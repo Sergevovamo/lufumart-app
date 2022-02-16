@@ -13,7 +13,12 @@ import {
 	MaterialCommunityIcons,
 } from '@expo/vector-icons';
 
-import { Home, BrowseCategories, FeaturedDeals } from '../screens/app/home';
+import {
+	Home,
+	BrowseCategories,
+	FeaturedDeals,
+	Details,
+} from '../screens/app/home';
 import { Categories } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
@@ -90,6 +95,23 @@ export const HomeStackScreen = ({ navigation }) => (
 			component={FeaturedDeals}
 			options={{
 				title: 'Featured Deals',
+				headerLeft: () => (
+					<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+						<Ionicons
+							name="arrow-back"
+							size={24}
+							color="black"
+							style={{ paddingHorizontal: 15 }}
+						/>
+					</TouchableOpacity>
+				),
+			}}
+		/>
+		<HomeStack.Screen
+			name="HomeDetailsScreen"
+			component={Details}
+			options={{
+				title: 'Details',
 				headerLeft: () => (
 					<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
 						<Ionicons
@@ -249,6 +271,10 @@ export const FeedStackScreen = ({ navigation }) => (
 			component={Feed}
 			options={{
 				title: 'Feed',
+				cardStyle: {
+					backgroundColor: '#fffff7',
+					opacity: 1,
+				},
 				headerRight: () => (
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<TouchableOpacity
@@ -345,7 +371,9 @@ export const SavedStackScreen = ({ navigation }) => (
 				title: 'Saved & Liked Items',
 				headerRight: () => (
 					<View style={{ flexDirection: 'row' }}>
-						<TouchableOpacity>
+						<TouchableOpacity
+							onPress={() => navigation.navigate('SavedCartScreen')}
+						>
 							<MaterialCommunityIcons
 								name="cart-outline"
 								size={24}
@@ -354,6 +382,23 @@ export const SavedStackScreen = ({ navigation }) => (
 							/>
 						</TouchableOpacity>
 					</View>
+				),
+			}}
+		/>
+		<SavedStack.Screen
+			name="SavedCartScreen"
+			component={Cart}
+			options={{
+				title: 'My Cart',
+				headerLeft: () => (
+					<TouchableOpacity onPress={() => navigation.navigate('SavedScreen')}>
+						<Ionicons
+							name="arrow-back"
+							size={24}
+							color="black"
+							style={{ paddingHorizontal: 15 }}
+						/>
+					</TouchableOpacity>
 				),
 			}}
 		/>

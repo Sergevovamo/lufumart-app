@@ -107,7 +107,7 @@ const ProductCategories = [
 	{
 		name: 'Baby',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1634043525/mega-image_ql5yxi.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644940019/samples/ecommerce/organic-cosmetic-children-for-bath-on-wooden-bakground-close-up-picture-id625379326_hjcisu.jpg',
 	},
 	{
 		name: 'Books & Magazines',
@@ -117,7 +117,7 @@ const ProductCategories = [
 	{
 		name: 'Business & Industrial',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644940124/samples/ecommerce/header-industrial_sppbt1.jpg',
 	},
 	{
 		name: 'Camera & Photo',
@@ -132,12 +132,12 @@ const ProductCategories = [
 	{
 		name: 'Accessories',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644939815/samples/ecommerce/5488972_TRUNK_OCT2020_MensAccessories_Blog_Header_kz3hov.jpg',
 	},
 	{
 		name: 'Collectibles',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644939873/samples/ecommerce/SportsCollectibels750x375_dfrusc.jpg',
 	},
 	{
 		name: 'Computers/Tablets',
@@ -147,17 +147,17 @@ const ProductCategories = [
 	{
 		name: 'Consumer Electronics',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644939843/samples/ecommerce/How_is_inventory_managed_for_consumer_electronics_fulfillment_3F_ksqzal.jpg',
 	},
 	{
 		name: 'Crafts',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644939627/samples/ecommerce/1511294243-kids-crafts-collage.jpg_vnu1rf.jpg',
 	},
 	{
 		name: 'Dolls & Bears',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644939591/samples/ecommerce/GUEST_bf56b9cc-2847-488d-8144-38c3f47fa0fb_meri8j.jpg',
 	},
 	{
 		name: 'Movies & TV',
@@ -172,7 +172,7 @@ const ProductCategories = [
 	{
 		name: 'Home & Garden',
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896019/samples/ecommerce/gh-best-laptop-backpacks-1624630728_iytabw.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644940068/samples/ecommerce/small-garden-ideas-1614032371_g1ob3p.jpg',
 	},
 	{
 		name: 'Gift Cards & Coupons',

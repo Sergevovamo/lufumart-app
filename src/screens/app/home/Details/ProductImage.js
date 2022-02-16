@@ -1,18 +1,13 @@
 import {
 	View,
-	Text,
 	Image,
-	StyleSheet,
 	ScrollView,
+	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
 
-import { numberWithCommas } from '../../../utils/NumberWithCommas';
-
-const FlashSales = () => {
-	const navigation = useNavigation();
+const ProductImage = () => {
 	return (
 		<ScrollView
 			horizontal
@@ -27,10 +22,7 @@ const FlashSales = () => {
 			{viewedProducts.map((item, index) => {
 				const { name, price, itemsInStock, imgUrl } = item;
 				return (
-					<TouchableOpacity
-						onPress={() => navigation.navigate('HomeDetailsScreen')}
-						key={index}
-					>
+					<TouchableOpacity key={index}>
 						<View style={styles.product}>
 							<View style={styles.imageContainer}>
 								<Image
@@ -40,22 +32,6 @@ const FlashSales = () => {
 									style={styles.image}
 								/>
 							</View>
-							<View
-								style={{
-									paddingVertical: 5,
-									borderBottomColor: 'black',
-									borderBottomWidth: 1,
-								}}
-							/>
-							<View style={{ paddingHorizontal: 10 }}>
-								<Text style={{ paddingVertical: 5 }}>{name}</Text>
-								<Text style={{ fontWeight: 'bold' }}>
-									KSh. {numberWithCommas(price)}
-								</Text>
-								<Text style={{ color: 'gray' }}>
-									{numberWithCommas(itemsInStock)} Items left
-								</Text>
-							</View>
 						</View>
 					</TouchableOpacity>
 				);
@@ -64,11 +40,11 @@ const FlashSales = () => {
 	);
 };
 
-export default FlashSales;
+export default ProductImage;
 
 const styles = StyleSheet.create({
 	product: {
-		width: 150,
+		width: 250,
 		height: 200,
 		...Platform.select({
 			ios: {
@@ -94,7 +70,7 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		backgroundColor: '#fff',
 		marginVertical: 5,
-		height: 100,
+		height: 200,
 		width: '100%',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -113,7 +89,7 @@ const viewedProducts = [
 		vat: 1799,
 		itemsInStock: 45,
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644898655/samples/ecommerce/vpavic_4291_20201113_0337_Edit.0_wowotl.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644991544/samples/ecommerce/61fSvLm1DIS._AC_SX522__n7fohv.jpg',
 	},
 	{
 		name: 'Smartphones',
@@ -129,7 +105,7 @@ const viewedProducts = [
 		vat: 29,
 		itemsInStock: 129,
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644901753/samples/ecommerce/811UWQmHkSS._AC_UY445__rihooe.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644991529/samples/ecommerce/MicrosoftTeams-image-7-1024x691_ny9kt8.jpg',
 	},
 	{
 		name: 'Boxers',
@@ -137,7 +113,7 @@ const viewedProducts = [
 		vat: 29,
 		itemsInStock: 119,
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902014/samples/ecommerce/81ImywNKf_L._AC_UX385__uvdpu5.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644991519/samples/ecommerce/maxresdefault_i0c1ye.jpg',
 	},
 	{
 		name: 'Drinks',
@@ -145,22 +121,6 @@ const viewedProducts = [
 		vat: 29,
 		itemsInStock: 206,
 		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644901961/samples/ecommerce/feb_art_whiskeys-768x512_gzaeya.jpg',
-	},
-	{
-		name: 'Socks',
-		price: 299,
-		vat: 29,
-		itemsInStock: 603,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902075/samples/ecommerce/socks-1631103779.jpg_myt5ec.jpg',
-	},
-	{
-		name: 'Pillow',
-		price: 2389,
-		vat: 29,
-		itemsInStock: 56,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902158/Marriott-The-Marriott-Pillow-MAR-108-L_xlrg_vnw53j.jpg',
+			'https://res.cloudinary.com/dgisuffs0/image/upload/v1644991512/samples/ecommerce/4_to_3_Teaser_Camera_Compare_Flagship_Smartphones_2021_gz47l2.jpg',
 	},
 ];

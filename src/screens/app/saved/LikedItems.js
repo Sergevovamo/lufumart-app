@@ -3,8 +3,17 @@ import React from 'react';
 
 const ViewedItems = () => {
 	return (
-		<View>
-			<Text>Recently LikedItems</Text>
+		<View
+			style={{
+				flex: 1,
+				backgroundColor: 'transparent',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
+		>
+			<View style={{ backgroundColor: 'white', padding: 20 }}>
+				<Text>Saved & Liked Items</Text>
+			</View>
 		</View>
 	);
 };

@@ -1,8 +1,11 @@
 {
 	"expo": {
-		"name": "lufumart",
+		"name": "Lufumart",
 		"slug": "lufumart",
 		"version": "0.1.0",
+		"privacy": "public",
+		"description": "Your Trusted Online Store",
+		"primaryColor": "#f68b1e",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
 		"splash": {
