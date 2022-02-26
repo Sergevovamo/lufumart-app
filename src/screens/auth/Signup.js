@@ -8,6 +8,7 @@ import {
 	StatusBar,
 	Dimensions,
 	ActivityIndicator,
+	ScrollView,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -46,119 +47,231 @@ const Signup = () => {
 
 	return (
 		<TextInputAvoidingView>
-			<Animated.View style={style.container}>
-				<LinearGradient
-					colors={['#00ab55']}
-					style={[styles.centerAlign, { height: height / 6 }]}
-				>
-					{/* <Image
+			<ScrollView>
+				<Animated.View style={style.container}>
+					<LinearGradient
+						colors={['#00ab55']}
+						style={[styles.centerAlign, { height: height / 6 }]}
+					>
+						{/* <Image
 						source={require('../../../assets/nikiai-logo.png')}
 						style={styles.logo}
 					/> */}
-				</LinearGradient>
-				<View
-					style={[
-						styles.centerAlign,
-						{
-							marginTop: 0,
-							backgroundColor: '#fffff7',
-							height: height,
-						},
-					]}
-				>
-					<View style={styles.inputContainer}>
-						<Text
-							style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}
-						>
-							SIGN UP
-						</Text>
-						<Controller
-							control={control}
-							type="email"
-							name="email"
-							render={({ field: { onChange, value, onBlur } }) => (
-								<TextInput
-									mode="outlined"
-									keyboardType="email-address"
-									label="Email address"
-									placeholder="Enter your email address"
-									value={value}
-									theme={{
-										colors: {
-											primary: '#f68b1e',
-											underlineColor: 'transparent',
-										},
-									}}
-									onBlur={onBlur}
-									onChangeText={(value) => onChange(value)}
-								/>
-							)}
-							rules={{
-								required: {
-									value: true,
-									message: 'Email address is required',
-								},
-								pattern: {
-									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-									message: 'Invalid email address',
-								},
-							}}
-						/>
-						<HelperText type="error" style={styles.helper}>
-							{errors?.email?.message}
-						</HelperText>
-						<Controller
-							control={control}
-							name="password"
-							render={({ field: { onChange, value, onBlur } }) => (
-								<TextInput
-									mode="outlined"
-									label="Password"
-									secureTextEntry={showPassword ? false : true}
-									placeholder="Enter password"
-									value={value}
-									theme={{
-										colors: {
-											primary: '#f68b1e',
-											underlineColor: 'transparent',
-										},
-									}}
-									onBlur={onBlur}
-									onChangeText={(value) => onChange(value)}
-									right={
-										<TextInput.Icon
-											onPress={togglePassword}
-											name={showPassword ? 'eye-off' : 'eye'}
-										/>
-									}
-								/>
-							)}
-							rules={{
-								required: {
-									value: true,
-									message: 'Password is required',
-								},
-								minLength: {
-									value: 8,
-									message: 'Password should be atleast 8 characters',
-								},
-							}}
-						/>
-						<HelperText type="error">{errors?.password?.message}</HelperText>
+					</LinearGradient>
+					<View
+						style={[
+							styles.centerAlign,
+							{
+								marginTop: 0,
+								backgroundColor: '#fffff7',
+								height: height,
+							},
+						]}
+					>
+						<View style={styles.inputSignContainer}>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: 'bold',
+									textAlign: 'center',
+								}}
+							>
+								SIGN UP
+							</Text>
+							<Controller
+								control={control}
+								name="name"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										label="Your Name"
+										placeholder="Enter your name"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#f68b1e',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'First Name is required',
+									},
+								}}
+							/>
 
-						<TouchableOpacity
-							onPress={handleSubmit(onSubmit)}
-							style={style.button}
-						>
-							{buttonLoading ? (
-								<ActivityIndicator color="#fff" size="small" />
-							) : (
-								<Text style={{ color: '#fff', fontSize: 18 }}>Sign up</Text>
-							)}
-						</TouchableOpacity>
+							<HelperText type="error" style={styles.helper}>
+								{errors?.name?.message}
+							</HelperText>
+							<Controller
+								control={control}
+								type="email"
+								name="email"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										keyboardType="email-address"
+										label="Email address"
+										placeholder="Enter your email address"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#f68b1e',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'Email address is required',
+									},
+									pattern: {
+										value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+										message: 'Invalid email address',
+									},
+								}}
+							/>
+							<HelperText type="error" style={styles.helper}>
+								{errors?.email?.message}
+							</HelperText>
+							<Controller
+								control={control}
+								name="phone"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										keyboardType="numeric"
+										maxLength={10}
+										label="Phone Number"
+										placeholder="0712345678"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#00ab55',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'Phone number is required',
+									},
+									pattern: {
+										value: /^(\+254|0)[1-9]\d{8}$/i,
+										message: 'Please enter a valid mobile number',
+									},
+								}}
+							/>
+
+							<HelperText type="error" style={styles.helper}>
+								{errors?.phone?.message}
+							</HelperText>
+							<Controller
+								control={control}
+								name="password"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										label="Password"
+										secureTextEntry={showPassword ? false : true}
+										placeholder="Enter password"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#f68b1e',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+										right={
+											<TextInput.Icon
+												onPress={togglePassword}
+												name={showPassword ? 'eye-off' : 'eye'}
+											/>
+										}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'Password is required',
+									},
+									minLength: {
+										value: 8,
+										message: 'Password should be atleast 8 characters',
+									},
+								}}
+							/>
+							<HelperText type="error">{errors?.password?.message}</HelperText>
+							<Controller
+								control={control}
+								name="password_confirmation"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										label="Confirm Password"
+										secureTextEntry={showPassword ? false : true}
+										placeholder="Confirm your password"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#00ab55',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+										right={
+											<TextInput.Icon
+												style={Platform.OS === 'ios' && { paddingTop: 10 }}
+												onPress={togglePassword}
+												name={showPassword ? 'eye-off' : 'eye'}
+											/>
+										}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'Confirm Password is required',
+									},
+									validate: (value) =>
+										value === getValues('password') || 'Passwords do not match',
+								}}
+							/>
+
+							<HelperText type="error" style={styles.helper}>
+								{errors?.password_confirmation?.message}
+							</HelperText>
+
+							<TouchableOpacity
+								onPress={handleSubmit(onSubmit)}
+								style={style.button}
+							>
+								{buttonLoading ? (
+									<ActivityIndicator color="#fff" size="small" />
+								) : (
+									<Text style={{ color: '#fff', fontSize: 18 }}>Sign up</Text>
+								)}
+							</TouchableOpacity>
+						</View>
 					</View>
-				</View>
-			</Animated.View>
+				</Animated.View>
+			</ScrollView>
 		</TextInputAvoidingView>
 	);
 };

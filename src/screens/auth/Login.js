@@ -15,6 +15,8 @@ import Toast from 'react-native-toast-message';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, HelperText, useTheme } from 'react-native-paper';
+import { loginUser } from '../../store/actions/auth-actions';
+import { clearErrors } from '../../store/actions/error-actions';
 import { styles } from './styles';
 
 import TextInputAvoidingView from '../../components/KeyboardAvoidingWrapper';
@@ -23,6 +25,7 @@ const { width, height } = Dimensions.get('screen');
 
 const Login = () => {
 	const dispatch = useDispatch();
+	let error = useSelector((state) => state.error);
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
@@ -39,10 +42,24 @@ const Login = () => {
 
 	const onSubmit = async (data) => {
 		// Attempt to authenticate user
-		console.log(data);
-		// setButtonLoading(true);
-		// await dispatch(loginUser(data));
+		setButtonLoading(true);
+		await dispatch(loginUser(data));
 	};
+
+	useEffect(() => {
+		// Check for register error
+		if (error.id === 'LOGIN_FAIL') {
+			setButtonLoading(false);
+			Toast.show({
+				type: 'error',
+				text1: 'Invalid credentials. Please try again!',
+				text2: 'Either your email address or password is incorrect.',
+			});
+			dispatch(clearErrors());
+		} else {
+			setButtonLoading(false);
+		}
+	}, [error]);
 
 	return (
 		<TextInputAvoidingView>

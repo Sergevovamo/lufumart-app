@@ -2,6 +2,7 @@ import { View, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
+import { Badge } from 'react-native-paper';
 
 import {
 	Octicons,
@@ -45,6 +46,7 @@ export const HomeStackScreen = ({ navigation }) => (
 						>
 							<Fontisto name="search" size={20} color="black" />
 						</TouchableOpacity>
+
 						<TouchableOpacity
 							onPress={() => navigation.navigate('HomeCartScreen')}
 						>
@@ -52,9 +54,26 @@ export const HomeStackScreen = ({ navigation }) => (
 								name="cart-outline"
 								size={24}
 								color="black"
-								style={{ paddingHorizontal: 15 }}
+								style={{
+									paddingHorizontal: 15,
+									// paddingRight: 15,
+									// paddingBottom: 5,
+								}}
 							/>
 						</TouchableOpacity>
+						<Badge
+							visible={true}
+							style={{
+								marginBottom: 25,
+								marginLeft: -15,
+								marginRight: 10,
+								color: '#fff',
+								backgroundColor: '#f68b1e',
+							}}
+							size={15}
+						>
+							36
+						</Badge>
 					</View>
 				),
 			}}
@@ -86,6 +105,19 @@ export const HomeStackScreen = ({ navigation }) => (
 								style={{ paddingHorizontal: 15 }}
 							/>
 						</TouchableOpacity>
+						<Badge
+							visible={true}
+							style={{
+								marginBottom: 25,
+								marginLeft: -15,
+								marginRight: 10,
+								color: '#fff',
+								backgroundColor: '#f68b1e',
+							}}
+							size={15}
+						>
+							36
+						</Badge>
 					</View>
 				),
 			}}
@@ -128,7 +160,7 @@ export const HomeStackScreen = ({ navigation }) => (
 			name="HomeSearchScreen"
 			component={Search}
 			options={{
-				title: 'Search bar',
+				title: 'Search',
 				headerLeft: () => (
 					<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
 						<Ionicons
@@ -198,7 +230,7 @@ export const CategoriesStackScreen = ({ navigation }) => (
 			options={{
 				title: 'Categories',
 				headerRight: () => (
-					<View style={{ flexDirection: 'row' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<TouchableOpacity
 							onPress={() => navigation.navigate('CategoriesCartScreen')}
 						>
@@ -209,6 +241,19 @@ export const CategoriesStackScreen = ({ navigation }) => (
 								style={{ paddingHorizontal: 15 }}
 							/>
 						</TouchableOpacity>
+						<Badge
+							visible={true}
+							style={{
+								marginBottom: 25,
+								marginLeft: -15,
+								marginRight: 10,
+								color: '#fff',
+								backgroundColor: '#f68b1e',
+							}}
+							size={15}
+						>
+							36
+						</Badge>
 					</View>
 				),
 			}}
@@ -292,6 +337,19 @@ export const FeedStackScreen = ({ navigation }) => (
 								style={{ paddingHorizontal: 15 }}
 							/>
 						</TouchableOpacity>
+						<Badge
+							visible={true}
+							style={{
+								marginBottom: 25,
+								marginLeft: -15,
+								marginRight: 10,
+								color: '#fff',
+								backgroundColor: '#f68b1e',
+							}}
+							size={15}
+						>
+							36
+						</Badge>
 					</View>
 				),
 			}}
@@ -300,7 +358,7 @@ export const FeedStackScreen = ({ navigation }) => (
 			name="FeedSearchScreen"
 			component={Search}
 			options={{
-				title: 'Search bar',
+				title: 'Search',
 				headerLeft: () => (
 					<TouchableOpacity onPress={() => navigation.navigate('FeedScreen')}>
 						<Ionicons
@@ -370,7 +428,7 @@ export const SavedStackScreen = ({ navigation }) => (
 			options={{
 				title: 'Saved & Liked Items',
 				headerRight: () => (
-					<View style={{ flexDirection: 'row' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<TouchableOpacity
 							onPress={() => navigation.navigate('SavedCartScreen')}
 						>
@@ -381,6 +439,19 @@ export const SavedStackScreen = ({ navigation }) => (
 								style={{ paddingHorizontal: 15 }}
 							/>
 						</TouchableOpacity>
+						<Badge
+							visible={true}
+							style={{
+								marginBottom: 25,
+								marginLeft: -15,
+								marginRight: 10,
+								color: '#fff',
+								backgroundColor: '#f68b1e',
+							}}
+							size={15}
+						>
+							36
+						</Badge>
 					</View>
 				),
 			}}

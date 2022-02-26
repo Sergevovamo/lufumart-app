@@ -40,6 +40,32 @@ const styles = StyleSheet.create({
 			},
 		}),
 	},
+	inputSignContainer: {
+		backgroundColor: '#ffffff',
+		padding: 20,
+		marginTop: -height / 3.5,
+		borderRadius: 20,
+		width: width / 1.2,
+		height: height / 1.15,
+		...Platform.select({
+			ios: {
+				shadowColor: 'gray',
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.25,
+				shadowRadius: 3.5,
+			},
+			android: {
+				elevation: -5, // its negative to allow effective box shadow
+				position: 'relative',
+				borderWidth: 1,
+				borderColor: '#f3f3f3',
+				zIndex: 50,
+			},
+		}),
+	},
 
 	// Surveyee Form
 	inputFormContainer: {
