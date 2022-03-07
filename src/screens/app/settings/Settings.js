@@ -35,14 +35,11 @@ const Settings = () => {
 						<Text style={{ color: '#5d616f', fontSize: 14, fontWeight: '500' }}>
 							{currentUser?.email}
 						</Text>
-						<Text style={{ color: '#5d616f', fontSize: 14, fontWeight: '500' }}>
-							{currentUser?.role}
-						</Text>
 					</View>
 
-					{/* <View style={{ paddingTop: 10 }}>
+					<View style={{ paddingTop: 10 }}>
 						<SettingsAccount />
-					</View> */}
+					</View>
 
 					<View style={{ paddingTop: 15 }}>
 						<SettingsSecurity />
