@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 		marginTop: -height / 3.5,
 		borderRadius: 20,
 		width: width / 1.2,
-		height: height / 1.15,
+		height: height,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',

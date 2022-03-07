@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
 	View,
 	Text,
@@ -7,7 +8,8 @@ import {
 	TouchableOpacity,
 	ScrollView,
 } from 'react-native';
-import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 import {
 	AntDesign,
@@ -16,21 +18,41 @@ import {
 } from '@expo/vector-icons';
 
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
+import {
+	getCartProducts,
+	addProductToCart,
+	decreaseCartProductQuantity,
+} from '../../../store/actions/product-actions';
 
 const { width, height } = Dimensions.get('screen');
 
 const Cart = ({ navigation }) => {
+	const dispatch = useDispatch();
+	const cartProducts = useSelector(
+		(state) => state.products?.cartProducts?.cartProducts
+	);
+	const cartProductQuantity = useSelector(
+		(state) => state.products?.cartProducts?.cartProductQuantity
+	);
+	// console.log(cartProductQuantity);
+
+	useEffect(() => {
+		dispatch(getCartProducts());
+	}, []);
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
-				{data.length > 0 ? (
-					data?.map((item, index) => {
-						const { name, price, quantity, imgUrl } = item;
+				{cartProducts?.length > 0 ? (
+					cartProducts?.map((item, index) => {
+						const { _id, name, price, imageUrl } = item;
 
 						return (
 							<View key={index} style={styles.productContainer}>
 								<View style={styles.imageContainer}>
-									<Image source={{ uri: `${imgUrl}` }} style={styles.image} />
+									<Image
+										source={{ uri: `${imageUrl[0]}` }}
+										style={styles.image}
+									/>
 								</View>
 								<View style={styles.productDetails}>
 									<View>
@@ -53,13 +75,19 @@ const Cart = ({ navigation }) => {
 												alignItems: 'center',
 											}}
 										>
-											<TouchableOpacity>
+											<TouchableOpacity
+												onPress={() =>
+													dispatch(decreaseCartProductQuantity(_id))
+												}
+											>
 												<AntDesign name="minuscircle" size={18} color="black" />
 											</TouchableOpacity>
 											<Text style={{ paddingHorizontal: 15, fontSize: 18 }}>
-												{quantity}
+												{cartProductQuantity[index]?.quantity}
 											</Text>
-											<TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => dispatch(addProductToCart(_id))}
+											>
 												<AntDesign name="pluscircle" size={18} color="black" />
 											</TouchableOpacity>
 										</View>

@@ -16,14 +16,17 @@ import Toast from 'react-native-toast-message';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, HelperText, useTheme } from 'react-native-paper';
+import { registerUser } from '../../store/actions/auth-actions';
+import { clearErrors } from '../../store/actions/error-actions';
 import { styles } from './styles';
 
 import TextInputAvoidingView from '../../components/KeyboardAvoidingWrapper';
 
 const { width, height } = Dimensions.get('screen');
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
 	const dispatch = useDispatch();
+	let error = useSelector((state) => state.error);
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
@@ -31,6 +34,7 @@ const Signup = () => {
 	const {
 		control,
 		handleSubmit,
+		getValues,
 		formState: { errors },
 	} = useForm({ mode: 'onBlur' });
 
@@ -40,10 +44,25 @@ const Signup = () => {
 
 	const onSubmit = async (data) => {
 		// Attempt to authenticate user
-		console.log(data);
-		// setButtonLoading(true);
-		// await dispatch(loginUser(data));
+
+		setButtonLoading(true);
+		await dispatch(registerUser(data));
 	};
+
+	useEffect(() => {
+		// Check for register error
+		if (error.id === 'REGISTER_FAIL') {
+			setButtonLoading(false);
+			Toast.show({
+				type: 'error',
+				text1: 'An account with given email already exists!',
+				text2: 'Oops, something went wrong',
+			});
+			dispatch(clearErrors());
+		} else {
+			setButtonLoading(false);
+		}
+	}, [error]);
 
 	return (
 		<TextInputAvoidingView>
@@ -51,7 +70,7 @@ const Signup = () => {
 				<Animated.View style={style.container}>
 					<LinearGradient
 						colors={['#00ab55']}
-						style={[styles.centerAlign, { height: height / 6 }]}
+						style={[styles.centerAlign, { height: height / 4 }]}
 					>
 						{/* <Image
 						source={require('../../../assets/nikiai-logo.png')}
@@ -100,7 +119,7 @@ const Signup = () => {
 								rules={{
 									required: {
 										value: true,
-										message: 'First Name is required',
+										message: 'Name is required',
 									},
 								}}
 							/>
@@ -178,6 +197,36 @@ const Signup = () => {
 
 							<HelperText type="error" style={styles.helper}>
 								{errors?.phone?.message}
+							</HelperText>
+							<Controller
+								control={control}
+								name="gender"
+								render={({ field: { onChange, value, onBlur } }) => (
+									<TextInput
+										mode="outlined"
+										label="Your gender"
+										placeholder="Enter your gender"
+										value={value}
+										theme={{
+											colors: {
+												primary: '#f68b1e',
+												underlineColor: 'transparent',
+											},
+										}}
+										onBlur={onBlur}
+										onChangeText={(value) => onChange(value)}
+									/>
+								)}
+								rules={{
+									required: {
+										value: true,
+										message: 'Gender is required',
+									},
+								}}
+							/>
+
+							<HelperText type="error" style={styles.helper}>
+								{errors?.gender?.message}
 							</HelperText>
 							<Controller
 								control={control}

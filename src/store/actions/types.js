@@ -18,3 +18,14 @@ export const SEND_EMAIL_OTP = 'send_email_otp';
 export const AUTH_USER = 'auth_user';
 export const AUTH_ERROR = 'auth_error';
 export const CLEAR_ERRORS = 'clear_errors';
+
+export const PRODUCT_LOADING = 'product_loading';
+export const GET_PRODUCT_CATEGORY = 'get_product_category';
+export const GET_PRODUCT_CATEGORIES = 'get_product_categories';
+export const DELETE_PRODUCT_CATEGORY = 'delete_product_category';
+
+export const GET_PRODUCT = 'get_product';
+export const GET_PRODUCTS = 'get_products';
+export const GET_CART_PRODUCTS = 'get_cart_products';
+export const ADD_PRODUCT_TO_CART = 'add_product_to_cart';
+export const DECREASE_PRODUCT_TO_CART = 'decrease_product_to_cart';

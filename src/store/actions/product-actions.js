@@ -1,0 +1,190 @@
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import { tokenConfig, auth } from './auth-actions';
+import {
+	PRODUCT_LOADING,
+	GET_PRODUCT_CATEGORY,
+	GET_PRODUCT_CATEGORIES,
+	GET_CART_PRODUCTS,
+	ADD_PRODUCT_TO_CART,
+	DECREASE_PRODUCT_TO_CART,
+	GET_PRODUCT,
+	GET_PRODUCTS,
+} from './types';
+import { returnErrors, clearErrors } from './error-actions';
+
+const PRODUCTS_CATEGORY_SERVER =
+	'https://api-v1.lufumart.com/api/v1/product-categories';
+const PRODUCTS_SERVER = 'https://api-v1.lufumart.com/api/v1/products';
+
+export const getProductCategories = () => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		const response = await axios.get(`${PRODUCTS_CATEGORY_SERVER}`, token);
+		const data = await response.data;
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		// console.log(data);
+		await dispatch({
+			type: GET_PRODUCT_CATEGORIES,
+			payload: data,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		// console.log(error.response.data);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching categories.`,
+		});
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_PRODUCT_CATEGORIES'
+			)
+		);
+	}
+};
+
+export const getProducts = () => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		const response = await axios.get(`${PRODUCTS_SERVER}`, token);
+		const data = await response.data;
+
+		console.log(data);
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: GET_PRODUCTS,
+			payload: data,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error.response.data);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching products.`,
+		});
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};
+
+export const getCartProducts = () => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		const response = await axios.get(
+			`${PRODUCTS_SERVER}/user-cart-products`,
+			token
+		);
+		const data = await response.data;
+
+		// console.log(data);
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: GET_CART_PRODUCTS,
+			payload: data,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching cart products.`,
+		});
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};
+
+// add product to cart and increase product cart quantity
+export const addProductToCart = (id) => async (dispatch) => {
+	const token = await tokenConfig();
+	try {
+		const response = await axios.get(
+			`${PRODUCTS_SERVER}/add-product-to-cart?productId=${id}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: ADD_PRODUCT_TO_CART,
+			payload: data,
+		});
+		dispatch(getCartProducts());
+		Toast.show({
+			type: 'success',
+			text1: 'Product updated successfully.',
+			text2: `product quantity increased.`,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while adding cart products.`,
+		});
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};
+
+export const decreaseCartProductQuantity = (id) => async (dispatch) => {
+	const token = await tokenConfig();
+	try {
+		const response = await axios.get(
+			`${PRODUCTS_SERVER}/decrease-cart-product-quantity?productId=${id}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: DECREASE_PRODUCT_TO_CART,
+			payload: data,
+		});
+		dispatch(getCartProducts());
+		Toast.show({
+			type: 'success',
+			text1: 'Product updated successfully.',
+			text2: `product quantity decreased.`,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while reducing product quantity.`,
+		});
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};

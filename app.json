@@ -4,6 +4,7 @@
 		"slug": "lufumart",
 		"version": "0.1.0",
 		"privacy": "public",
+		"owner": "sergevovamo",
 		"description": "Your Trusted Online Store",
 		"primaryColor": "#f68b1e",
 		"orientation": "portrait",
