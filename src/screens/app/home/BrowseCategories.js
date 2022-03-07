@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import {
 	View,
 	Text,
@@ -6,21 +7,33 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getProductCategories } from '../../../store/actions/product-actions';
 
 const BrowseCategories = () => {
+	const dispatch = useDispatch();
+
+	const productCategories = useSelector(
+		(state) => state.products?.productCategories
+	);
+
+	useEffect(() => {
+		dispatch(getProductCategories());
+	}, []);
+
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
-				{ProductCategories?.map((item, index) => {
-					const { name, imgUrl } = item;
+				{productCategories?.map((item, index) => {
+					const { name, imageUrl } = item;
+
 					return (
 						<TouchableOpacity key={index}>
 							<View style={styles.product}>
 								<View style={styles.imageContainer}>
 									<Image
 										source={{
-											uri: `${imgUrl}`,
+											uri: `${imageUrl}`,
 										}}
 										style={styles.image}
 									/>

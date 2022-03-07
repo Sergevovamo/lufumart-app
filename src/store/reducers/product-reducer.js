@@ -8,6 +8,7 @@ import {
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	DECREASE_PRODUCT_TO_CART,
+	CALCULATE_TOTAL,
 } from '../actions/types';
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
 	product: null,
 	products: null,
 	cartProducts: null,
+	total: null,
 };
 
 export default function ProductReducer(state = initialState, action) {
@@ -75,6 +77,13 @@ export default function ProductReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				cartProducts: action.payload,
+			};
+		case CALCULATE_TOTAL:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				total: action.payload,
 			};
 		case DELETE_PRODUCT_CATEGORY:
 			return {

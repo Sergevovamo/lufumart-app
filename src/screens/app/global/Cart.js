@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
 	View,
 	Text,
@@ -9,7 +9,6 @@ import {
 	ScrollView,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import Toast from 'react-native-toast-message';
 
 import {
 	AntDesign,
@@ -28,17 +27,19 @@ const { width, height } = Dimensions.get('screen');
 
 const Cart = ({ navigation }) => {
 	const dispatch = useDispatch();
+
 	const cartProducts = useSelector(
 		(state) => state.products?.cartProducts?.cartProducts
 	);
 	const cartProductQuantity = useSelector(
 		(state) => state.products?.cartProducts?.cartProductQuantity
 	);
-	// console.log(cartProductQuantity);
+	const total = useSelector((state) => state.products?.total);
 
 	useEffect(() => {
 		dispatch(getCartProducts());
 	}, []);
+
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
@@ -133,12 +134,14 @@ const Cart = ({ navigation }) => {
 					<View style={styles.productTotalContainer}>
 						<Text style={{ fontWeight: 'bold' }}>Sub Total</Text>
 						<Text style={{ fontWeight: 'bold' }}>
-							Ksh. {numberWithCommas(4998)}
+							Ksh. {numberWithCommas(parseInt(total?.subTotal))}
 						</Text>
 					</View>
 					<View style={styles.productTotalContainer}>
 						<Text style={{ color: 'gray' }}>VAT</Text>
-						<Text style={{ color: 'gray' }}>Ksh. {numberWithCommas(379)}</Text>
+						<Text style={{ color: 'gray' }}>
+							Ksh. {numberWithCommas(parseInt(total?.vat))}
+						</Text>
 					</View>
 					<View
 						style={{
@@ -150,7 +153,7 @@ const Cart = ({ navigation }) => {
 					/>
 					<View style={styles.productTotalContainer}>
 						<Text>Total</Text>
-						<Text>Ksh. {numberWithCommas(5377)}</Text>
+						<Text>Ksh. {numberWithCommas(parseInt(total?.total))}</Text>
 					</View>
 				</View>
 				<TouchableOpacity

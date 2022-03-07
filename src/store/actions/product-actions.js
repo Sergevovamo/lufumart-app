@@ -10,6 +10,7 @@ import {
 	DECREASE_PRODUCT_TO_CART,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	CALCULATE_TOTAL,
 } from './types';
 import { returnErrors, clearErrors } from './error-actions';
 
@@ -58,7 +59,7 @@ export const getProducts = () => async (dispatch) => {
 		const response = await axios.get(`${PRODUCTS_SERVER}`, token);
 		const data = await response.data;
 
-		console.log(data);
+		// console.log(data);
 		await dispatch({
 			type: PRODUCT_LOADING,
 		});
@@ -96,10 +97,13 @@ export const getCartProducts = () => async (dispatch) => {
 			type: PRODUCT_LOADING,
 		});
 
+		calculateTotal(data.cartProducts, data.cartProductQuantity, dispatch);
+
 		await dispatch({
 			type: GET_CART_PRODUCTS,
 			payload: data,
 		});
+
 		dispatch(clearErrors());
 	} catch (error) {
 		console.log(error);
@@ -112,6 +116,27 @@ export const getCartProducts = () => async (dispatch) => {
 			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
 		);
 	}
+};
+
+const calculateTotal = (cartProducts, cartProductQuantity, dispatch) => {
+	let total = 0;
+
+	cartProducts?.map((item, index) => {
+		total += parseInt(item.price, 10) * cartProductQuantity[index]?.quantity;
+	});
+
+	const vat = total * 0.16;
+
+	const data = {
+		subTotal: total,
+		vat,
+		total: total + vat,
+	};
+
+	dispatch({
+		type: CALCULATE_TOTAL,
+		payload: data,
+	});
 };
 
 // add product to cart and increase product cart quantity

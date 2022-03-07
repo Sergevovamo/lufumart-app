@@ -24,7 +24,7 @@ import {
 import { Categories } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
-import { Profile } from '../screens/app/settings';
+import { Settings } from '../screens/app/settings';
 import { Cart, Checkout, Search, Notifications } from '../screens/app/global';
 
 const HomeStack = createStackNavigator();
@@ -508,7 +508,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 		<SettingsStack.Navigator>
 			<SettingsStack.Screen
 				name="SettingsScreen"
-				component={Profile}
+				component={Settings}
 				options={{
 					title: 'Settings',
 					headerRight: () => (

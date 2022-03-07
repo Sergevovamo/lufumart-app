@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
 	Ionicons,
@@ -22,6 +23,13 @@ const { width, height } = Dimensions.get('screen');
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 
 const Checkout = () => {
+	const dispatch = useDispatch();
+
+	const cartProducts = useSelector(
+		(state) => state.products?.cartProducts?.cartProducts
+	);
+
+	const total = useSelector((state) => state.products?.total);
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
@@ -112,12 +120,15 @@ const Checkout = () => {
 							paddingBottom: 15,
 						}}
 					>
-						{data?.map((item, index) => {
-							const { name, price, imgUrl } = item;
+						{cartProducts?.map((item, index) => {
+							const { _id, name, price, imageUrl } = item;
 							return (
 								<View key={index} style={styles.cartProduct}>
 									<View style={styles.imageContainer}>
-										<Image source={{ uri: `${imgUrl}` }} style={styles.image} />
+										<Image
+											source={{ uri: `${imageUrl[0]}` }}
+											style={styles.image}
+										/>
 									</View>
 									<View style={styles.productDetails}>
 										<View>
@@ -137,7 +148,7 @@ const Checkout = () => {
 						Total
 					</Text>
 					<Text style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}>
-						KSh. {numberWithCommas(13196)}
+						KSh. {numberWithCommas(parseInt(total?.total))}
 					</Text>
 				</View>
 				<TouchableOpacity
