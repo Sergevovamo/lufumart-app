@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 
-const ProductImage = () => {
+const ProductImage = ({ imageUrl }) => {
 	return (
 		<ScrollView
 			horizontal
@@ -19,8 +19,7 @@ const ProductImage = () => {
 				paddingLeft: 10,
 			}}
 		>
-			{viewedProducts.map((item, index) => {
-				const { name, price, itemsInStock, imgUrl } = item;
+			{imageUrl?.map((imgUrl, index) => {
 				return (
 					<TouchableOpacity key={index}>
 						<View style={styles.product}>

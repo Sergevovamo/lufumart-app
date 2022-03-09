@@ -28,5 +28,6 @@ export const GET_PRODUCT = 'get_product';
 export const GET_PRODUCTS = 'get_products';
 export const GET_CART_PRODUCTS = 'get_cart_products';
 export const ADD_PRODUCT_TO_CART = 'add_product_to_cart';
+export const REMOVE_PRODUCT_TO_CART = 'remove_product_to_cart';
 export const DECREASE_PRODUCT_TO_CART = 'decrease_product_to_cart';
 export const CALCULATE_TOTAL = 'calculate_total';

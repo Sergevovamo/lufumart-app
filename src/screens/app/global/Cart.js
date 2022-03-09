@@ -20,6 +20,7 @@ import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
 	getCartProducts,
 	addProductToCart,
+	removeProductToCart,
 	decreaseCartProductQuantity,
 } from '../../../store/actions/product-actions';
 
@@ -101,7 +102,9 @@ const Cart = ({ navigation }) => {
 													style={{ paddingHorizontal: 15 }}
 												/>
 											</TouchableOpacity>
-											<TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => dispatch(removeProductToCart(_id))}
+											>
 												<MaterialIcons name="delete" size={22} color="black" />
 											</TouchableOpacity>
 										</View>

@@ -7,6 +7,7 @@ import {
 	GET_PRODUCT_CATEGORIES,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
+	REMOVE_PRODUCT_TO_CART,
 	DECREASE_PRODUCT_TO_CART,
 	GET_PRODUCT,
 	GET_PRODUCTS,
@@ -78,6 +79,36 @@ export const getProducts = () => async (dispatch) => {
 		});
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};
+
+export const getProduct = (productId) => async (dispatch) => {
+	const token = await tokenConfig();
+	// console.log(productId);
+	try {
+		const response = await axios.get(`${PRODUCTS_SERVER}/${productId}`, token);
+		const data = await response.data;
+		console.log(data);
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: GET_PRODUCT,
+			payload: data,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching product.`,
+		});
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'GET_PRODUCT')
 		);
 	}
 };
@@ -210,6 +241,48 @@ export const decreaseCartProductQuantity = (id) => async (dispatch) => {
 		});
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+		);
+	}
+};
+
+export const removeProductToCart = (id) => async (dispatch) => {
+	const token = await tokenConfig();
+	try {
+		const response = await axios.get(
+			`${PRODUCTS_SERVER}/remove-product-to-cart?productId=${id}`,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		await dispatch({
+			type: REMOVE_PRODUCT_TO_CART,
+			payload: data,
+		});
+
+		dispatch(getCartProducts());
+		Toast.show({
+			type: 'success',
+			text1: 'Product updated successfully.',
+			text2: `Product removed from cart.`,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while removing cart products.`,
+		});
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'REMOVE_PRODUCT_TO_CART'
+			)
 		);
 	}
 };

@@ -1,6 +1,6 @@
 import { View, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { Badge } from 'react-native-paper';
@@ -27,6 +27,8 @@ import { LikedItems } from '../screens/app/saved';
 import { Settings } from '../screens/app/settings';
 import { Cart, Checkout, Search, Notifications } from '../screens/app/global';
 
+import { getCartProducts } from '../store/actions/product-actions';
+
 const HomeStack = createStackNavigator();
 const CategoriesStack = createStackNavigator();
 const FeedStack = createStackNavigator();
@@ -34,9 +36,14 @@ const SavedStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 
 export const HomeStackScreen = ({ navigation }) => {
+	const dispatch = useDispatch();
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
+
+	useEffect(() => {
+		dispatch(getCartProducts());
+	}, [numberOfCartItems]);
 
 	return (
 		<HomeStack.Navigator>

@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
 	View,
 	Text,
@@ -6,13 +7,33 @@ import {
 	ScrollView,
 	TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
+import {
+	getProduct,
+	getProducts,
+	getCartProducts,
+	addProductToCart,
+	decreaseCartProductQuantity,
+} from '../../../store/actions/product-actions';
 
 const FlashSales = () => {
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
+
+	const products = useSelector((state) => state.products?.products);
+	// console.log(products);
+
+	useEffect(() => {
+		dispatch(getProducts());
+	}, []);
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('HomeDetailsScreen');
+	};
 	return (
 		<ScrollView
 			horizontal
@@ -22,20 +43,19 @@ const FlashSales = () => {
 				width: '100%',
 				paddingBottom: 15,
 				paddingLeft: 10,
+				paddingRight: 10,
 			}}
 		>
-			{viewedProducts.map((item, index) => {
-				const { name, price, itemsInStock, imgUrl } = item;
+			{products?.map((item, index) => {
+				const { name, price, quantity, imageUrl } = item;
+
 				return (
-					<TouchableOpacity
-						onPress={() => navigation.navigate('HomeDetailsScreen')}
-						key={index}
-					>
+					<TouchableOpacity onPress={() => viewedProduct(item)} key={index}>
 						<View style={styles.product}>
 							<View style={styles.imageContainer}>
 								<Image
 									source={{
-										uri: `${imgUrl}`,
+										uri: `${imageUrl[0]}`,
 									}}
 									style={styles.image}
 								/>
@@ -53,7 +73,7 @@ const FlashSales = () => {
 									KSh. {numberWithCommas(price)}
 								</Text>
 								<Text style={{ color: 'gray' }}>
-									{numberWithCommas(itemsInStock)} Items left
+									{numberWithCommas(quantity)} Items left
 								</Text>
 							</View>
 						</View>

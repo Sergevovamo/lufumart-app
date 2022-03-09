@@ -7,6 +7,7 @@ import {
 	GET_PRODUCTS,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
+	REMOVE_PRODUCT_TO_CART,
 	DECREASE_PRODUCT_TO_CART,
 	CALCULATE_TOTAL,
 } from '../actions/types';
@@ -65,6 +66,13 @@ export default function ProductReducer(state = initialState, action) {
 				cartProducts: action.payload,
 			};
 		case ADD_PRODUCT_TO_CART:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				cartProducts: action.payload,
+			};
+		case REMOVE_PRODUCT_TO_CART:
 			return {
 				...state,
 				isAuthenticated: true,
