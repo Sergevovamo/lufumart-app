@@ -89,7 +89,7 @@ export const getProduct = (productId) => async (dispatch) => {
 	try {
 		const response = await axios.get(`${PRODUCTS_SERVER}/${productId}`, token);
 		const data = await response.data;
-		console.log(data);
+		// console.log(data);
 
 		await dispatch({
 			type: PRODUCT_LOADING,
@@ -179,6 +179,7 @@ export const addProductToCart = (id) => async (dispatch) => {
 			token
 		);
 		const data = await response.data;
+		// console.log(data);
 
 		await dispatch({
 			type: PRODUCT_LOADING,
@@ -189,18 +190,19 @@ export const addProductToCart = (id) => async (dispatch) => {
 			payload: data,
 		});
 		dispatch(getCartProducts());
+
 		Toast.show({
 			type: 'success',
-			text1: 'Product updated successfully.',
-			text2: `product quantity increased.`,
+			text1: 'Cart successfully updated.',
 		});
+
 		dispatch(clearErrors());
 	} catch (error) {
 		console.log(error);
 		Toast.show({
 			type: 'error',
 			text1: 'Error! Something went wrong.',
-			text2: `An error occurred while adding cart products.`,
+			text2: `Cart unsuccessfully updated.`,
 		});
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
@@ -228,7 +230,7 @@ export const decreaseCartProductQuantity = (id) => async (dispatch) => {
 		dispatch(getCartProducts());
 		Toast.show({
 			type: 'success',
-			text1: 'Product updated successfully.',
+			text1: 'Cart successfully updated.',
 			text2: `product quantity decreased.`,
 		});
 		dispatch(clearErrors());
@@ -266,7 +268,7 @@ export const removeProductToCart = (id) => async (dispatch) => {
 		dispatch(getCartProducts());
 		Toast.show({
 			type: 'success',
-			text1: 'Product updated successfully.',
+			text1: 'Cart successfully updated.',
 			text2: `Product removed from cart.`,
 		});
 		dispatch(clearErrors());

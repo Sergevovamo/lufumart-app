@@ -1,17 +1,25 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import {
 	View,
 	Text,
-	Image,
 	ScrollView,
 	StyleSheet,
+	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import {
+	MaterialCommunityIcons,
+	AntDesign,
+	MaterialIcons,
+} from '@expo/vector-icons';
 
-import { addProductToCart } from '../../../../store/actions/product-actions';
+import {
+	addProductToCart,
+	getCartProducts,
+	decreaseCartProductQuantity,
+} from '../../../../store/actions/product-actions';
 
 import ProductImage from './ProductImage';
 import RecentlyViewed from '../RecentlyViewed';
@@ -20,16 +28,35 @@ const Details = () => {
 	const dispatch = useDispatch();
 
 	const product = useSelector((state) => state.products?.product);
-	// console.log(product);
-	const [buttonLoading, setButtonLoading] = useState(false);
+	const cartProducts = useSelector(
+		(state) => state.products?.cartProducts?.cartProducts
+	);
+	const cartProductQuantity = useSelector(
+		(state) => state.products?.cartProducts?.cartProductQuantity
+	);
+	const buttonLoading = useSelector((state) => state.products?.isLoading);
+
+	useEffect(() => {
+		dispatch(getCartProducts());
+	}, []);
 
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
-			{product?.map((item, index) => {
-				console.log(item);
+			{product?.map((item) => {
 				const { _id, name, brand, salePrice, price, imageUrl } = item;
+
+				let filteredCartItem = cartProducts?.filter((product) => {
+					return product._id === _id;
+				});
+
+				let filteredCartItemQuantity = cartProductQuantity?.filter(
+					(product) => {
+						return product.id === _id;
+					}
+				);
+
 				return (
-					<Fragment key={index}>
+					<Fragment key={_id}>
 						<ProductImage imageUrl={imageUrl} />
 						<View style={styles.productDetails}>
 							<TouchableOpacity style={styles.button}>
@@ -42,18 +69,65 @@ const Details = () => {
 							<Text style={styles.location}>
 								+ shipping from KSh 96 to Dagoretti South - Ngand'o/Riruta
 							</Text>
-							<TouchableOpacity
-								onPress={() => dispatch(addProductToCart(_id))}
-								style={style.button}
-							>
-								{buttonLoading ? (
-									<ActivityIndicator color="#fff" size="small" />
-								) : (
-									<Text style={{ color: '#fff', fontSize: 18 }}>
-										Add to Cart
-									</Text>
-								)}
-							</TouchableOpacity>
+							{filteredCartItem?.length > 0 ? (
+								<View
+									style={{
+										flexDirection: 'row',
+										justifyContent: 'center',
+										alignItems: 'center',
+									}}
+								>
+									<TouchableOpacity
+										onPress={() => dispatch(decreaseCartProductQuantity(_id))}
+										style={style.iconButton}
+									>
+										<AntDesign name="minuscircle" size={22} color="#fff" />
+									</TouchableOpacity>
+									<View
+										style={{
+											width: '60%',
+											alignItems: 'center',
+										}}
+									>
+										<Text style={{ fontSize: 20 }}>
+											{filteredCartItemQuantity[0].quantity}
+										</Text>
+									</View>
+									<TouchableOpacity
+										onPress={() => dispatch(addProductToCart(_id))}
+										style={style.iconButton}
+									>
+										<AntDesign name="pluscircle" size={22} color="#fff" />
+									</TouchableOpacity>
+								</View>
+							) : (
+								<TouchableOpacity
+									onPress={() => dispatch(addProductToCart(_id))}
+									style={style.button}
+								>
+									{buttonLoading ? (
+										<ActivityIndicator color="#fff" size="small" />
+									) : (
+										<View
+											style={{
+												width: '50%',
+												flexDirection: 'row',
+												justifyContent: 'space-around',
+												alignItems: 'center',
+											}}
+										>
+											<MaterialIcons
+												name="add-shopping-cart"
+												size={24}
+												color="#fff"
+											/>
+											<Text style={{ color: '#fff', fontSize: 18 }}>
+												Add to Cart
+											</Text>
+										</View>
+									)}
+								</TouchableOpacity>
+							)}
 						</View>
 						<View>
 							<Text style={styles.promotionTitle}>PROMOTIONS</Text>
@@ -131,6 +205,16 @@ export default Details;
 const style = StyleSheet.create({
 	button: {
 		width: '100%',
+		height: 60,
+		padding: 15,
+		marginVertical: 15,
+		backgroundColor: '#00ab55',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 10,
+	},
+	iconButton: {
+		width: '20%',
 		height: 60,
 		padding: 15,
 		marginVertical: 15,

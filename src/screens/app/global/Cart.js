@@ -9,6 +9,7 @@ import {
 	ScrollView,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 import {
 	AntDesign,
@@ -18,6 +19,7 @@ import {
 
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
+	getProduct,
 	getCartProducts,
 	addProductToCart,
 	removeProductToCart,
@@ -26,8 +28,9 @@ import {
 
 const { width, height } = Dimensions.get('screen');
 
-const Cart = ({ navigation }) => {
+const Cart = () => {
 	const dispatch = useDispatch();
+	const navigation = useNavigation();
 
 	const cartProducts = useSelector(
 		(state) => state.products?.cartProducts?.cartProducts
@@ -41,6 +44,11 @@ const Cart = ({ navigation }) => {
 		dispatch(getCartProducts());
 	}, []);
 
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('HomeDetailsScreen');
+	};
+
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
@@ -50,12 +58,15 @@ const Cart = ({ navigation }) => {
 
 						return (
 							<View key={index} style={styles.productContainer}>
-								<View style={styles.imageContainer}>
+								<TouchableOpacity
+									onPress={() => viewedProduct(item)}
+									style={styles.imageContainer}
+								>
 									<Image
 										source={{ uri: `${imageUrl[0]}` }}
 										style={styles.image}
 									/>
-								</View>
+								</TouchableOpacity>
 								<View style={styles.productDetails}>
 									<View>
 										<Text>{name}</Text>
@@ -82,7 +93,7 @@ const Cart = ({ navigation }) => {
 													dispatch(decreaseCartProductQuantity(_id))
 												}
 											>
-												<AntDesign name="minuscircle" size={18} color="black" />
+												<AntDesign name="minuscircle" size={22} color="black" />
 											</TouchableOpacity>
 											<Text style={{ paddingHorizontal: 15, fontSize: 18 }}>
 												{cartProductQuantity[index]?.quantity}
@@ -90,14 +101,14 @@ const Cart = ({ navigation }) => {
 											<TouchableOpacity
 												onPress={() => dispatch(addProductToCart(_id))}
 											>
-												<AntDesign name="pluscircle" size={18} color="black" />
+												<AntDesign name="pluscircle" size={22} color="black" />
 											</TouchableOpacity>
 										</View>
 										<View style={{ flexDirection: 'row' }}>
 											<TouchableOpacity>
 												<MaterialCommunityIcons
 													name="heart-outline"
-													size={22}
+													size={25}
 													color="black"
 													style={{ paddingHorizontal: 15 }}
 												/>
@@ -105,7 +116,7 @@ const Cart = ({ navigation }) => {
 											<TouchableOpacity
 												onPress={() => dispatch(removeProductToCart(_id))}
 											>
-												<MaterialIcons name="delete" size={22} color="black" />
+												<MaterialIcons name="delete" size={25} color="black" />
 											</TouchableOpacity>
 										</View>
 									</View>

@@ -13,6 +13,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
+	isLoading: true,
 	isAuthenticated: null,
 	productCategory: null,
 	productCategories: null,

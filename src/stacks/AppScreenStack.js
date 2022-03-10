@@ -27,7 +27,7 @@ import { LikedItems } from '../screens/app/saved';
 import { Settings } from '../screens/app/settings';
 import { Cart, Checkout, Search, Notifications } from '../screens/app/global';
 
-import { getCartProducts } from '../store/actions/product-actions';
+import { auth } from '../store/actions/auth-actions';
 
 const HomeStack = createStackNavigator();
 const CategoriesStack = createStackNavigator();
@@ -40,10 +40,14 @@ export const HomeStackScreen = ({ navigation }) => {
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
+	const cartProducts = useSelector(
+		(state) => state.products?.cartProducts?.cartProducts
+	);
 
 	useEffect(() => {
-		dispatch(getCartProducts());
-	}, [numberOfCartItems]);
+		dispatch(auth());
+		// listen to cartProducts & update items in cart
+	}, [cartProducts]);
 
 	return (
 		<HomeStack.Navigator>
@@ -75,7 +79,7 @@ export const HomeStackScreen = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 							<Badge
-								visible={true}
+								visible={numberOfCartItems?.length ? true : false}
 								style={{
 									marginBottom: 25,
 									marginLeft: -15,
@@ -119,7 +123,7 @@ export const HomeStackScreen = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 							<Badge
-								visible={true}
+								visible={numberOfCartItems?.length ? true : false}
 								style={{
 									marginBottom: 25,
 									marginLeft: -15,
@@ -167,6 +171,37 @@ export const HomeStackScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<TouchableOpacity
+								onPress={() => navigation.navigate('HomeDetailCartScreen')}
+							>
+								<MaterialCommunityIcons
+									name="cart-outline"
+									size={24}
+									color="black"
+									style={{
+										paddingHorizontal: 15,
+										// paddingRight: 15,
+										// paddingBottom: 5,
+									}}
+								/>
+							</TouchableOpacity>
+							<Badge
+								visible={numberOfCartItems?.length ? true : false}
+								style={{
+									marginBottom: 25,
+									marginLeft: -15,
+									marginRight: 10,
+									color: '#fff',
+									backgroundColor: '#f68b1e',
+								}}
+								size={15}
+							>
+								{numberOfCartItems?.length}
+							</Badge>
+						</View>
+					),
 				}}
 			/>
 			<HomeStack.Screen
@@ -193,6 +228,25 @@ export const HomeStackScreen = ({ navigation }) => {
 					title: 'My Cart',
 					headerLeft: () => (
 						<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<HomeStack.Screen
+				name="HomeDetailCartScreen"
+				component={Cart}
+				options={{
+					title: 'My Cart',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('HomeDetailsScreen')}
+						>
 							<Ionicons
 								name="arrow-back"
 								size={24}
@@ -260,7 +314,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 							<Badge
-								visible={true}
+								visible={numberOfCartItems?.length ? true : false}
 								style={{
 									marginBottom: 25,
 									marginLeft: -15,
@@ -361,7 +415,7 @@ export const FeedStackScreen = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 							<Badge
-								visible={true}
+								visible={numberOfCartItems?.length ? true : false}
 								style={{
 									marginBottom: 25,
 									marginLeft: -15,
@@ -468,7 +522,7 @@ export const SavedStackScreen = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 							<Badge
-								visible={true}
+								visible={numberOfCartItems?.length ? true : false}
 								style={{
 									marginBottom: 25,
 									marginLeft: -15,
@@ -508,9 +562,6 @@ export const SavedStackScreen = ({ navigation }) => {
 };
 
 export const SettingsStackScreen = ({ navigation }) => {
-	const numberOfCartItems = useSelector(
-		(state) => state.auth?.user?.current_user?.cart
-	);
 	return (
 		<SettingsStack.Navigator>
 			<SettingsStack.Screen
