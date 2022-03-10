@@ -17,9 +17,9 @@ const DataStorage = () => {
 			showsHorizontalScrollIndicator={false}
 			style={{
 				paddingTop: 5,
-				width: '100%',
+				// width: '100%',
 				paddingBottom: 15,
-				paddingLeft: 10,
+				paddingHorizontal: 10,
 			}}
 		>
 			{viewedProducts.map((item, index) => {

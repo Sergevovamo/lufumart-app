@@ -76,7 +76,7 @@ const Home = ({ navigation }) => {
 				</TouchableOpacity>
 			</View>
 
-			<TouchableOpacity style={styles.titleOnlyHeader}>
+			<View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -90,7 +90,7 @@ const Home = ({ navigation }) => {
 				<TouchableOpacity>
 					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
 				</TouchableOpacity>
-			</TouchableOpacity>
+			</View>
 			<FlashSales />
 
 			<View style={styles.titleHeader}>
@@ -142,7 +142,7 @@ const Home = ({ navigation }) => {
 			</View>
 			<TopSellingItems />
 
-			<TouchableOpacity style={styles.titleOnlyHeader}>
+			<View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -156,10 +156,10 @@ const Home = ({ navigation }) => {
 				<TouchableOpacity>
 					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
 				</TouchableOpacity>
-			</TouchableOpacity>
+			</View>
 			<Laptops />
 
-			<TouchableOpacity style={styles.titleOnlyHeader}>
+			<View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -173,10 +173,10 @@ const Home = ({ navigation }) => {
 				<TouchableOpacity>
 					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
 				</TouchableOpacity>
-			</TouchableOpacity>
+			</View>
 			<Headphones />
 
-			<TouchableOpacity style={styles.titleOnlyHeader}>
+			<View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -190,7 +190,7 @@ const Home = ({ navigation }) => {
 				<TouchableOpacity>
 					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
 				</TouchableOpacity>
-			</TouchableOpacity>
+			</View>
 			<DataStorage />
 
 			<View style={styles.titleOnlyHeader}>
