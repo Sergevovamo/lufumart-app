@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Tabs = () => {
 	const [selectedTab, setSelectedTab] = useState(tabs[0]);
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<>
 			<FlatList
 				data={tabs}
 				keyExtractor={(item, index) => `${item}-${index}`}
@@ -46,7 +46,7 @@ const Tabs = () => {
 					);
 				}}
 			/>
-		</SafeAreaView>
+		</>
 	);
 };
 

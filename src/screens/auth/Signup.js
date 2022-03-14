@@ -68,15 +68,7 @@ const Signup = ({ navigation }) => {
 		<TextInputAvoidingView>
 			<ScrollView>
 				<Animated.View style={style.container}>
-					<LinearGradient
-						colors={['#00ab55']}
-						style={[styles.centerAlign, { height: height / 4 }]}
-					>
-						{/* <Image
-						source={require('../../../assets/nikiai-logo.png')}
-						style={styles.logo}
-					/> */}
-					</LinearGradient>
+					<View style={[styles.centerAlign, { height: height / 6 }]}></View>
 					<View
 						style={[
 							styles.centerAlign,

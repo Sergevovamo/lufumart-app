@@ -22,8 +22,10 @@ const FULL_SIZE = CELL_WIDTH;
 const Categories = () => {
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7', paddingHorizontal: 8 }}>
-			<Tabs />
-			<SubCategory />
+			<SafeAreaView style={{ flex: 1 }}>
+				<Tabs />
+				<SubCategory />
+			</SafeAreaView>
 		</ScrollView>
 	);
 };
