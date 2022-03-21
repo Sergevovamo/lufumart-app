@@ -12,9 +12,8 @@ import {
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useForm, Controller } from 'react-hook-form';
-import { TextInput, HelperText, useTheme } from 'react-native-paper';
+import { TextInput, HelperText } from 'react-native-paper';
 import { loginUser } from '../../store/actions/auth-actions';
 import { clearErrors } from '../../store/actions/error-actions';
 import { styles } from './styles';

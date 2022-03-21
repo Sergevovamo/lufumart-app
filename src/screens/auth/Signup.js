@@ -16,6 +16,7 @@ import Toast from 'react-native-toast-message';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, HelperText, useTheme } from 'react-native-paper';
+import RNPickerSelect from 'react-native-picker-select';
 import { registerUser } from '../../store/actions/auth-actions';
 import { clearErrors } from '../../store/actions/error-actions';
 import { styles } from './styles';
@@ -68,14 +69,14 @@ const Signup = ({ navigation }) => {
 		<TextInputAvoidingView>
 			<ScrollView>
 				<Animated.View style={style.container}>
-					<View style={[styles.centerAlign, { height: height / 6 }]}></View>
+					{/* <View style={[styles.centerAlign, { height: height / 6 }]}></View> */}
 					<View
 						style={[
 							styles.centerAlign,
 							{
 								marginTop: 0,
 								backgroundColor: '#fffff7',
-								height: height,
+								height: height / 0.75,
 							},
 						]}
 					>
@@ -190,29 +191,27 @@ const Signup = ({ navigation }) => {
 							<HelperText type="error" style={styles.helper}>
 								{errors?.phone?.message}
 							</HelperText>
+
 							<Controller
 								control={control}
 								name="gender"
 								render={({ field: { onChange, value, onBlur } }) => (
-									<TextInput
-										mode="outlined"
-										label="Your gender"
-										placeholder="Enter your gender"
+									<RNPickerSelect
+										useNativeAndroidPickerStyle={false}
+										placeholder={{ label: 'Select your gender', value: null }}
+										onValueChange={(value) => onChange(value)}
 										value={value}
-										theme={{
-											colors: {
-												primary: '#f68b1e',
-												underlineColor: 'transparent',
-											},
-										}}
-										onBlur={onBlur}
-										onChangeText={(value) => onChange(value)}
+										items={[
+											{ label: 'Male', value: 'Male' },
+											{ label: 'Female', value: 'Female' },
+										]}
+										style={pickerSelectStyles}
 									/>
 								)}
 								rules={{
 									required: {
 										value: true,
-										message: 'Gender is required',
+										message: 'Please select your gender',
 									},
 								}}
 							/>
@@ -278,7 +277,6 @@ const Signup = ({ navigation }) => {
 										onChangeText={(value) => onChange(value)}
 										right={
 											<TextInput.Icon
-												style={Platform.OS === 'ios' && { paddingTop: 10 }}
 												onPress={togglePassword}
 												name={showPassword ? 'eye-off' : 'eye'}
 											/>
@@ -333,5 +331,28 @@ const style = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 10,
+	},
+});
+
+const pickerSelectStyles = StyleSheet.create({
+	inputIOS: {
+		fontSize: 16,
+		paddingVertical: 16,
+		paddingHorizontal: 10,
+		borderWidth: 1,
+		borderColor: 'gray',
+		borderRadius: 4,
+		color: 'black',
+		paddingRight: 30, // to ensure the text is never behind the icon
+	},
+	inputAndroid: {
+		fontSize: 16,
+		paddingHorizontal: 10,
+		paddingVertical: 14,
+		borderWidth: 0.5,
+		borderColor: 'gray',
+		borderRadius: 4,
+		color: 'black',
+		paddingRight: 30, // to ensure the text is never behind the icon
 	},
 });

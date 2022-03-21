@@ -80,7 +80,7 @@ const AppTabStack = () => {
 					),
 				}}
 			/>
-			<Tab.Screen
+			{/* <Tab.Screen
 				name="Saved"
 				component={SavedStackScreen}
 				options={{
@@ -92,7 +92,7 @@ const AppTabStack = () => {
 						/>
 					),
 				}}
-			/>
+			/> */}
 			<Tab.Screen
 				name="Settings"
 				component={SettingsStackScreen}

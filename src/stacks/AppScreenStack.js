@@ -573,16 +573,9 @@ export const SettingsStackScreen = ({ navigation }) => {
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<TouchableOpacity
 								onPress={() => navigation.navigate('Notifications')}
+								style={{ paddingHorizontal: 15 }}
 							>
 								<SimpleLineIcons name="bell" size={20} color="black" />
-							</TouchableOpacity>
-							<TouchableOpacity>
-								<Fontisto
-									name="more-v-a"
-									size={20}
-									color="black"
-									style={{ paddingHorizontal: 15 }}
-								/>
 							</TouchableOpacity>
 						</View>
 					),
