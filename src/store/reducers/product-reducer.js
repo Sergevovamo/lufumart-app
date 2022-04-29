@@ -19,6 +19,7 @@ const initialState = {
 	productCategories: null,
 	product: null,
 	products: null,
+	cartDetails: null,
 	cartProducts: null,
 	total: null,
 };
@@ -64,7 +65,7 @@ export default function ProductReducer(state = initialState, action) {
 				...state,
 				isAuthenticated: true,
 				isLoading: false,
-				cartProducts: action.payload,
+				cartDetails: action.payload,
 			};
 		case ADD_PRODUCT_TO_CART:
 			return {

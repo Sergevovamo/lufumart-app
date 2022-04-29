@@ -29,10 +29,10 @@ const Details = () => {
 
 	const product = useSelector((state) => state.products?.product);
 	const cartProducts = useSelector(
-		(state) => state.products?.cartProducts?.cartProducts
+		(state) => state.products?.cartDetails?.cartProducts
 	);
 	const cartProductQuantity = useSelector(
-		(state) => state.products?.cartProducts?.cartProductQuantity
+		(state) => state.products?.cartDetails?.cartProductQuantity
 	);
 	const buttonLoading = useSelector((state) => state.products?.isLoading);
 
@@ -51,7 +51,7 @@ const Details = () => {
 
 				let filteredCartItemQuantity = cartProductQuantity?.filter(
 					(product) => {
-						return product.id === _id;
+						return product.productId === _id;
 					}
 				);
 
@@ -78,6 +78,9 @@ const Details = () => {
 									}}
 								>
 									<TouchableOpacity
+										disabled={
+											filteredCartItemQuantity[0]?.quantity === 1 ? true : false
+										}
 										onPress={() => dispatch(decreaseCartProductQuantity(_id))}
 										style={style.iconButton}
 									>
@@ -90,7 +93,7 @@ const Details = () => {
 										}}
 									>
 										<Text style={{ fontSize: 20 }}>
-											{filteredCartItemQuantity[0].quantity}
+											{filteredCartItemQuantity[0]?.quantity}
 										</Text>
 									</View>
 									<TouchableOpacity

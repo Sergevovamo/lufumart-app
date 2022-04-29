@@ -41,7 +41,7 @@ export const HomeStackScreen = ({ navigation }) => {
 		(state) => state.auth?.user?.current_user?.cart
 	);
 	const cartProducts = useSelector(
-		(state) => state.products?.cartProducts?.cartProducts
+		(state) => state.products?.cartDetails?.cartProducts
 	);
 
 	useEffect(() => {

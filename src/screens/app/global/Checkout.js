@@ -26,10 +26,12 @@ const Checkout = () => {
 	const dispatch = useDispatch();
 
 	const cartProducts = useSelector(
-		(state) => state.products?.cartProducts?.cartProducts
+		(state) => state.products?.cartDetails?.cartProducts
 	);
 
-	const total = useSelector((state) => state.products?.total);
+	const cartProductTotal = useSelector(
+		(state) => state.products?.cartDetails?.cartProductTotal
+	);
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
@@ -148,7 +150,7 @@ const Checkout = () => {
 						Total
 					</Text>
 					<Text style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}>
-						KSh. {numberWithCommas(parseInt(total?.total))}
+						KSh. {numberWithCommas(parseInt(cartProductTotal?.total))}
 					</Text>
 				</View>
 				<TouchableOpacity

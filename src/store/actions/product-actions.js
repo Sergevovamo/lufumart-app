@@ -128,7 +128,7 @@ export const getCartProducts = () => async (dispatch) => {
 			type: PRODUCT_LOADING,
 		});
 
-		calculateTotal(data.cartProducts, data.cartProductQuantity, dispatch);
+		// calculateTotal(data.cartProducts, data.cartProductQuantity, dispatch);
 
 		await dispatch({
 			type: GET_CART_PRODUCTS,
@@ -149,26 +149,26 @@ export const getCartProducts = () => async (dispatch) => {
 	}
 };
 
-const calculateTotal = (cartProducts, cartProductQuantity, dispatch) => {
-	let total = 0;
+// const calculateTotal = (cartProducts, cartProductQuantity, dispatch) => {
+// 	let total = 0;
 
-	cartProducts?.map((item, index) => {
-		total += parseInt(item.price, 10) * cartProductQuantity[index]?.quantity;
-	});
+// 	cartProducts?.map((item, index) => {
+// 		total += parseInt(item.price, 10) * cartProductQuantity[index]?.quantity;
+// 	});
 
-	const vat = total * 0.16;
+// 	const vat = total * 0.16;
 
-	const data = {
-		subTotal: total,
-		vat,
-		total: total + vat,
-	};
+// 	const data = {
+// 		subTotal: total,
+// 		vat,
+// 		total: total + vat,
+// 	};
 
-	dispatch({
-		type: CALCULATE_TOTAL,
-		payload: data,
-	});
-};
+// 	dispatch({
+// 		type: CALCULATE_TOTAL,
+// 		payload: data,
+// 	});
+// };
 
 // add product to cart and increase product cart quantity
 export const addProductToCart = (id) => async (dispatch) => {

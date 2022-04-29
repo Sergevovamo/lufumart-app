@@ -32,13 +32,17 @@ const Cart = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 
+	const cartProductTotal = useSelector(
+		(state) => state.products?.cartDetails?.cartProductTotal
+	);
+
 	const cartProducts = useSelector(
-		(state) => state.products?.cartProducts?.cartProducts
+		(state) => state.products?.cartDetails?.cartProducts
 	);
+
 	const cartProductQuantity = useSelector(
-		(state) => state.products?.cartProducts?.cartProductQuantity
+		(state) => state.products?.cartDetails?.cartProductQuantity
 	);
-	const total = useSelector((state) => state.products?.total);
 
 	useEffect(() => {
 		dispatch(getCartProducts());
@@ -148,13 +152,13 @@ const Cart = () => {
 					<View style={styles.productTotalContainer}>
 						<Text style={{ fontWeight: 'bold' }}>Sub Total</Text>
 						<Text style={{ fontWeight: 'bold' }}>
-							Ksh. {numberWithCommas(parseInt(total?.subTotal))}
+							Ksh. {numberWithCommas(parseInt(cartProductTotal?.subTotal))}
 						</Text>
 					</View>
 					<View style={styles.productTotalContainer}>
 						<Text style={{ color: 'gray' }}>VAT</Text>
 						<Text style={{ color: 'gray' }}>
-							Ksh. {numberWithCommas(parseInt(total?.vat))}
+							Ksh. {numberWithCommas(parseInt(cartProductTotal?.vat))}
 						</Text>
 					</View>
 					<View
@@ -167,7 +171,9 @@ const Cart = () => {
 					/>
 					<View style={styles.productTotalContainer}>
 						<Text>Total</Text>
-						<Text>Ksh. {numberWithCommas(parseInt(total?.total))}</Text>
+						<Text>
+							Ksh. {numberWithCommas(parseInt(cartProductTotal?.total))}
+						</Text>
 					</View>
 				</View>
 				<TouchableOpacity

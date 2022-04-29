@@ -19,11 +19,11 @@ import {
 
 import Carousel from '../../../components/Carousel';
 
-import TopSellingItems from './TopSellingItems';
+// import TopSellingItems from './TopSellingItems';
 import RecentlyViewed from './RecentlyViewed';
-import Laptops from './Laptops';
-import Headphones from './Headphones';
-import DataStorage from './DataStorage';
+// import Laptops from './Laptops';
+// import Headphones from './Headphones';
+// import DataStorage from './DataStorage';
 import DiscountProducts from './DiscountProducts';
 import FlashSales from './FlashSales';
 import FreeShippingProducts from './FreeShippingProducts';
@@ -128,7 +128,7 @@ const Home = ({ navigation }) => {
 			</TouchableOpacity>
 			<FreeShippingProducts />
 
-			<View style={styles.titleOnlyHeader}>
+			{/* <View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -140,58 +140,7 @@ const Home = ({ navigation }) => {
 					Top Selling Items
 				</Text>
 			</View>
-			<TopSellingItems />
-
-			<View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Laptops
-				</Text>
-				<TouchableOpacity>
-					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
-				</TouchableOpacity>
-			</View>
-			<Laptops />
-
-			<View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Headphones
-				</Text>
-				<TouchableOpacity>
-					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
-				</TouchableOpacity>
-			</View>
-			<Headphones />
-
-			<View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Data Storage
-				</Text>
-				<TouchableOpacity>
-					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
-				</TouchableOpacity>
-			</View>
-			<DataStorage />
+			<TopSellingItems /> */}
 
 			<View style={styles.titleOnlyHeader}>
 				<Text
