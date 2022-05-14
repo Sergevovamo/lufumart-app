@@ -22,6 +22,7 @@ export const CLEAR_ERRORS = 'clear_errors';
 export const PRODUCT_LOADING = 'product_loading';
 export const GET_PRODUCT_CATEGORY = 'get_product_category';
 export const GET_PRODUCT_CATEGORIES = 'get_product_categories';
+export const GET_PRODUCT_HOME_CATEGORIES = 'get_product_home_categories';
 export const DELETE_PRODUCT_CATEGORY = 'delete_product_category';
 
 export const GET_PRODUCT = 'get_product';

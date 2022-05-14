@@ -1,133 +1,100 @@
+import React, { useEffect } from 'react';
 import {
 	View,
 	Text,
 	Image,
 	StyleSheet,
-	ScrollView,
+	FlatList,
 	TouchableOpacity,
 } from 'react-native';
-import React from 'react';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
+import {
+	getProduct,
+	getProducts,
+	getCartProducts,
+	addProductToCart,
+	decreaseCartProductQuantity,
+} from '../../../store/actions/product-actions';
 
 const RecentlyViewed = () => {
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	const products = useSelector((state) => state.products?.products);
+
+	useEffect(() => {
+		dispatch(getProducts());
+	}, []);
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('HomeDetailsScreen');
+	};
 	return (
-		<ScrollView
-			horizontal
-			showsHorizontalScrollIndicator={false}
-			style={{
-				paddingTop: 5,
-				width: '100%',
-				paddingBottom: 15,
-				paddingLeft: 10,
-			}}
-		>
-			{viewedProducts.map((item, index) => {
-				const { name, price, vat, imgUrl } = item;
-				return (
-					<TouchableOpacity key={index}>
-						<View style={styles.recentProduct}>
-							<View style={styles.recentImageContainer}>
-								<Image
-									source={{
-										uri: `${imgUrl}`,
-									}}
-									style={styles.recentImage}
-								/>
+		<>
+			<FlatList
+				data={products}
+				keyExtractor={(item, index) => `${item}-${index}`}
+				horizontal
+				style={{ flexGrow: 0 }}
+				contentContainerStyle={{ padding: 5 }}
+				showsHorizontalScrollIndicator={false}
+				renderItem={({ item: product }) => {
+					const { name, salePrice, imageUrl } = product;
+					let dollarPrice = parseInt(salePrice) / 108;
+					return (
+						<TouchableOpacity>
+							<View style={styles.product}>
+								<View style={styles.imageContainer}>
+									<Image
+										source={{
+											uri: `${imageUrl[0]}`,
+										}}
+										style={styles.image}
+									/>
+								</View>
+								<View style={{ paddingHorizontal: 10 }}>
+									<Text
+										numberOfLines={2}
+										style={{ paddingVertical: 5, fontSize: 12 }}
+									>
+										{name}
+									</Text>
+									<Text style={{ fontWeight: 'bold' }}>
+										US ${numberWithCommas(dollarPrice.toFixed(2))}
+									</Text>
+								</View>
 							</View>
-							<View
-								style={{
-									paddingVertical: 5,
-									borderBottomColor: 'black',
-									borderBottomWidth: 1,
-								}}
-							/>
-							<View style={{ paddingHorizontal: 10 }}>
-								<Text style={{ paddingVertical: 5 }}>{name}</Text>
-								<Text style={{ fontWeight: 'bold' }}>
-									KSh. {numberWithCommas(price)}
-								</Text>
-								<Text style={{ color: 'gray' }}>
-									KSh. {numberWithCommas(vat)}
-								</Text>
-							</View>
-						</View>
-					</TouchableOpacity>
-				);
-			})}
-		</ScrollView>
+						</TouchableOpacity>
+					);
+				}}
+			/>
+		</>
 	);
 };
 
 export default RecentlyViewed;
 
 const styles = StyleSheet.create({
-	recentProduct: {
+	product: {
 		width: 150,
-		height: 200,
-		...Platform.select({
-			ios: {
-				shadowColor: 'gray',
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.25,
-				shadowRadius: 3.5,
-			},
-			android: {
-				elevation: -5, // its negative to allow effective box shadow
-				position: 'relative',
-				borderWidth: 1,
-				borderColor: '#f3f3f3',
-				zIndex: 50,
-			},
-		}),
+		height: 180,
 		marginHorizontal: 8,
-		backgroundColor: '#fff',
 	},
-	recentImageContainer: {
-		backgroundColor: '#fff',
+	imageContainer: {
+		backgroundColor: '#f3f7ff',
 		marginVertical: 5,
 		height: 100,
 		width: '100%',
+		borderRadius: 7,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	recentImage: {
+	image: {
 		resizeMode: 'contain',
 		width: '85%',
 		height: '100%',
 	},
 });
-
-const viewedProducts = [
-	{
-		name: 'Baby socks',
-		price: 699,
-		vat: 179,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1634531592/cool_socks_z2eshw.jpg',
-	},
-	{
-		name: 'Baby shoes',
-		price: 899,
-		vat: 219,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1634534482/shoe-landing_pafayc.jpg',
-	},
-	{
-		name: 'Baby red socks',
-		price: 399,
-		vat: 129,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1634531592/socks_wv5fk0.png',
-	},
-	{
-		name: 'Baby winter cloth',
-		price: 769,
-		vat: 167,
-		imgUrl:
-			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1634531590/child_m8pjmu.jpg',
-	},
-];

@@ -5,6 +5,7 @@ import {
 	PRODUCT_LOADING,
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
+	GET_PRODUCT_HOME_CATEGORIES,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	REMOVE_PRODUCT_TO_CART,
@@ -20,10 +21,8 @@ const PRODUCTS_CATEGORY_SERVER =
 const PRODUCTS_SERVER = 'https://api-v1.lufumart.com/api/v1/products';
 
 export const getProductCategories = () => async (dispatch) => {
-	const token = await tokenConfig();
-
 	try {
-		const response = await axios.get(`${PRODUCTS_CATEGORY_SERVER}`, token);
+		const response = await axios.get(`${PRODUCTS_CATEGORY_SERVER}`);
 		const data = await response.data;
 
 		await dispatch({
@@ -53,11 +52,43 @@ export const getProductCategories = () => async (dispatch) => {
 	}
 };
 
-export const getProducts = () => async (dispatch) => {
-	const token = await tokenConfig();
-
+export const getProductHomeCategories = () => async (dispatch) => {
 	try {
-		const response = await axios.get(`${PRODUCTS_SERVER}`, token);
+		const response = await axios.get(
+			`${PRODUCTS_CATEGORY_SERVER}/lufumart-app`
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		// console.log(data);
+		await dispatch({
+			type: GET_PRODUCT_HOME_CATEGORIES,
+			payload: data,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		// console.log(error.response.data);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching categories.`,
+		});
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_PRODUCT_HOME_CATEGORIES'
+			)
+		);
+	}
+};
+
+export const getProducts = () => async (dispatch) => {
+	try {
+		const response = await axios.get(`${PRODUCTS_SERVER}/lufumart-app`);
 		const data = await response.data;
 
 		// console.log(data);
@@ -84,10 +115,9 @@ export const getProducts = () => async (dispatch) => {
 };
 
 export const getProduct = (productId) => async (dispatch) => {
-	const token = await tokenConfig();
 	// console.log(productId);
 	try {
-		const response = await axios.get(`${PRODUCTS_SERVER}/${productId}`, token);
+		const response = await axios.get(`${PRODUCTS_SERVER}/${productId}`);
 		const data = await response.data;
 		// console.log(data);
 

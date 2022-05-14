@@ -1,4 +1,5 @@
 import {
+	Platform,
 	View,
 	Text,
 	ScrollView,
@@ -19,8 +20,9 @@ import {
 
 import Carousel from '../../../components/Carousel';
 
-// import TopSellingItems from './TopSellingItems';
+import TopSellingItems from './TopSellingItems';
 import RecentlyViewed from './RecentlyViewed';
+import ShopCategories from './ShopCategories';
 // import Laptops from './Laptops';
 // import Headphones from './Headphones';
 // import DataStorage from './DataStorage';
@@ -28,107 +30,107 @@ import DiscountProducts from './DiscountProducts';
 import FlashSales from './FlashSales';
 import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
+import RecommendedForYou from './RecommendedForYou';
 
 const Home = ({ navigation }) => {
 	return (
-		<ScrollView style={{ backgroundColor: '#fffff7' }}>
-			<Carousel data={data} />
+		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
+			<ScrollView nestedScrollEnabled={true}>
+				<View style={styles.tabContainer}>
+					<TouchableOpacity style={styles.tab}>
+						<MaterialCommunityIcons
+							name="heart-outline"
+							size={24}
+							color="black"
+						/>
+						<Text>Saved</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => navigation.navigate('HomeCategoriesScreen')}
+						style={styles.tab}
+					>
+						<MaterialIcons name="category" size={24} color="black" />
+						<Text>Categories</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => navigation.navigate('HomeFeaturedDealsScreen')}
+						style={styles.tab}
+					>
+						<Ionicons name="flash-outline" size={24} color="black" />
+						<Text>Deals</Text>
+					</TouchableOpacity>
+				</View>
+				<Carousel data={data} />
 
-			<View style={styles.tabContainer}>
-				<TouchableOpacity style={styles.tab}>
-					<MaterialCommunityIcons
-						name="heart-outline"
-						size={24}
-						color="black"
-					/>
-					<Text>Saved</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => navigation.navigate('HomeCategoriesScreen')}
-					style={styles.tab}
-				>
-					<MaterialIcons name="category" size={24} color="black" />
-					<Text>Categories</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => navigation.navigate('HomeFeaturedDealsScreen')}
-					style={styles.tab}
-				>
-					<Ionicons name="flash-outline" size={24} color="black" />
-					<Text>Deals</Text>
-				</TouchableOpacity>
-			</View>
+				<View style={styles.banner}>
+					<Text style={styles.textHeader}>Welcome to Lufumart</Text>
+					<Text
+						style={{
+							color: '#fff',
+							fontSize: 15,
+							marginVertical: 5,
+							paddingHorizontal: 12,
+						}}
+					>
+						We've Got a Feeling You'll Love
+					</Text>
+					<TouchableOpacity style={styles.bannerButton}>
+						<Text style={{ color: '#f68b1e' }}>Flash Sales</Text>
+					</TouchableOpacity>
+					<FlashSales />
+				</View>
 
-			<View style={styles.banner}>
-				<Text style={styles.textHeader}>Welcome to Lufumart</Text>
-				<Text
-					style={{
-						color: '#fff',
-						fontSize: 16,
-						marginVertical: 5,
-						paddingHorizontal: 18,
-					}}
-				>
-					Get what you ordered or your money back.
-				</Text>
-				<TouchableOpacity style={styles.bannerButton}>
-					<Text style={{ color: '#f68b1e' }}>Here's how</Text>
+				<TouchableOpacity style={styles.titleOnlyHeader}>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Your Recently Viewed Items
+					</Text>
+					<AntDesign name="right" size={24} color="#f68b1e" />
 				</TouchableOpacity>
-			</View>
+				<RecentlyViewed />
 
-			<View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Flash Sales
-				</Text>
-				<TouchableOpacity>
-					<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>SEE ALL</Text>
+				<View style={styles.titleHeader}>
+					<Text
+						style={{
+							fontSize: Platform.OS === 'ios' ? 25 : 22,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Up to 50% off New Balance
+					</Text>
+					<Text style={{ fontSize: 15, color: '#f68b1e' }}>
+						Great deals direct from the brand
+					</Text>
+					<TouchableOpacity style={styles.titleButton}>
+						<Text style={{ color: '#fff' }}>Shop now</Text>
+					</TouchableOpacity>
+				</View>
+				<DiscountProducts />
+
+				<TouchableOpacity style={styles.titleOnlyHeader}>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Today's Deals - All With Free Shipping
+					</Text>
+					<AntDesign name="arrowright" size={24} color="#f68b1e" />
 				</TouchableOpacity>
-			</View>
-			<FlashSales />
+				<FreeShippingProducts />
 
-			<View style={styles.titleHeader}>
-				<Text
-					style={{
-						fontSize: 25,
-						color: '#f68b1e',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Up to 50% off New Balance
-				</Text>
-				<Text style={{ fontSize: 16, color: '#f68b1e' }}>
-					Great deals direct from the brand
-				</Text>
-				<TouchableOpacity style={styles.titleButton}>
-					<Text style={{ color: '#fff' }}>Shop now</Text>
-				</TouchableOpacity>
-			</View>
-			<DiscountProducts />
-
-			<TouchableOpacity style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#f68b1e',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Today's Deals - All With Free Shipping
-				</Text>
-				<AntDesign name="right" size={24} color="#f68b1e" />
-			</TouchableOpacity>
-			<FreeShippingProducts />
-
-			{/* <View style={styles.titleOnlyHeader}>
+				{/* <View style={styles.titleOnlyHeader}>
 				<Text
 					style={{
 						fontSize: 20,
@@ -142,54 +144,88 @@ const Home = ({ navigation }) => {
 			</View>
 			<TopSellingItems /> */}
 
-			<View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#f68b1e',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Recommended Sellers
-				</Text>
-			</View>
-			<RecommendedSellers />
+				<View style={styles.banner2}>
+					<Text style={styles.textHeader2}>Save on the brands you love</Text>
+					<Text
+						style={{
+							color: '#fff',
+							fontSize: 15,
+							marginVertical: 5,
+							paddingHorizontal: 18,
+						}}
+					>
+						Up to 40% off Certified Refurbished
+					</Text>
+					<TouchableOpacity style={styles.bannerButton2}>
+						<Text style={{ color: '#00ab55' }}>Spend smart</Text>
+					</TouchableOpacity>
+					<FlashSales />
+				</View>
 
-			<TouchableOpacity style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Your Recently Viewed Items
-				</Text>
-				<AntDesign name="right" size={24} color="#f68b1e" />
-			</TouchableOpacity>
-			<RecentlyViewed />
+				<View style={styles.titleOnlyHeader}>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#000000',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Shop Categories
+					</Text>
+				</View>
+				<ShopCategories />
 
-			<View style={styles.banner2}>
-				<Text style={styles.textHeader2}>
-					The right parts at the right places
-				</Text>
-				<Text
-					style={{
-						color: '#fff',
-						fontSize: 16,
-						marginVertical: 5,
-						paddingHorizontal: 18,
-					}}
-				>
-					Get what you ordered or your money back.
-				</Text>
-				<TouchableOpacity style={styles.bannerButton2}>
-					<Text style={{ color: '#00ab55' }}>Let's ride!</Text>
+				<TouchableOpacity style={styles.titleOnlyHeader}>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Get Kitchen Ware with up to 50% off today
+					</Text>
+					<AntDesign name="arrowright" size={24} color="#f68b1e" />
 				</TouchableOpacity>
-			</View>
-		</ScrollView>
+				<FreeShippingProducts />
+
+				<View style={styles.titleHeader}>
+					<Text
+						style={{
+							fontSize: Platform.OS === 'ios' ? 25 : 22,
+							color: '#000000',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Blanket & Throws
+					</Text>
+					<Text style={{ fontSize: 15, color: '#000000' }}>
+						Recommended for you
+					</Text>
+					<TouchableOpacity style={styles.titleButton}>
+						<Text style={{ color: '#fff' }}>Shop now</Text>
+					</TouchableOpacity>
+				</View>
+				<RecommendedForYou />
+
+				<View style={styles.titleOnlyHeader}>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#000000',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Recommended Sellers
+					</Text>
+				</View>
+				<RecommendedSellers />
+			</ScrollView>
+		</View>
 	);
 };
 
@@ -197,14 +233,15 @@ export default Home;
 
 const styles = StyleSheet.create({
 	tabContainer: {
-		paddingHorizontal: 18,
+		marginHorizontal: 18,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	tab: {
-		width: '30%',
-		marginLeft: 10,
+		width: Platform.OS === 'ios' ? '30%' : '35%',
+		marginLeft: 5,
+		marginVertical: 5,
 		paddingVertical: 5,
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -214,23 +251,23 @@ const styles = StyleSheet.create({
 	},
 	banner: {
 		marginVertical: 10,
-		height: 150,
+		height: 260,
 		backgroundColor: '#f68b1e',
 	},
 	textHeader: {
-		fontSize: 30,
-		marginTop: 5,
-		paddingHorizontal: 18,
+		fontSize: Platform.OS === 'ios' ? 30 : 25,
+		marginTop: 20,
+		paddingHorizontal: 12,
 		color: '#fff',
 		fontWeight: 'bold',
 	},
 	bannerButton: {
-		marginTop: 20,
-		marginHorizontal: 18,
+		marginTop: 10,
+		marginHorizontal: 12,
 		padding: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderRadius: 10,
+		borderRadius: 50,
 		backgroundColor: '#fff',
 		width: '30%',
 	},
@@ -243,7 +280,7 @@ const styles = StyleSheet.create({
 		padding: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderRadius: 10,
+		borderRadius: 50,
 		backgroundColor: '#00ab55',
 		width: '30%',
 	},
@@ -261,7 +298,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#00ab55',
 	},
 	textHeader2: {
-		fontSize: 28,
+		fontSize: Platform.OS === 'ios' ? 30 : 25,
 		marginTop: 5,
 		paddingHorizontal: 18,
 		color: '#fff',
@@ -269,50 +306,33 @@ const styles = StyleSheet.create({
 	},
 	bannerButton2: {
 		marginTop: 20,
-		marginHorizontal: 18,
+		marginHorizontal: 12,
 		padding: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 10,
 		backgroundColor: '#fff',
-		width: '30%',
+		width: Platform.OS === 'ios' ? '30%' : '35%',
 	},
 });
 
 const data = [
 	{
-		title: 'Anise Aroma Art Bazar',
+		title: 'Headphones',
 		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644843143/samples/ecommerce/4873_vv32wo.jpg',
-		description:
-			'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+		description: 'Listen to your top mixes',
 		id: 1,
-	},
-	{
-		title: 'Wired Headphones',
-		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644843145/samples/ecommerce/wired_20headphones_my2zia.png',
-		description:
-			'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-		id: 2,
-	},
-	{
-		title: 'Noise Cancelling',
-		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644843143/samples/ecommerce/NoiseCanceling_atzjnn.png',
-		description:
-			'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-		id: 3,
 	},
 	{
 		title: 'Laptop Bag',
 		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394323/samples/ecommerce/leather-bag-gray.jpg',
-		description:
-			'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+		description: 'Your laptop backpack bag',
 		id: 3,
 	},
 	{
 		title: 'Watch',
 		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394315/samples/ecommerce/analog-classic.jpg',
-		description:
-			'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+		description: 'Keep track of your time all day long',
 		id: 3,
 	},
 ];

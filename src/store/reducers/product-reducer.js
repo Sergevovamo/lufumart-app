@@ -2,6 +2,7 @@ import {
 	PRODUCT_LOADING,
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
+	GET_PRODUCT_HOME_CATEGORIES,
 	DELETE_PRODUCT_CATEGORY,
 	GET_PRODUCT,
 	GET_PRODUCTS,
@@ -17,6 +18,7 @@ const initialState = {
 	isAuthenticated: null,
 	productCategory: null,
 	productCategories: null,
+	productHomeCategories: null,
 	product: null,
 	products: null,
 	cartDetails: null,
@@ -45,7 +47,13 @@ export default function ProductReducer(state = initialState, action) {
 				isLoading: false,
 				productCategories: action.payload,
 			};
-
+		case GET_PRODUCT_HOME_CATEGORIES:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				productHomeCategories: action.payload,
+			};
 		case GET_PRODUCT:
 			return {
 				...state,

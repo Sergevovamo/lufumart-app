@@ -61,7 +61,14 @@ export const HomeStackScreen = ({ navigation }) => {
 							<TouchableOpacity
 								onPress={() => navigation.navigate('HomeSearchScreen')}
 							>
-								<Fontisto name="search" size={20} color="black" />
+								<Fontisto
+									name="search"
+									size={20}
+									color="black"
+									style={{
+										paddingHorizontal: 5,
+									}}
+								/>
 							</TouchableOpacity>
 
 							<TouchableOpacity
@@ -72,9 +79,7 @@ export const HomeStackScreen = ({ navigation }) => {
 									size={24}
 									color="black"
 									style={{
-										paddingHorizontal: 15,
-										// paddingRight: 15,
-										// paddingBottom: 5,
+										paddingHorizontal: 5,
 									}}
 								/>
 							</TouchableOpacity>

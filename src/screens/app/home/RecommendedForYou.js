@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
 	getProduct,
@@ -19,7 +18,7 @@ import {
 	decreaseCartProductQuantity,
 } from '../../../store/actions/product-actions';
 
-const FlashSales = () => {
+const RecommendedForYou = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 
@@ -43,7 +42,8 @@ const FlashSales = () => {
 				contentContainerStyle={{ padding: 5 }}
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item: product }) => {
-					const { imageUrl } = product;
+					const { name, salePrice, imageUrl } = product;
+					let dollarPrice = parseInt(salePrice) / 108;
 					return (
 						<TouchableOpacity>
 							<View style={styles.product}>
@@ -55,6 +55,17 @@ const FlashSales = () => {
 										style={styles.image}
 									/>
 								</View>
+								<View style={{ paddingHorizontal: 10 }}>
+									<Text
+										numberOfLines={2}
+										style={{ paddingVertical: 5, fontSize: 12 }}
+									>
+										{name}
+									</Text>
+									<Text style={{ fontWeight: 'bold' }}>
+										US ${numberWithCommas(dollarPrice.toFixed(2))}
+									</Text>
+								</View>
 							</View>
 						</TouchableOpacity>
 					);
@@ -64,16 +75,16 @@ const FlashSales = () => {
 	);
 };
 
-export default FlashSales;
+export default RecommendedForYou;
 
 const styles = StyleSheet.create({
 	product: {
 		width: 150,
-		height: 105,
+		height: 180,
 		marginHorizontal: 8,
 	},
 	imageContainer: {
-		backgroundColor: '#fff',
+		backgroundColor: '#f3f7ff',
 		marginVertical: 5,
 		height: 100,
 		width: '100%',

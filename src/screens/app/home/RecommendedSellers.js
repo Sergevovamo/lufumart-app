@@ -1,86 +1,110 @@
+import React, { useEffect } from 'react';
 import {
 	View,
 	Text,
 	Image,
-	ScrollView,
 	StyleSheet,
+	FlatList,
 	TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { numberWithCommas } from '../../../utils/NumberWithCommas';
+import {
+	getProduct,
+	getProducts,
+	getCartProducts,
+	addProductToCart,
+	decreaseCartProductQuantity,
+} from '../../../store/actions/product-actions';
 
 import { Fontisto, MaterialIcons } from '@expo/vector-icons';
 
 const RecommendedSellers = () => {
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	const products = useSelector((state) => state.products?.products);
+
+	useEffect(() => {
+		dispatch(getProducts());
+	}, []);
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('HomeDetailsScreen');
+	};
+
 	return (
-		<ScrollView
-			horizontal
-			showsHorizontalScrollIndicator={false}
-			style={{
-				paddingTop: 5,
-				width: '100%',
-				paddingBottom: 15,
-				paddingLeft: 10,
-			}}
-		>
-			{sellers.map((item, index) => {
-				const { name, description, img, time } = item;
-				return (
-					<View key={index} style={styles.sellerContainer}>
-						<View style={styles.popularText}>
-							<Text style={{ fontSize: 10, color: '#fff' }}>
-								POPULAR SELLERS
-							</Text>
-						</View>
-						<View style={styles.sellerHeader}>
-							<View style={styles.sellerInfo}>
-								<Fontisto name="shopping-store" size={24} color="black" />
-								<Text style={{ marginLeft: 5 }}>{name}</Text>
+		<>
+			<FlatList
+				data={sellers}
+				keyExtractor={(item, index) => `${item}-${index}`}
+				horizontal
+				style={{ flexGrow: 0 }}
+				contentContainerStyle={{ padding: 5 }}
+				showsHorizontalScrollIndicator={false}
+				renderItem={({ item: seller }) => {
+					const { name, description, img, time } = seller;
+
+					return (
+						<View style={styles.sellerContainer}>
+							<View style={styles.popularText}>
+								<Text style={{ fontSize: 8, color: '#fff' }}>
+									POPULAR SELLER
+								</Text>
 							</View>
-							<TouchableOpacity style={styles.button}>
-								<Text style={{ color: '#fff' }}>Follow</Text>
-							</TouchableOpacity>
-						</View>
-						<View
-							style={{
-								paddingVertical: 1,
-								borderBottomColor: 'gray',
-								borderBottomWidth: 1,
-							}}
-						/>
-						<View style={styles.imageContainer}>
-							{img?.map((image, index) => (
-								<Image
-									key={index}
-									source={{
-										uri: `${image}`,
-									}}
-									style={styles.image}
-								/>
-							))}
-						</View>
-						<View
-							style={{
-								paddingVertical: 1,
-								borderBottomColor: 'gray',
-								borderBottomWidth: 1,
-							}}
-						/>
-						<View style={styles.sellerFooter}>
-							<View style={styles.footerTitle}>
-								<Text>{description}</Text>
-								<Text style={{ paddingVertical: 10 }}>{time}</Text>
+							<View style={styles.sellerHeader}>
+								<View style={styles.sellerInfo}>
+									<Fontisto name="shopping-store" size={24} color="black" />
+									<Text style={{ marginLeft: 5 }}>{name}</Text>
+								</View>
+								<TouchableOpacity style={styles.button}>
+									<Text style={{ color: '#fff' }}>Follow</Text>
+								</TouchableOpacity>
 							</View>
-							<TouchableOpacity
-								style={{ flexDirection: 'row', alignItems: 'center' }}
-							>
-								<MaterialIcons name="ios-share" size={20} color="#f68b1e" />
-								<Text style={{ color: '#f68b1e' }}>SHARE</Text>
-							</TouchableOpacity>
+							<View
+								style={{
+									paddingVertical: 1,
+									borderBottomColor: 'gray',
+									borderBottomWidth: 1,
+								}}
+							/>
+							<View style={styles.imageContainer}>
+								{img?.map((image, index) => (
+									<Image
+										key={index}
+										source={{
+											uri: `${image}`,
+										}}
+										style={styles.image}
+									/>
+								))}
+							</View>
+							<View
+								style={{
+									paddingVertical: 1,
+									borderBottomColor: 'gray',
+									borderBottomWidth: 1,
+								}}
+							/>
+							<View style={styles.sellerFooter}>
+								<View style={styles.footerTitle}>
+									<Text>{description}</Text>
+									<Text style={{ paddingVertical: 10 }}>{time}</Text>
+								</View>
+								<TouchableOpacity
+									style={{ flexDirection: 'row', alignItems: 'center' }}
+								>
+									<MaterialIcons name="ios-share" size={20} color="#f68b1e" />
+									<Text style={{ color: '#f68b1e' }}>SHARE</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
-					</View>
-				);
-			})}
-		</ScrollView>
+					);
+				}}
+			/>
+		</>
 	);
 };
 
@@ -89,7 +113,7 @@ export default RecommendedSellers;
 const styles = StyleSheet.create({
 	sellerContainer: {
 		padding: 3,
-		width: 330,
+		width: Platform.OS === 'ios' ? 300 : 250,
 		height: 250,
 		...Platform.select({
 			ios: {
@@ -136,8 +160,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	button: {
-		width: '25%',
-		height: 45,
+		width: '30%',
+		height: 30,
 		backgroundColor: '#00ab55',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -179,7 +203,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644898626/samples/ecommerce/hero-image.fill.size_1248x702.v1623391330_slbryj.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644898570/samples/ecommerce/img-5704_ds77hk.jpg',
 		],
-		time: '1 hour ago',
+		time: '74 followers',
 	},
 	{
 		name: 'Qwen',
@@ -189,7 +213,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896010/samples/ecommerce/timbuk2_messenger_classic_messenger_bag_eco_monsoon_1108_4_1112_front_Timbuk2_ffffff80808100c3_1989_720x.progressive_lwwyoj.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644896005/samples/ecommerce/91i8aaaNcqL._AC_SY450__lnpyjz.jpg',
 		],
-		time: '53 min ago',
+		time: '53 followers',
 	},
 	{
 		name: 'SMB',
@@ -199,7 +223,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900266/samples/ecommerce/mt03614ag_nb_40_i_pkelzz.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900359/samples/ecommerce/elan-75-years-hoodie-ptec7520-3d_yh4gid.png',
 		],
-		time: '37 min ago',
+		time: '37 followers',
 	},
 	{
 		name: 'Home Care',
@@ -209,7 +233,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644901753/samples/ecommerce/811UWQmHkSS._AC_UY445__rihooe.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900067/samples/ecommerce/1620399389-best-amazon-dresses-for-women-ruffle-dress-1620399361.png_dt5c48.png',
 		],
-		time: '2 hours ago',
+		time: '2 followers',
 	},
 	{
 		name: 'Sonell Mart',
@@ -219,7 +243,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900151/samples/ecommerce/61lN36UMlmL._AC_UY395__xwstd1.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900109/samples/ecommerce/51WOGmwXm3L._AC_UY395__gpv5bo.jpg',
 		],
-		time: '3 hour ago',
+		time: '3 followers',
 	},
 	{
 		name: 'Bold Collection',
@@ -229,7 +253,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644899634/samples/ecommerce/16-gb-Flash-disk_gjchnu.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644899363/samples/ecommerce/MWP22_navamo.jpg',
 		],
-		time: '20 sec ago',
+		time: '20 followers',
 	},
 	{
 		name: 'Sizzling Sounds',
@@ -239,7 +263,7 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900631/samples/ecommerce/5b240ed61ae66253008b5228_iakair.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900599/samples/ecommerce/best-shoes-1610418585.jpg_u163oy.jpg',
 		],
-		time: '3 min ago',
+		time: '3 followers',
 	},
 	{
 		name: 'DTA Kenya',
@@ -249,6 +273,6 @@ const sellers = [
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902075/samples/ecommerce/socks-1631103779.jpg_myt5ec.jpg',
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644900217/samples/ecommerce/00000000_zi_8be594af-52ce-4fe5-9d04-6bb31a8cb06a_lbwzrk.jpg',
 		],
-		time: '1 day ago',
+		time: '1 followers',
 	},
 ];

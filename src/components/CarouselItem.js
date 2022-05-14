@@ -57,10 +57,6 @@ const styles = StyleSheet.create({
 	itemTitle: {
 		color: 'white',
 		fontSize: 22,
-		shadowColor: '#000',
-		shadowOffset: { width: 0.2, height: 0.8 },
-		shadowOpacity: 1,
-		shadowRadius: 3,
 		marginBottom: 5,
 		fontWeight: 'bold',
 		elevation: 3,
@@ -68,11 +64,6 @@ const styles = StyleSheet.create({
 	itemDescription: {
 		color: 'white',
 		fontSize: 12,
-		shadowColor: '#000',
-		shadowOffset: { width: 0.2, height: 0.8 },
-		shadowOpacity: 1,
-		shadowRadius: 3,
-		elevation: 5,
 	},
 });
 

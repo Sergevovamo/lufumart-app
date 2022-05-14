@@ -29,7 +29,7 @@ function infiniteScroll(dataList, mySlide) {
 				offset: scrollValue,
 			});
 		}
-	}, 3000);
+	}, 8000);
 }
 
 const Carousel = ({ data }) => {
@@ -56,7 +56,7 @@ const Carousel = ({ data }) => {
 					scrollEnabled
 					snapToAlignment="center"
 					scrollEventThrottle={16}
-					decelerationRate={'fast'}
+					decelerationRate={'normal'}
 					showsHorizontalScrollIndicator={false}
 					renderItem={({ item }) => {
 						return <CarouselItem item={item} />;
