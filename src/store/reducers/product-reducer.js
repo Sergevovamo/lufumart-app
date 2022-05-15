@@ -3,9 +3,11 @@ import {
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
 	GET_PRODUCT_HOME_CATEGORIES,
+	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
 	DELETE_PRODUCT_CATEGORY,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	GET_PRODUCTS_SUB_CATEGORY,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	REMOVE_PRODUCT_TO_CART,
@@ -19,8 +21,10 @@ const initialState = {
 	productCategory: null,
 	productCategories: null,
 	productHomeCategories: null,
+	productSubCategoriesByCategory: null,
 	product: null,
 	products: null,
+	getProductsBySubCategory: null,
 	cartDetails: null,
 	cartProducts: null,
 	total: null,
@@ -36,37 +40,51 @@ export default function ProductReducer(state = initialState, action) {
 		case GET_PRODUCT_CATEGORY:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				productCategory: action.payload,
 			};
 		case GET_PRODUCT_CATEGORIES:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				productCategories: action.payload,
 			};
 		case GET_PRODUCT_HOME_CATEGORIES:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				productHomeCategories: action.payload,
+			};
+		case GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				productSubCategoriesByCategory: action.payload,
 			};
 		case GET_PRODUCT:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				product: action.payload,
 			};
 		case GET_PRODUCTS:
 			return {
 				...state,
-				isAuthenticated: true,
+				isAuthenticated: false,
 				isLoading: false,
 				products: action.payload,
+			};
+		case GET_PRODUCTS_SUB_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				getProductsBySubCategory: action.payload,
 			};
 		case GET_CART_PRODUCTS:
 			return {

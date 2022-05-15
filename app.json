@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "Lufumart",
 		"slug": "lufumart",
-		"version": "0.1.5",
+		"version": "0.1.6",
 		"privacy": "public",
 		"owner": "sergevovamo",
 		"description": "Your Trusted Online Store",
@@ -23,7 +23,7 @@
 		},
 		"android": {
 			"package": "com.lufumart.app",
-			"versionCode": 6,
+			"versionCode": 7,
 			"permissions": ["NOTIFICATIONS"],
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",

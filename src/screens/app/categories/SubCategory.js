@@ -1,49 +1,114 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	FlatList,
+	TouchableOpacity,
+	ActivityIndicator,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import {
+	getProductSubCategoryByCategory,
+	getProductsBySubCategory,
+} from '../../../store/actions/product-actions';
+import Tabs from './Tabs';
 
 const SubCategory = () => {
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	// get sub categories
+	const productSubCategories = useSelector(
+		(state) => state.products?.productSubCategoriesByCategory
+	);
+
+	// get products by sub category
+	const getProductSubCategories = useSelector(
+		(state) => state.products?.getProductsBySubCategory
+	);
+
+	useEffect(() => {
+		let categoryId = '627eaa45dfa8780fea3c8044';
+		dispatch(getProductSubCategoryByCategory(categoryId));
+	}, []);
+
+	useEffect(() => {
+		let payload = {
+			subCategoryId: '627eb4fbdfa8780fea3c80b9',
+			limit: '12',
+		};
+		dispatch(getProductsBySubCategory(payload));
+	}, [productSubCategories]);
+
 	return (
 		<>
-			{subCategory?.map((sub, index) => {
-				const { name } = sub;
-				return (
-					<View key={index} style={styles.container}>
-						<View style={styles.titleOnlyHeader}>
-							<Text style={styles.subTitle}>{name}</Text>
-							<TouchableOpacity>
-								<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>
-									SEE ALL
-								</Text>
-							</TouchableOpacity>
-						</View>
-						<View
-							style={{
-								paddingVertical: 5,
-								borderBottomColor: 'black',
-								borderBottomWidth: 1,
-							}}
-						/>
-						<View style={styles.itemContainer}>
-							{viewedProducts?.map((item, index) => {
-								const { name, price, vat, imgUrl } = item;
-								return (
-									<TouchableOpacity key={index} style={styles.itemCard}>
-										<View style={styles.imageContainer}>
-											<Image
-												source={{
-													uri: `${imgUrl}`,
-												}}
-												style={styles.image}
+			{productSubCategories?.length > 0 ? (
+				<FlatList
+					data={productSubCategories}
+					ListHeaderComponent={Tabs}
+					keyExtractor={(item, index) => `${item}-${index}`}
+					style={{ flexGrow: 0 }}
+					contentContainerStyle={{ padding: 5 }}
+					showsVerticalScrollIndicator={false}
+					renderItem={({ item: sub }) => {
+						const { name } = sub;
+						console.log(sub);
+
+						return (
+							<>
+								<View style={styles.container}>
+									<View style={styles.titleOnlyHeader}>
+										<Text style={styles.subTitle}>{name}</Text>
+										<TouchableOpacity>
+											<AntDesign
+												name="arrowright"
+												size={24}
+												color="#f68b1e"
+												style={{ paddingHorizontal: 15 }}
 											/>
-										</View>
-										<Text style={styles.itemText}>{name}</Text>
-									</TouchableOpacity>
-								);
-							})}
-						</View>
-					</View>
-				);
-			})}
+										</TouchableOpacity>
+									</View>
+									<View
+										style={{
+											paddingVertical: 5,
+											borderBottomColor: 'black',
+											borderBottomWidth: 0.5,
+										}}
+									/>
+									<View style={styles.itemContainer}>
+										{getProductSubCategories?.map((item, index) => {
+											const { name, imageUrl } = item;
+											return (
+												<TouchableOpacity key={index} style={styles.itemCard}>
+													<View style={styles.imageContainer}>
+														<Image
+															source={{
+																uri: `${imageUrl[0]}`,
+															}}
+															style={styles.image}
+														/>
+													</View>
+													<Text numberOfLines={1} style={styles.itemText}>
+														{name}
+													</Text>
+												</TouchableOpacity>
+											);
+										})}
+									</View>
+								</View>
+							</>
+						);
+					}}
+				/>
+			) : (
+				<>
+					<ActivityIndicator size="large" style={styles.loading} />
+				</>
+			)}
 		</>
 	);
 };
@@ -51,6 +116,15 @@ const SubCategory = () => {
 export default SubCategory;
 
 const styles = StyleSheet.create({
+	loading: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 	container: {
 		marginTop: 10,
 		backgroundColor: '#fff',
@@ -94,7 +168,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 	},
 	itemCard: {
-		width: 85,
+		width: Platform.OS === 'ios' ? '22%' : '20%',
 		minHeight: 85,
 		marginVertical: 5,
 		marginHorizontal: 2,
@@ -173,6 +247,38 @@ const viewedProducts = [
 		itemsInStock: 206,
 		imgUrl:
 			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644901961/samples/ecommerce/feb_art_whiskeys-768x512_gzaeya.jpg',
+	},
+	{
+		name: 'Socks',
+		price: 299,
+		vat: 29,
+		itemsInStock: 603,
+		imgUrl:
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902075/samples/ecommerce/socks-1631103779.jpg_myt5ec.jpg',
+	},
+	{
+		name: 'Pillow',
+		price: 2389,
+		vat: 29,
+		itemsInStock: 56,
+		imgUrl:
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644902158/Marriott-The-Marriott-Pillow-MAR-108-L_xlrg_vnw53j.jpg',
+	},
+	{
+		name: 'Jacket',
+		price: 2389,
+		vat: 29,
+		itemsInStock: 56,
+		imgUrl:
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1646921525/Quilted_Pack_Jacket_ybtlg2_f8ygmk.jpg',
+	},
+	{
+		name: 'Undies',
+		price: 999,
+		vat: 29,
+		itemsInStock: 129,
+		imgUrl:
+			'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644901753/samples/ecommerce/811UWQmHkSS._AC_UY445__rihooe.jpg',
 	},
 	{
 		name: 'Socks',

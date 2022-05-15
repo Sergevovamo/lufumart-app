@@ -6,28 +6,52 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+	getProductCategories,
+	getProductSubCategoryByCategory,
+} from '../../../store/actions/product-actions';
 
 const Tabs = () => {
-	const [selectedTab, setSelectedTab] = useState(tabs[0]);
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	const productCategories = useSelector(
+		(state) => state.products?.productCategories
+	);
+
+	const [selectedTab, setSelectedTab] = useState({});
+
+	useEffect(() => {
+		dispatch(getProductCategories());
+	}, []);
+	// console.log(selectedTab);
+
+	useEffect(() => {
+		dispatch(getProductSubCategoryByCategory(selectedTab?._id));
+	}, [selectedTab]);
 	return (
 		<>
 			<FlatList
-				data={tabs}
+				data={productCategories}
 				keyExtractor={(item, index) => `${item}-${index}`}
 				horizontal
 				style={{ flexGrow: 0 }}
-				contentContainerStyle={{ padding: 5 }}
-				showsHorizontalScrollIndicator={false}
-				renderItem={({ item: tab }) => {
+				contentContainerStyle={{ paddingHorizontal: 5 }}
+				showsHorizontalScrollIndicator={true}
+				renderItem={({ item: category }) => {
+					const { name } = category;
+
 					return (
-						<TouchableOpacity onPress={() => setSelectedTab(tab)}>
+						<TouchableOpacity onPress={() => setSelectedTab(category)}>
 							<View
 								style={[
 									styles.pill,
 									{
 										backgroundColor:
-											selectedTab === tab ? '#f68b1e' : 'transparent',
+											selectedTab?.name === name ? '#f68b1e' : 'transparent',
 									},
 								]}
 							>
@@ -35,11 +59,11 @@ const Tabs = () => {
 									style={[
 										styles.pillText,
 										{
-											color: selectedTab === tab ? '#fff' : '#000000',
+											color: selectedTab?.name === name ? '#fff' : '#000000',
 										},
 									]}
 								>
-									{tab}
+									{name}
 								</Text>
 							</View>
 						</TouchableOpacity>
@@ -54,25 +78,12 @@ export default Tabs;
 
 const styles = StyleSheet.create({
 	pill: {
+		marginVertical: 10,
 		paddingHorizontal: 20,
-		paddingVertical: 20 / 2,
+		paddingVertical: Platform.OS === 'ios' ? 20 / 2 : 12,
 		borderRadius: 5,
 	},
 	pillText: {
 		fontWeight: '700',
 	},
 });
-
-const tabs = [
-	'Supermarket',
-	'Health & Beauty',
-	'Home & Office',
-	'Phones & Tablets',
-	'Computing',
-	'Electronics',
-	'Fashion',
-	'Gaming',
-	'Baby Products',
-	'Sporting Goods',
-	'Garden & Outdoors',
-];
