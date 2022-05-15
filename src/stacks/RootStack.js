@@ -9,23 +9,23 @@ import AppTabStack from './AppTabStack';
 import AuthScreenStack from './AuthScreenStack';
 
 const RootStack = () => {
-	const dispatch = useDispatch();
-	let authUser = useSelector((state) => state.auth.isAuthenticated);
+	// const dispatch = useDispatch();
+	// let authUser = useSelector((state) => state.auth.isAuthenticated);
 
-	const [isLoading, setIsLoading] = useState(false);
+	// const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
-		setIsLoading(true);
-		const authUser = async () => {
-			await dispatch(auth());
-			setIsLoading(false);
-		};
-		authUser();
-	}, []);
+	// useEffect(() => {
+	// 	setIsLoading(true);
+	// 	const authUser = async () => {
+	// 		await dispatch(auth());
+	// 		setIsLoading(false);
+	// 	};
+	// 	authUser();
+	// }, []);
 
-	if (isLoading) {
-		return <ActivityIndicator size="large" style={styles.loading} />;
-	}
+	// if (isLoading) {
+	// 	return <ActivityIndicator size="large" style={styles.loading} />;
+	// }
 
 	return (
 		<NavigationContainer>

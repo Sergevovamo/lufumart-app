@@ -56,7 +56,7 @@ const SubCategory = () => {
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item: sub }) => {
 						const { name } = sub;
-						console.log(sub);
+						// console.log(sub);
 
 						return (
 							<>
