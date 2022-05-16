@@ -159,10 +159,10 @@ export const getProducts = () => async (dispatch) => {
 };
 
 export const getProductsBySubCategory = (payload) => async (dispatch) => {
-	const { subCategoryId, limit } = payload;
+	const { subCategoryArrayId, limit } = payload;
 	try {
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app?subCategoryId=${subCategoryId}&limit=${limit}`
+			`${PRODUCTS_SERVER}/lufumart-app?${subCategoryArrayId}&limit=${limit}`
 		);
 		const data = await response.data;
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
 	View,
 	Text,
@@ -6,20 +6,23 @@ import {
 	StyleSheet,
 	FlatList,
 	TouchableOpacity,
-	ActivityIndicator,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
+import LottieView from 'lottie-react-native';
 import {
 	getProductSubCategoryByCategory,
 	getProductsBySubCategory,
+	getProducts,
 } from '../../../store/actions/product-actions';
 import Tabs from './Tabs';
 
 const SubCategory = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+
+	const [LottieAnim, setLottieAnim] = useState();
 
 	// get sub categories
 	const productSubCategories = useSelector(
@@ -37,12 +40,38 @@ const SubCategory = () => {
 	}, []);
 
 	useEffect(() => {
+		let params = productSubCategories?.map((item, index) => {
+			return item._id;
+		});
+
+		// Convert array to query string
+		let paramsToQueryString = params
+			?.map(function (el, idx) {
+				return 'subCategoryArrayId[' + idx + ']=' + el;
+			})
+			.join('&');
+
 		let payload = {
-			subCategoryId: '627eb4fbdfa8780fea3c80b9',
-			limit: '12',
+			subCategoryArrayId: paramsToQueryString,
+			limit: '96',
 		};
+
 		dispatch(getProductsBySubCategory(payload));
 	}, [productSubCategories]);
+
+	useEffect(() => {
+		fetch('https://assets7.lottiefiles.com/packages/lf20_rwq6ciql.json', {
+			method: 'GET',
+		})
+			.then((response) => response.json())
+			.then((responseData) => {
+				// console.log(responseData);
+				setLottieAnim(responseData);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}, []);
 
 	return (
 		<>
@@ -56,7 +85,7 @@ const SubCategory = () => {
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item: sub }) => {
 						const { name } = sub;
-						// console.log(sub);
+						// console.log(name);
 
 						return (
 							<>
@@ -81,21 +110,27 @@ const SubCategory = () => {
 									/>
 									<View style={styles.itemContainer}>
 										{getProductSubCategories?.map((item, index) => {
-											const { name, imageUrl } = item;
+											const { name, imageUrl, subCategory } = item;
+											// console.log(name);
+											// console.log(item?.subCategory === sub?._id);
 											return (
-												<TouchableOpacity key={index} style={styles.itemCard}>
-													<View style={styles.imageContainer}>
-														<Image
-															source={{
-																uri: `${imageUrl[0]}`,
-															}}
-															style={styles.image}
-														/>
-													</View>
-													<Text numberOfLines={1} style={styles.itemText}>
-														{name}
-													</Text>
-												</TouchableOpacity>
+												<Fragment key={index}>
+													{item?.subCategory === sub?._id && (
+														<TouchableOpacity style={styles.itemCard}>
+															<View style={styles.imageContainer}>
+																<Image
+																	source={{
+																		uri: `${imageUrl[0]}`,
+																	}}
+																	style={styles.image}
+																/>
+															</View>
+															<Text numberOfLines={1} style={styles.itemText}>
+																{name}
+															</Text>
+														</TouchableOpacity>
+													)}
+												</Fragment>
 											);
 										})}
 									</View>
@@ -105,9 +140,18 @@ const SubCategory = () => {
 					}}
 				/>
 			) : (
-				<>
-					<ActivityIndicator size="large" style={styles.loading} />
-				</>
+				<View
+					style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+				>
+					{LottieAnim && (
+						<LottieView
+							source={LottieAnim}
+							style={styles.loading}
+							autoPlay
+							loop
+						/>
+					)}
+				</View>
 			)}
 		</>
 	);
@@ -117,13 +161,7 @@ export default SubCategory;
 
 const styles = StyleSheet.create({
 	loading: {
-		position: 'absolute',
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom: 0,
-		alignItems: 'center',
-		justifyContent: 'center',
+		width: '20%',
 	},
 	container: {
 		marginTop: 10,
