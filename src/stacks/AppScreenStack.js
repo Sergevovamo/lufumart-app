@@ -21,7 +21,7 @@ import {
 	FeaturedDeals,
 	Details,
 } from '../screens/app/home';
-import { Categories } from '../screens/app/categories';
+import { Categories, ProductList } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
 import { Settings } from '../screens/app/settings';
@@ -299,6 +299,11 @@ export const CategoriesStackScreen = ({ navigation }) => {
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
+
+	const currentSubCategoryTitle = useSelector(
+		(state) => state.products?.currentSubCategoryTitle?.name
+	);
+
 	return (
 		<CategoriesStack.Navigator>
 			<CategoriesStack.Screen
@@ -381,6 +386,54 @@ export const CategoriesStackScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					),
+				}}
+			/>
+			<CategoriesStack.Screen
+				name="ProductListScreen"
+				component={ProductList}
+				options={{
+					title: `${currentSubCategoryTitle}`,
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('CategoriesScreen')}
+						>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+					// headerRight: () => (
+					// 	<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					// 		<TouchableOpacity
+					// 			onPress={() => navigation.navigate('HomeDetailCartScreen')}
+					// 		>
+					// 			<MaterialCommunityIcons
+					// 				name="cart-outline"
+					// 				size={24}
+					// 				color="black"
+					// 				style={{
+					// 					paddingHorizontal: 15,
+					// 				}}
+					// 			/>
+					// 		</TouchableOpacity>
+					// 		<Badge
+					// 			visible={numberOfCartItems?.length ? true : false}
+					// 			style={{
+					// 				marginBottom: 25,
+					// 				marginLeft: -15,
+					// 				marginRight: 10,
+					// 				color: '#fff',
+					// 				backgroundColor: '#f68b1e',
+					// 			}}
+					// 			size={15}
+					// 		>
+					// 			{numberOfCartItems?.length}
+					// 		</Badge>
+					// 	</View>
+					// ),
 				}}
 			/>
 		</CategoriesStack.Navigator>

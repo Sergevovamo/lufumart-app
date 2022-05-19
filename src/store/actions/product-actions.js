@@ -3,10 +3,13 @@ import Toast from 'react-native-toast-message';
 import { tokenConfig, auth } from './auth-actions';
 import {
 	PRODUCT_LOADING,
+	PAGINATION_LOADING,
+	PAGINATION_LIST_END,
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
 	GET_PRODUCT_HOME_CATEGORIES,
 	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
+	CURRENT_SUB_CATEGORY_TITLE,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	REMOVE_PRODUCT_TO_CART,
@@ -14,6 +17,8 @@ import {
 	GET_PRODUCT,
 	GET_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
+	GET_MORE_PRODUCTS_SUB_CATEGORY,
+	RESET_GET_MORE_PRODUCTS_SUB_CATEGORY,
 	CALCULATE_TOTAL,
 } from './types';
 import { returnErrors, clearErrors } from './error-actions';
@@ -131,7 +136,7 @@ export const getProductSubCategoryByCategory =
 export const getProducts = () => async (dispatch) => {
 	try {
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app?limit=12`
+			`${PRODUCTS_SERVER}/lufumart-app?limit=20`
 		);
 		const data = await response.data;
 
@@ -142,7 +147,7 @@ export const getProducts = () => async (dispatch) => {
 
 		await dispatch({
 			type: GET_PRODUCTS,
-			payload: data,
+			payload: data?.products,
 		});
 		dispatch(clearErrors());
 	} catch (error) {
@@ -153,18 +158,25 @@ export const getProducts = () => async (dispatch) => {
 			text2: `An error occurred while fetching products.`,
 		});
 		dispatch(
-			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_PRODUCTS'
+			)
 		);
 	}
 };
 
+// This function serves the screen on Category with limit 12
 export const getProductsBySubCategory = (payload) => async (dispatch) => {
-	const { subCategoryArrayId, limit } = payload;
+	const { subCategoryIds, limit } = payload;
 	try {
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app?${subCategoryArrayId}&limit=${limit}`
+			`${PRODUCTS_SERVER}/lufumart-app?${subCategoryIds}&limit=${limit}&type=array`
 		);
 		const data = await response.data;
+
+		// totalProducts, page & products
 
 		// console.log(data);
 		await dispatch({
@@ -173,11 +185,11 @@ export const getProductsBySubCategory = (payload) => async (dispatch) => {
 
 		await dispatch({
 			type: GET_PRODUCTS_SUB_CATEGORY,
-			payload: data,
+			payload: data?.products,
 		});
 		dispatch(clearErrors());
 	} catch (error) {
-		console.log(error?.response.data);
+		console.log(error?.response?.data);
 		Toast.show({
 			type: 'error',
 			text1: 'Error! Something went wrong.',
@@ -185,9 +197,99 @@ export const getProductsBySubCategory = (payload) => async (dispatch) => {
 		});
 		dispatch(
 			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_PRODUCTS_SUB_CATEGORY'
+			)
+		);
+	}
+};
+
+// This function serves the Category screen with more products of sub category
+export const getMoreProductsBySubCategory = (payload) => async (dispatch) => {
+	// use default limit of 20
+	const { subCategoryId, page } = payload;
+	console.log(page);
+	try {
+		if (subCategoryId) {
+			const response = await axios.get(
+				`${PRODUCTS_SERVER}/lufumart-app/sub-category-products?${subCategoryId}&page=${page}`
+			);
+
+			const data = await response.data;
+
+			// totalProducts, page & products
+
+			// console.log(data);
+			await dispatch({
+				type: PAGINATION_LOADING,
+				payload: {
+					page: page,
+				},
+			});
+			await dispatch({
+				type: GET_MORE_PRODUCTS_SUB_CATEGORY,
+				payload: data?.products,
+			});
+			// await dispatch({
+			// 	type: PAGINATION_LIST_END,
+			// });
+			dispatch(clearErrors());
+		}
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Error on Get More Sub Categories',
+			text2: `An error occurred while fetching more products by sub category.`,
+		});
+		dispatch(
+			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_MORE_PRODUCTS_SUB_CATEGORY'
+			)
+		);
+	}
+};
+
+export const resetGetMoreProductsSubCategory = () => async (dispatch) => {
+	try {
+		await dispatch({
+			type: RESET_GET_MORE_PRODUCTS_SUB_CATEGORY,
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// export const fetchMoreProductsBySubCategory = (params) => async (dispatch) => {
+// 	console.log(params);
+// 	try {
+// 		dispatch({
+// 			type: PAGINATION_LOADING,
+// 			payload: {
+// 				page: params.page,
+// 			},
+// 		});
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// };
+
+export const getCurrentSubCategoryTitle = (data) => (dispatch) => {
+	try {
+		// dispatch current Sub Category Title
+		dispatch({
+			type: CURRENT_SUB_CATEGORY_TITLE,
+			payload: data,
+		});
+	} catch (error) {
+		dispatch(
+			returnErrors(
 				error.response.data,
 				error.response.status,
-				'GET_PRODUCTS_SUB_CATEGORY'
+				'CURRENT_SUB_CATEGORY_TITLE'
 			)
 		);
 	}
@@ -217,7 +319,11 @@ export const getProduct = (productId) => async (dispatch) => {
 			text2: `An error occurred while fetching product.`,
 		});
 		dispatch(
-			returnErrors(error.response.data, error.response.status, 'GET_PRODUCT')
+			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_PRODUCT'
+			)
 		);
 	}
 };
@@ -253,7 +359,11 @@ export const getCartProducts = () => async (dispatch) => {
 			text2: `An error occurred while fetching cart products.`,
 		});
 		dispatch(
-			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_PRODUCTS'
+			)
 		);
 	}
 };

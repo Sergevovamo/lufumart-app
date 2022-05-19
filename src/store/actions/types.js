@@ -20,6 +20,8 @@ export const AUTH_ERROR = 'auth_error';
 export const CLEAR_ERRORS = 'clear_errors';
 
 export const PRODUCT_LOADING = 'product_loading';
+export const PAGINATION_LOADING = 'pagination_loading';
+export const PAGINATION_LIST_END = 'pagination_list_end';
 export const GET_PRODUCT_CATEGORY = 'get_product_category';
 export const GET_PRODUCT_CATEGORIES = 'get_product_categories';
 export const GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY =
@@ -30,6 +32,10 @@ export const DELETE_PRODUCT_CATEGORY = 'delete_product_category';
 export const GET_PRODUCT = 'get_product';
 export const GET_PRODUCTS = 'get_products';
 export const GET_PRODUCTS_SUB_CATEGORY = 'get_products_sub_category';
+export const GET_MORE_PRODUCTS_SUB_CATEGORY = 'get_more_products_sub_category';
+export const RESET_GET_MORE_PRODUCTS_SUB_CATEGORY =
+	'reset_get_more_products_sub_category';
+export const CURRENT_SUB_CATEGORY_TITLE = 'current_sub_category_title';
 export const GET_CART_PRODUCTS = 'get_cart_products';
 export const ADD_PRODUCT_TO_CART = 'add_product_to_cart';
 export const REMOVE_PRODUCT_TO_CART = 'remove_product_to_cart';

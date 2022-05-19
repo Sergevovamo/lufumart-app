@@ -12,8 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 import {
+	resetGetMoreProductsSubCategory,
+	getMoreProductsBySubCategory, // More than 12 products
 	getProductSubCategoryByCategory,
-	getProductsBySubCategory,
+	getProductsBySubCategory, // limit 12
+	getCurrentSubCategoryTitle,
 	getProducts,
 } from '../../../store/actions/product-actions';
 import Tabs from './Tabs';
@@ -47,13 +50,14 @@ const SubCategory = () => {
 		// Convert array to query string
 		let paramsToQueryString = params
 			?.map(function (el, idx) {
-				return 'subCategoryArrayId[' + idx + ']=' + el;
+				return 'subCategoryIds[' + idx + ']=' + el;
 			})
 			.join('&');
 
 		let payload = {
-			subCategoryArrayId: paramsToQueryString,
-			limit: '96',
+			// Pass sub category id as array
+			subCategoryIds: paramsToQueryString,
+			limit: '12',
 		};
 
 		dispatch(getProductsBySubCategory(payload));
@@ -73,6 +77,29 @@ const SubCategory = () => {
 			});
 	}, []);
 
+	const viewSubCategoryProducts = (subCategory) => {
+		dispatch(resetGetMoreProductsSubCategory());
+		// console.log(subCategory);
+		let params = [`${subCategory._id}`];
+
+		// Convert array to query string
+		let paramsToQueryString = params
+			?.map(function (el, idx) {
+				return 'subCategoryId[' + idx + ']=' + el;
+			})
+			.join('&');
+
+		let payload = {
+			// Pass sub category id as array
+			page: 1,
+			subCategoryId: paramsToQueryString,
+		};
+
+		dispatch(getMoreProductsBySubCategory(payload));
+		dispatch(getCurrentSubCategoryTitle(subCategory));
+		navigation.navigate('ProductListScreen');
+	};
+
 	return (
 		<>
 			{productSubCategories?.length > 0 ? (
@@ -90,17 +117,20 @@ const SubCategory = () => {
 						return (
 							<>
 								<View style={styles.container}>
-									<View style={styles.titleOnlyHeader}>
+									<TouchableOpacity
+										onPress={() => viewSubCategoryProducts(sub)}
+										style={styles.titleOnlyHeader}
+									>
 										<Text style={styles.subTitle}>{name}</Text>
-										<TouchableOpacity>
+										<View>
 											<AntDesign
 												name="arrowright"
 												size={24}
 												color="#f68b1e"
 												style={{ paddingHorizontal: 15 }}
 											/>
-										</TouchableOpacity>
-									</View>
+										</View>
+									</TouchableOpacity>
 									<View
 										style={{
 											paddingVertical: 5,

@@ -1,13 +1,18 @@
 import {
 	PRODUCT_LOADING,
+	PAGINATION_LOADING,
+	PAGINATION_LIST_END,
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
 	GET_PRODUCT_HOME_CATEGORIES,
 	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
+	CURRENT_SUB_CATEGORY_TITLE,
 	DELETE_PRODUCT_CATEGORY,
 	GET_PRODUCT,
 	GET_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
+	GET_MORE_PRODUCTS_SUB_CATEGORY,
+	RESET_GET_MORE_PRODUCTS_SUB_CATEGORY,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	REMOVE_PRODUCT_TO_CART,
@@ -16,7 +21,10 @@ import {
 } from '../actions/types';
 
 const initialState = {
-	isLoading: true,
+	isLoading: false,
+	paginationLoading: false,
+	moreLoading: false,
+	isListEnd: false,
 	isAuthenticated: null,
 	productCategory: null,
 	productCategories: null,
@@ -25,9 +33,12 @@ const initialState = {
 	product: null,
 	products: null,
 	getProductsBySubCategory: null,
+	getMoreProductsBySubCategory: [],
 	cartDetails: null,
 	cartProducts: null,
 	total: null,
+	// Currently view products based on Product Detail or Sub Category
+	currentSubCategoryTitle: null,
 };
 
 export default function ProductReducer(state = initialState, action) {
@@ -37,6 +48,12 @@ export default function ProductReducer(state = initialState, action) {
 				...state,
 				isLoading: true,
 			};
+		case PAGINATION_LOADING:
+			if (action.payload.page === 1) {
+				return { ...state, paginationLoading: true };
+			} else {
+				return { ...state, moreLoading: true };
+			}
 		case GET_PRODUCT_CATEGORY:
 			return {
 				...state,
@@ -86,6 +103,32 @@ export default function ProductReducer(state = initialState, action) {
 				isLoading: false,
 				getProductsBySubCategory: action.payload,
 			};
+		case GET_MORE_PRODUCTS_SUB_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				paginationLoading: false,
+				moreLoading: false,
+				getMoreProductsBySubCategory: [
+					...state.getMoreProductsBySubCategory,
+					...action.payload,
+				],
+			};
+		case RESET_GET_MORE_PRODUCTS_SUB_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				paginationLoading: false,
+				moreLoading: false,
+				getMoreProductsBySubCategory: [],
+			};
+		case CURRENT_SUB_CATEGORY_TITLE:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				currentSubCategoryTitle: action.payload,
+			};
 		case GET_CART_PRODUCTS:
 			return {
 				...state,
@@ -129,6 +172,13 @@ export default function ProductReducer(state = initialState, action) {
 				productCategories: state.productCategories?.filter(
 					(product) => product._id !== action.payload
 				),
+			};
+		case PAGINATION_LIST_END:
+			return {
+				...state,
+				paginationLoading: false,
+				moreLoading: false,
+				isListEnd: true,
 			};
 		default:
 			return state;
