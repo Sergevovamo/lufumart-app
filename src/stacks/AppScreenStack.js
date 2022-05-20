@@ -37,9 +37,13 @@ const SettingsStack = createStackNavigator();
 
 export const HomeStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
+
+	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
+
 	const cartProducts = useSelector(
 		(state) => state.products?.cartDetails?.cartProducts
 	);
@@ -178,33 +182,35 @@ export const HomeStackScreen = ({ navigation }) => {
 					),
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('HomeDetailCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{
-										paddingHorizontal: 15,
-										// paddingRight: 15,
-										// paddingBottom: 5,
-									}}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeDetailCartScreen')}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{
+												paddingHorizontal: 15,
+											}}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
 						</View>
 					),
 				}}

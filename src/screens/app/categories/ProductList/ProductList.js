@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, memo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
 	View,
 	Text,
@@ -25,11 +25,13 @@ const ProductList = () => {
 	const [page, setPage] = useState(1);
 
 	useEffect(() => {
-		requestAPI();
+		if (page > 1) {
+			requestAPI();
+		}
 		// console.log('CURRENT PAGE', page);
-	}, [page]);
+	}, [page, requestAPI]);
 
-	// Sub categort products
+	// Sub category products
 	const products = useSelector((state) => state.products);
 	// Current Sub Category Title
 	const currentSubCategoryId = useSelector(
@@ -41,7 +43,8 @@ const ProductList = () => {
 		(state) => state.products?.getMoreProductsBySubCategory
 	);
 
-	const requestAPI = () => {
+	// useCallback prevent re-renders to avoid duplicate calls in the api
+	const requestAPI = useCallback(() => {
 		let params = [`${currentSubCategoryId}`];
 
 		// Convert array to query string
@@ -57,7 +60,7 @@ const ProductList = () => {
 		};
 		// console.log(data);
 		dispatch(getMoreProductsBySubCategory(data));
-	};
+	}, [page]);
 
 	const fetchMoreData = () => {
 		if (!products.isListEnd && !products.moreLoading) {
@@ -74,7 +77,7 @@ const ProductList = () => {
 
 	const renderEmpty = () => (
 		<View style={styles.emptyText}>
-			<Text>No Data at the moment</Text>
+			<Text>No products at the moment</Text>
 			<Button onPress={() => requestAPI()} title="Refresh" />
 		</View>
 	);

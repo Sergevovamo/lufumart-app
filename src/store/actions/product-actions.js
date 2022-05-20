@@ -209,7 +209,7 @@ export const getProductsBySubCategory = (payload) => async (dispatch) => {
 export const getMoreProductsBySubCategory = (payload) => async (dispatch) => {
 	// use default limit of 20
 	const { subCategoryId, page } = payload;
-	console.log(page);
+	// console.log(page);
 	try {
 		if (subCategoryId) {
 			const response = await axios.get(
@@ -262,20 +262,6 @@ export const resetGetMoreProductsSubCategory = () => async (dispatch) => {
 		console.log(error);
 	}
 };
-
-// export const fetchMoreProductsBySubCategory = (params) => async (dispatch) => {
-// 	console.log(params);
-// 	try {
-// 		dispatch({
-// 			type: PAGINATION_LOADING,
-// 			payload: {
-// 				page: params.page,
-// 			},
-// 		});
-// 	} catch (error) {
-// 		console.log(error);
-// 	}
-// };
 
 export const getCurrentSubCategoryTitle = (data) => (dispatch) => {
 	try {

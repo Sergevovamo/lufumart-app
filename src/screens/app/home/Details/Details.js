@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
 	View,
 	Text,
@@ -8,6 +8,8 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import LottieView from 'lottie-react-native';
+import { numberWithCommas } from '../../../../utils/NumberWithCommas';
 
 import {
 	MaterialCommunityIcons,
@@ -27,6 +29,9 @@ import RecentlyViewed from '../RecentlyViewed';
 const Details = () => {
 	const dispatch = useDispatch();
 
+	const [LottieAnim, setLottieAnim] = useState();
+
+	let currentUser = useSelector((state) => state.auth.isAuthenticated);
 	const product = useSelector((state) => state.products?.product);
 	const cartProducts = useSelector(
 		(state) => state.products?.cartDetails?.cartProducts
@@ -34,16 +39,32 @@ const Details = () => {
 	const cartProductQuantity = useSelector(
 		(state) => state.products?.cartDetails?.cartProductQuantity
 	);
-	const buttonLoading = useSelector((state) => state.products?.isLoading);
+	const productLoading = useSelector((state) => state.products?.isLoading);
 
 	useEffect(() => {
-		dispatch(getCartProducts());
+		fetch('https://assets7.lottiefiles.com/packages/lf20_rwq6ciql.json', {
+			method: 'GET',
+		})
+			.then((response) => response.json())
+			.then((responseData) => {
+				// console.log(responseData);
+				setLottieAnim(responseData);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 	}, []);
+
+	// useEffect(() => {
+	// 	dispatch(getCartProducts());
+	// }, []);
 
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			{product?.map((item) => {
 				const { _id, name, brand, salePrice, price, imageUrl } = item;
+
+				let dollarPrice = parseInt(salePrice) / 108;
 
 				let filteredCartItem = cartProducts?.filter((product) => {
 					return product._id === _id;
@@ -64,8 +85,10 @@ const Details = () => {
 							</TouchableOpacity>
 							<Text style={{ marginTop: 5 }}>{name}</Text>
 							<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
-							<Text style={styles.price}>KSh {salePrice}</Text>
-							<Text style={styles.initialPrice}>KSh {price}</Text>
+							<Text style={styles.price}>
+								US ${numberWithCommas(dollarPrice.toFixed(2))}
+							</Text>
+							{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 							<Text style={styles.location}>
 								+ shipping from KSh 96 to Dagoretti South - Ngand'o/Riruta
 							</Text>
@@ -104,32 +127,47 @@ const Details = () => {
 									</TouchableOpacity>
 								</View>
 							) : (
-								<TouchableOpacity
-									onPress={() => dispatch(addProductToCart(_id))}
-									style={style.button}
-								>
-									{buttonLoading ? (
-										<ActivityIndicator color="#fff" size="small" />
-									) : (
-										<View
-											style={{
-												width: '50%',
-												flexDirection: 'row',
-												justifyContent: 'space-around',
-												alignItems: 'center',
-											}}
+								<>
+									{currentUser ? (
+										<TouchableOpacity
+											onPress={() => dispatch(addProductToCart(_id))}
+											style={style.button}
 										>
-											<MaterialIcons
-												name="add-shopping-cart"
-												size={24}
-												color="#fff"
-											/>
-											<Text style={{ color: '#fff', fontSize: 18 }}>
-												Add to Cart
-											</Text>
-										</View>
+											<View
+												style={{
+													width: '50%',
+													flexDirection: 'row',
+													justifyContent: 'space-around',
+													alignItems: 'center',
+												}}
+											>
+												<MaterialIcons
+													name="add-shopping-cart"
+													size={24}
+													color="#fff"
+												/>
+												<Text style={{ color: '#fff', fontSize: 18 }}>
+													Add to Cart
+												</Text>
+											</View>
+										</TouchableOpacity>
+									) : (
+										<TouchableOpacity style={style.button}>
+											<View
+												style={{
+													width: '50%',
+													flexDirection: 'row',
+													justifyContent: 'space-around',
+													alignItems: 'center',
+												}}
+											>
+												<Text style={{ color: '#fff', fontSize: 18 }}>
+													Sign in
+												</Text>
+											</View>
+										</TouchableOpacity>
 									)}
-								</TouchableOpacity>
+								</>
 							)}
 						</View>
 						<View>
@@ -229,6 +267,9 @@ const style = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+	loading: {
+		width: '15%',
+	},
 	productDetails: {
 		width: '100%',
 		minHeight: 250,

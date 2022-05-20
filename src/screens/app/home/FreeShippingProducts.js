@@ -45,7 +45,7 @@ const FreeShippingProducts = () => {
 					const { name, salePrice, imageUrl } = product;
 					let dollarPrice = parseInt(salePrice) / 108;
 					return (
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => viewedProduct(product)}>
 							<View style={styles.product}>
 								<View style={styles.imageContainer}>
 									<Image

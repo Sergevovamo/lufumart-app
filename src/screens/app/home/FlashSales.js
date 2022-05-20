@@ -45,7 +45,7 @@ const FlashSales = () => {
 				renderItem={({ item: product }) => {
 					const { imageUrl } = product;
 					return (
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => viewedProduct(product)}>
 							<View style={styles.product}>
 								<View style={styles.imageContainer}>
 									<Image

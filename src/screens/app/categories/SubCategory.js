@@ -191,7 +191,7 @@ export default SubCategory;
 
 const styles = StyleSheet.create({
 	loading: {
-		width: '20%',
+		width: '15%',
 	},
 	container: {
 		marginTop: 10,
