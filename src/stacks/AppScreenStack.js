@@ -62,44 +62,63 @@ export const HomeStackScreen = ({ navigation }) => {
 					title: 'Home',
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('HomeSearchScreen')}
-							>
-								<Fontisto
-									name="search"
-									size={20}
-									color="black"
-									style={{
-										paddingHorizontal: 5,
-									}}
-								/>
-							</TouchableOpacity>
+							{currentUser ? (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeSearchScreen')}
+									>
+										<Fontisto
+											name="search"
+											size={20}
+											color="black"
+											style={{
+												paddingHorizontal: 5,
+											}}
+										/>
+									</TouchableOpacity>
 
-							<TouchableOpacity
-								onPress={() => navigation.navigate('HomeCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{
-										paddingHorizontal: 5,
-									}}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeCartScreen')}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{
+												paddingHorizontal: 5,
+											}}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							) : (
+								<View>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeSearchScreen')}
+									>
+										<Fontisto
+											name="search"
+											size={20}
+											color="black"
+											style={{
+												paddingHorizontal: 20,
+											}}
+										/>
+									</TouchableOpacity>
+								</View>
+							)}
 						</View>
 					),
 				}}
@@ -302,6 +321,8 @@ export const HomeStackScreen = ({ navigation }) => {
 };
 
 export const CategoriesStackScreen = ({ navigation }) => {
+	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
@@ -319,29 +340,33 @@ export const CategoriesStackScreen = ({ navigation }) => {
 					title: 'Categories',
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('CategoriesCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{ paddingHorizontal: 15 }}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('CategoriesCartScreen')}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{ paddingHorizontal: 15 }}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
 						</View>
 					),
 				}}
@@ -447,6 +472,8 @@ export const CategoriesStackScreen = ({ navigation }) => {
 };
 
 export const FeedStackScreen = ({ navigation }) => {
+	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
@@ -461,36 +488,66 @@ export const FeedStackScreen = ({ navigation }) => {
 						backgroundColor: '#fffff7',
 						opacity: 1,
 					},
+
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('FeedSearchScreen')}
-							>
-								<Fontisto name="search" size={20} color="black" />
-							</TouchableOpacity>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('FeedCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{ paddingHorizontal: 15 }}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
+							{currentUser ? (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('FeedSearchScreen')}
+									>
+										<Fontisto
+											name="search"
+											size={20}
+											color="black"
+											style={{
+												paddingHorizontal: 5,
+											}}
+										/>
+									</TouchableOpacity>
+
+									<TouchableOpacity
+										onPress={() => navigation.navigate('FeedCartScreen')}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{
+												paddingHorizontal: 5,
+											}}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							) : (
+								<View>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('FeedSearchScreen')}
+									>
+										<Fontisto
+											name="search"
+											size={20}
+											color="black"
+											style={{
+												paddingHorizontal: 20,
+											}}
+										/>
+									</TouchableOpacity>
+								</View>
+							)}
 						</View>
 					),
 				}}
