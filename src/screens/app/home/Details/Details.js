@@ -244,6 +244,9 @@ const Details = () => {
 								</View>
 							</View>
 						</View> */}
+						<View>
+							<Text style={styles.promotionTitle}>SELLER INFORMATION</Text>
+						</View>
 						<View style={styles.sellerContainer}>
 							<View style={styles.popularText}>
 								<Text style={{ fontSize: 8, color: '#fff' }}>
@@ -482,7 +485,7 @@ const styles = StyleSheet.create({
 	},
 	// Seller Card Styles
 	sellerContainer: {
-		marginVertical: 15,
+		marginVertical: 1,
 		padding: 3,
 		width: Platform.OS === 'ios' ? 350 : 300,
 		height: 250,

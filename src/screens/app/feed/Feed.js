@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { View, Text, Platform } from 'react-native';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -16,8 +16,8 @@ const Feed = () => {
 				tabBarScrollEnabled: true,
 				tabBarStyle: {
 					width: '85%',
-					height: '8%',
-					marginTop: 5,
+					height: Platform.OS === 'ios' ? '8%' : '10%',
+					marginTop: Platform.OS === 'ios' ? 25 : 30,
 					borderTopLeftRadius: 5,
 					borderTopRightRadius: 5,
 					borderBottomLeftRadius: 5,
@@ -26,7 +26,7 @@ const Feed = () => {
 					alignItems: 'center',
 					marginLeft: 'auto',
 					marginRight: 'auto',
-					marginBottom: 20,
+					marginBottom: 10,
 					backgroundColor: '#fff',
 				},
 			}}

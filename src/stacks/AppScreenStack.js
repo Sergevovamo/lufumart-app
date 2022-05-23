@@ -488,7 +488,7 @@ export const FeedStackScreen = ({ navigation }) => {
 						backgroundColor: '#fffff7',
 						opacity: 1,
 					},
-
+					headerShown: false,
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							{currentUser ? (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -18,7 +18,7 @@ const Auth = () => {
 					tabBarScrollEnabled: true,
 					tabBarStyle: {
 						width: '85%',
-						height: '8%',
+						height: Platform.ios ? '8%' : '10%',
 						marginTop: 10,
 						borderTopLeftRadius: 5,
 						borderTopRightRadius: 5,

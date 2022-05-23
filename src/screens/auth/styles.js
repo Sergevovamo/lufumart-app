@@ -12,15 +12,13 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		width: 160,
-		height: height / 5,
 	},
 	inputContainer: {
 		backgroundColor: '#ffffff',
 		padding: 20,
-		marginTop: -height / 1.6,
+		marginTop: 5,
 		borderRadius: 20,
 		width: width / 1.2,
-		height: height / 2,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',

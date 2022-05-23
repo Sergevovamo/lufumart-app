@@ -2,7 +2,8 @@ import {
 	View,
 	Text,
 	Image,
-	ScrollView,
+	Platform,
+	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
@@ -12,68 +13,77 @@ import { Fontisto, MaterialIcons } from '@expo/vector-icons';
 
 const Following = () => {
 	return (
-		<ScrollView style={{ backgroundColor: '#fffff7' }}>
-			<View style={styles.container}>
-				{sellers.map((item, index) => {
-					const { name, description, img, time } = item;
+		<View style={styles.container}>
+			<FlatList
+				data={sellers}
+				keyExtractor={(item, index) => `${item}-${index}`}
+				style={{ flexGrow: 0 }}
+				contentContainerStyle={{ padding: 5 }}
+				showsVerticalScrollIndicator={false}
+				renderItem={({ item: seller }) => {
+					const { name, description, img, time } = seller;
+					// console.log(name);
+
 					return (
-						<View key={index} style={styles.sellerContainer}>
-							<View style={styles.popularText}>
-								<Text style={{ fontSize: 10, color: '#fff' }}>
-									POPULAR SELLERS
-								</Text>
-							</View>
-							<View style={styles.sellerHeader}>
-								<View style={styles.sellerInfo}>
-									<Fontisto name="shopping-store" size={24} color="black" />
-									<Text style={{ marginLeft: 5 }}>{name}</Text>
+						<>
+							<View style={styles.sellerContainer}>
+								<View style={styles.popularText}>
+									<Text style={{ fontSize: 10, color: '#fff' }}>
+										POPULAR SELLERS
+									</Text>
 								</View>
-								<TouchableOpacity style={styles.button}>
-									<Text style={{ color: '#fff' }}>Follow</Text>
-								</TouchableOpacity>
-							</View>
-							<View
-								style={{
-									paddingVertical: 1,
-									borderBottomColor: 'gray',
-									borderBottomWidth: 1,
-								}}
-							/>
-							<View style={styles.imageContainer}>
-								{img?.map((image, index) => (
-									<Image
-										key={index}
-										source={{
-											uri: `${image}`,
-										}}
-										style={styles.image}
-									/>
-								))}
-							</View>
-							<View
-								style={{
-									paddingVertical: 1,
-									borderBottomColor: 'gray',
-									borderBottomWidth: 1,
-								}}
-							/>
-							<View style={styles.sellerFooter}>
-								<View style={styles.footerTitle}>
-									<Text>{description}</Text>
-									<Text style={{ paddingVertical: 10 }}>{time}</Text>
+								<View style={styles.sellerHeader}>
+									<View style={styles.sellerInfo}>
+										<Fontisto name="shopping-store" size={24} color="black" />
+										<Text style={{ marginLeft: 5 }}>{name}</Text>
+									</View>
+									<TouchableOpacity style={styles.button}>
+										<Text style={{ color: '#fff' }}>Follow</Text>
+									</TouchableOpacity>
 								</View>
-								<TouchableOpacity
-									style={{ flexDirection: 'row', alignItems: 'center' }}
-								>
-									<MaterialIcons name="ios-share" size={20} color="#f68b1e" />
-									<Text style={{ color: '#f68b1e' }}>SHARE</Text>
-								</TouchableOpacity>
+								<View
+									style={{
+										paddingVertical: 1,
+										borderBottomColor: 'gray',
+										borderBottomWidth: 1,
+									}}
+								/>
+								<View style={styles.imageContainer}>
+									{img?.map((image, index) => (
+										<Image
+											key={index}
+											source={{
+												uri: `${image}`,
+											}}
+											style={styles.image}
+										/>
+									))}
+								</View>
+								<View
+									style={{
+										paddingVertical: 1,
+										borderBottomColor: 'gray',
+										borderBottomWidth: 1,
+									}}
+								/>
+								<View style={styles.sellerFooter}>
+									<View style={styles.footerTitle}>
+										<Text>{description}</Text>
+										<Text style={{ paddingVertical: 10 }}>{time}</Text>
+									</View>
+									<TouchableOpacity
+										style={{ flexDirection: 'row', alignItems: 'center' }}
+									>
+										<MaterialIcons name="ios-share" size={20} color="#f68b1e" />
+										<Text style={{ color: '#f68b1e' }}>SHARE</Text>
+									</TouchableOpacity>
+								</View>
 							</View>
-						</View>
+						</>
 					);
-				})}
-			</View>
-		</ScrollView>
+				}}
+			/>
+		</View>
 	);
 };
 
@@ -83,11 +93,12 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: 'center',
+		backgroundColor: '#fffff7',
 	},
 	sellerContainer: {
 		padding: 3,
 		marginBottom: 10,
-		width: 330,
+		width: Platform.OS === 'ios' ? 330 : 300,
 		height: 250,
 		...Platform.select({
 			ios: {

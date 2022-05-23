@@ -1,6 +1,7 @@
 import {
 	View,
 	Text,
+	Image,
 	TouchableOpacity,
 	Animated,
 	Platform,
@@ -62,18 +63,8 @@ const Login = () => {
 
 	return (
 		<TextInputAvoidingView>
-			<Animated.View style={style.container}>
-				<View style={[styles.centerAlign, { height: height / 6 }]}></View>
-				<View
-					style={[
-						styles.centerAlign,
-						{
-							marginTop: 0,
-							backgroundColor: '#fffff7',
-							height: height,
-						},
-					]}
-				>
+			<View style={style.container}>
+				<View style={styles.centerAlign}>
 					<View style={styles.inputContainer}>
 						<Text
 							style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}
@@ -166,7 +157,24 @@ const Login = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</Animated.View>
+				<View
+					style={{
+						marginTop: 40,
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<Image
+						style={{
+							width: Platform.OS === 'ios' ? 330 : 265,
+							height: Platform.OS === 'ios' ? 51 : 41,
+						}}
+						source={{
+							uri: 'https://res.cloudinary.com/lufumart-ecommerce/image/upload/q_auto/v1649943020/lufumart-logo/Lufumart_Logo_owimai.png',
+						}}
+					/>
+				</View>
+			</View>
 		</TextInputAvoidingView>
 	);
 };
