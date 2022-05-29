@@ -58,7 +58,14 @@ const Cart = () => {
 			<View style={styles.container}>
 				{cartProducts?.length > 0 ? (
 					cartProducts?.map((item, index) => {
-						const { _id, name, price, imageUrl } = item;
+						const { _id, name, price, salePrice, imageUrl } = item;
+
+						let filteredCartItemQuantity = cartProductQuantity?.filter(
+							(product) => {
+								return product.productId === _id;
+							}
+						);
+						let dollarPrice = parseInt(salePrice) / 108;
 
 						return (
 							<View key={index} style={styles.productContainer}>
@@ -74,8 +81,8 @@ const Cart = () => {
 								<View style={styles.productDetails}>
 									<View>
 										<Text>{name}</Text>
-										<Text style={{ marginTop: 5 }}>
-											KSh. {numberWithCommas(price)}
+										<Text style={{ marginTop: 5, fontWeight: 'bold' }}>
+											US ${numberWithCommas(dollarPrice.toFixed(2))}
 										</Text>
 									</View>
 									<View
@@ -100,7 +107,7 @@ const Cart = () => {
 												<AntDesign name="minuscircle" size={22} color="black" />
 											</TouchableOpacity>
 											<Text style={{ paddingHorizontal: 15, fontSize: 18 }}>
-												{cartProductQuantity[index]?.quantity}
+												{filteredCartItemQuantity[0]?.quantity}
 											</Text>
 											<TouchableOpacity
 												onPress={() => dispatch(addProductToCart(_id))}
@@ -109,14 +116,6 @@ const Cart = () => {
 											</TouchableOpacity>
 										</View>
 										<View style={{ flexDirection: 'row' }}>
-											<TouchableOpacity>
-												<MaterialCommunityIcons
-													name="heart-outline"
-													size={25}
-													color="black"
-													style={{ paddingHorizontal: 15 }}
-												/>
-											</TouchableOpacity>
 											<TouchableOpacity
 												onPress={() => dispatch(removeProductToCart(_id))}
 											>
@@ -132,6 +131,7 @@ const Cart = () => {
 					<View
 						style={{
 							flex: 1,
+							marginTop: 20,
 							backgroundColor: 'transparent',
 							alignItems: 'center',
 							justifyContent: 'center',
@@ -152,13 +152,19 @@ const Cart = () => {
 					<View style={styles.productTotalContainer}>
 						<Text style={{ fontWeight: 'bold' }}>Sub Total</Text>
 						<Text style={{ fontWeight: 'bold' }}>
-							Ksh. {numberWithCommas(parseInt(cartProductTotal?.subTotal))}
+							Ksh.{' '}
+							{cartProductTotal?.subTotal
+								? numberWithCommas(parseInt(cartProductTotal?.subTotal))
+								: 0}
 						</Text>
 					</View>
 					<View style={styles.productTotalContainer}>
 						<Text style={{ color: 'gray' }}>VAT</Text>
 						<Text style={{ color: 'gray' }}>
-							Ksh. {numberWithCommas(parseInt(cartProductTotal?.vat))}
+							Ksh.{' '}
+							{cartProductTotal?.vat
+								? numberWithCommas(parseInt(cartProductTotal?.vat))
+								: 0}
 						</Text>
 					</View>
 					<View
@@ -172,7 +178,10 @@ const Cart = () => {
 					<View style={styles.productTotalContainer}>
 						<Text>Total</Text>
 						<Text>
-							Ksh. {numberWithCommas(parseInt(cartProductTotal?.total))}
+							Ksh.{' '}
+							{cartProductTotal?.total
+								? numberWithCommas(parseInt(cartProductTotal?.total))
+								: 0}
 						</Text>
 					</View>
 				</View>
@@ -182,23 +191,6 @@ const Cart = () => {
 				>
 					<Text style={{ color: '#fff', fontSize: 18 }}>Checkout</Text>
 				</TouchableOpacity>
-				{/* <View style={styles.recentlyViewed}>
-					<Text
-						style={{
-							fontSize: 20,
-							color: '#000000',
-							fontWeight: 'bold',
-							paddingBottom: 5,
-						}}
-					>
-						Recently viewed
-					</Text>
-					<TouchableOpacity>
-						<Text style={{ color: '#f68b1e', fontWeight: 'bold' }}>
-							SEE ALL
-						</Text>
-					</TouchableOpacity>
-				</View> */}
 			</View>
 		</ScrollView>
 	);
@@ -216,7 +208,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		flexDirection: 'row',
 		width: width * 0.9,
-		height: 130,
+		height: 150,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',

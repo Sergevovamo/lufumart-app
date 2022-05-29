@@ -6,10 +6,12 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT_SUCCESS,
+	CURRENT_USER_ADDRESS,
 } from '../actions/types';
 
 const initialState = {
 	isAuthenticated: null,
+	currentUserAddress: null,
 	user: null,
 };
 
@@ -34,6 +36,11 @@ export default function AuthReducer(state = initialState, action) {
 				...action.payload,
 				isAuthenticated: true,
 				isLoading: false,
+			};
+		case CURRENT_USER_ADDRESS:
+			return {
+				...state,
+				currentUserAddress: action.payload,
 			};
 		case AUTH_ERROR:
 		case LOGIN_FAIL:

@@ -25,11 +25,17 @@ import { Categories, ProductList } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
 import { Settings } from '../screens/app/settings';
-import { Cart, Checkout, Search, Notifications } from '../screens/app/global';
+import {
+	Cart,
+	Checkout,
+	DeliveryAddress,
+	Search,
+	Notifications,
+} from '../screens/app/global';
 import { Auth } from '../screens/auth'; // Auth Screen
 
 import { auth } from '../store/actions/auth-actions';
-import { showTabbar } from '../store/actions/app-settings-actions';
+import { showTabbar, hideTabbar } from '../store/actions/app-settings-actions';
 
 const HomeStack = createStackNavigator();
 const CategoriesStack = createStackNavigator();
@@ -62,6 +68,11 @@ export const HomeStackScreen = ({ navigation }) => {
 		dispatch(showTabbar());
 	};
 
+	const removeTabbar = () => {
+		navigation.navigate('HomeCartScreen');
+		dispatch(hideTabbar());
+	};
+
 	return (
 		<HomeStack.Navigator>
 			<HomeStack.Screen
@@ -86,9 +97,7 @@ export const HomeStackScreen = ({ navigation }) => {
 										/>
 									</TouchableOpacity>
 
-									<TouchableOpacity
-										onPress={() => navigation.navigate('HomeCartScreen')}
-									>
+									<TouchableOpacity onPress={removeTabbar}>
 										<MaterialCommunityIcons
 											name="cart-outline"
 											size={24}
@@ -266,7 +275,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				options={{
 					title: 'My Cart',
 					headerLeft: () => (
-						<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+						<TouchableOpacity onPress={displayTabbar}>
 							<Ionicons
 								name="arrow-back"
 								size={24}
@@ -313,11 +322,20 @@ export const HomeStackScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					),
-					headerRight: () => (
-						<TouchableOpacity>
-							<Fontisto
-								name="more-v-a"
-								size={20}
+				}}
+			/>
+			<HomeStack.Screen
+				name="DeliveryAddressScreen"
+				component={DeliveryAddress}
+				options={{
+					title: 'Delivery Address',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('CheckoutScreen')}
+						>
+							<Ionicons
+								name="arrow-back"
+								size={24}
 								color="black"
 								style={{ paddingHorizontal: 15 }}
 							/>

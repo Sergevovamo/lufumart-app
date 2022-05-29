@@ -18,6 +18,7 @@ export const SEND_EMAIL_OTP = 'send_email_otp';
 export const AUTH_USER = 'auth_user';
 export const AUTH_ERROR = 'auth_error';
 export const CLEAR_ERRORS = 'clear_errors';
+export const CURRENT_USER_ADDRESS = 'current_user_address';
 
 export const PRODUCT_LOADING = 'product_loading';
 export const PAGINATION_LOADING = 'pagination_loading';

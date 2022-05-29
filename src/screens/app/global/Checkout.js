@@ -4,11 +4,13 @@ import {
 	Image,
 	Dimensions,
 	ScrollView,
+	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 import {
 	Ionicons,
@@ -24,6 +26,12 @@ import { numberWithCommas } from '../../../utils/NumberWithCommas';
 
 const Checkout = () => {
 	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	let currentUserAddress = useSelector(
+		(state) => state.auth.currentUserAddress
+	);
+	// console.log(currentUserAddress);
 
 	const cartProducts = useSelector(
 		(state) => state.products?.cartDetails?.cartProducts
@@ -32,6 +40,7 @@ const Checkout = () => {
 	const cartProductTotal = useSelector(
 		(state) => state.products?.cartDetails?.cartProductTotal
 	);
+
 	return (
 		<ScrollView style={{ backgroundColor: '#fffff7' }}>
 			<View style={styles.container}>
@@ -43,10 +52,16 @@ const Checkout = () => {
 						<View style={styles.iconWrapper}>
 							<Ionicons name="md-location-outline" size={24} color="#fff" />
 						</View>
-						<TouchableOpacity style={styles.locationWrapper}>
+						<TouchableOpacity
+							style={styles.locationWrapper}
+							onPress={() => navigation.navigate('DeliveryAddressScreen')}
+						>
 							<View>
-								<Text>20845 Oakridge Farm Lane</Text>
-								<Text>New York (NYC)</Text>
+								<Text numberOfLines={2}>
+									{currentUserAddress?.description
+										? currentUserAddress?.description
+										: 'Search your delivery location'}
+								</Text>
 							</View>
 							<View>
 								<AntDesign name="right" size={20} color="gray" />
@@ -112,38 +127,42 @@ const Checkout = () => {
 							<AntDesign name="right" size={20} color="gray" />
 						</TouchableOpacity>
 					</View>
-					<ScrollView
+
+					<FlatList
+						data={cartProducts}
+						keyExtractor={(item, index) => `${item}-${index}`}
 						horizontal
+						style={{ flexGrow: 0 }}
+						contentContainerStyle={{ padding: 5 }}
 						showsHorizontalScrollIndicator={false}
-						style={{
-							paddingTop: 5,
-							width: '100%',
-							height: '100%',
-							paddingBottom: 15,
-						}}
-					>
-						{cartProducts?.map((item, index) => {
-							const { _id, name, price, imageUrl } = item;
+						renderItem={({ item: product }) => {
+							const { name, salePrice, imageUrl } = product;
+							let dollarPrice = parseInt(salePrice) / 108;
 							return (
-								<View key={index} style={styles.cartProduct}>
+								<View style={styles.product}>
 									<View style={styles.imageContainer}>
 										<Image
-											source={{ uri: `${imageUrl[0]}` }}
+											source={{
+												uri: `${imageUrl[0]}`,
+											}}
 											style={styles.image}
 										/>
 									</View>
-									<View style={styles.productDetails}>
-										<View>
-											<Text style={{ fontSize: 13 }}>{name}</Text>
-											<Text style={{ marginTop: 15, fontSize: 12 }}>
-												KSh. {numberWithCommas(price)}
-											</Text>
-										</View>
+									<View style={{ paddingHorizontal: 10 }}>
+										<Text
+											numberOfLines={2}
+											style={{ paddingVertical: 5, fontSize: 12 }}
+										>
+											{name}
+										</Text>
+										<Text style={{ fontWeight: 'bold' }}>
+											US ${numberWithCommas(dollarPrice.toFixed(2))}
+										</Text>
 									</View>
 								</View>
 							);
-						})}
-					</ScrollView>
+						}}
+					/>
 				</View>
 				<View style={styles.productTotal}>
 					<Text style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}>
@@ -252,6 +271,25 @@ const styles = StyleSheet.create({
 			},
 		}),
 	},
+	product: {
+		width: 150,
+		height: 225,
+		marginHorizontal: 8,
+	},
+	imageContainer: {
+		backgroundColor: '#f3f7ff',
+		marginVertical: 5,
+		height: 150,
+		width: '100%',
+		borderRadius: 7,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	image: {
+		resizeMode: 'contain',
+		width: '85%',
+		height: '100%',
+	},
 	cardWrapper: {
 		width: '80%',
 		flexDirection: 'row',
@@ -261,10 +299,10 @@ const styles = StyleSheet.create({
 	},
 	cartContainer: {
 		width: '100%',
-		minHeight: 150,
+		// minHeight: 150,
 		marginVertical: 15,
 		paddingHorizontal: 18,
-		height: 100,
+		// height: 150,
 	},
 	cartHeader: {
 		flexDirection: 'row',
@@ -297,17 +335,6 @@ const styles = StyleSheet.create({
 			},
 		}),
 		backgroundColor: '#fff',
-	},
-	imageContainer: {
-		width: '50%',
-		height: '100%',
-		justifyContent: 'flex-start',
-		backgroundColor: '#fff',
-	},
-	image: {
-		resizeMode: 'cover',
-		width: '100%',
-		height: '100%',
 	},
 	productDetails: {
 		paddingVertical: 5,

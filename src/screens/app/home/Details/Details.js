@@ -29,7 +29,10 @@ import {
 	getCartProducts,
 	decreaseCartProductQuantity,
 } from '../../../../store/actions/product-actions';
-import { auth } from '../../../../store/actions/auth-actions';
+import {
+	auth,
+	currentUserAddress,
+} from '../../../../store/actions/auth-actions';
 import { mapStyle } from './MapStyle';
 
 import ProductImage from './ProductImage';
@@ -153,15 +156,17 @@ const Details = () => {
 					let filteredCartItem = cartProducts?.filter((product) => {
 						return product._id === _id;
 					});
+					// console.log(_id);
 
 					let filteredCartItemQuantity = cartProductQuantity?.filter(
 						(product) => {
 							return product.productId === _id;
 						}
 					);
+					// console.log(filteredCartItem);
 
 					return (
-						<View style={{ backgroundColor: '#fffff7' }}>
+						<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
 							<ProductImage imageUrl={imageUrl} />
 							<View style={styles.productDetails}>
 								<TouchableOpacity style={styles.button}>
@@ -196,7 +201,19 @@ const Details = () => {
 													onPress={() =>
 														dispatch(decreaseCartProductQuantity(_id))
 													}
-													style={style.iconButton}
+													style={{
+														width: '20%',
+														height: 60,
+														padding: 15,
+														marginVertical: 15,
+														backgroundColor:
+															filteredCartItemQuantity[0]?.quantity === 1
+																? '#a0f2c9'
+																: '#00ab55',
+														justifyContent: 'center',
+														alignItems: 'center',
+														borderRadius: 10,
+													}}
 												>
 													<AntDesign
 														name="minuscircle"
@@ -361,6 +378,10 @@ const Details = () => {
 								// returnKeyType={'default'}
 								fetchDetails={true}
 								autoFocus={true}
+								textInputProps={{
+									placeholderTextColor: 'gray',
+									returnKeyType: 'search',
+								}}
 								styles={autoComplete}
 								query={{
 									key: GOOGLE_MAPS_APIKEY,
@@ -380,6 +401,17 @@ const Details = () => {
 										address: data.description,
 										coordinate: `${details.geometry.location.lat},${details.geometry.location.lng}`,
 									});
+
+									const address = {
+										name: details.name,
+										country: details.address_components,
+										vicinity: details.vicinity,
+										latitude: details.geometry.location.lat,
+										longitude: details.geometry.location.lng,
+										description: data.description,
+									};
+									// save user current address
+									dispatch(currentUserAddress(address));
 									goSearchedRegion(searchedRegion);
 								}}
 								onFail={(error) => console.error(error)}

@@ -7,6 +7,7 @@ import {
 	REGISTER_SUCCESS,
 	LOGIN_SUCCESS,
 	LOGOUT_SUCCESS,
+	CURRENT_USER_ADDRESS,
 } from './types';
 import {
 	returnErrors,
@@ -170,4 +171,19 @@ export const logOut = () => async (dispatch) => {
 	dispatch({
 		type: LOGOUT_SUCCESS,
 	});
+};
+
+export const currentUserAddress = (payload) => async (dispatch) => {
+	try {
+		dispatch({
+			type: CURRENT_USER_ADDRESS,
+			payload: payload,
+		});
+		Toast.show({
+			type: 'success',
+			text1: `Delivery address set successfully`,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
