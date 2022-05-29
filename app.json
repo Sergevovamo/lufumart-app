@@ -19,12 +19,26 @@
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
-			"supportsTablet": true
+			"supportsTablet": true,
+			"bundleIdentifier": "com.lufumart.app",
+			"config": {
+				"googleMapsApiKey": "AIzaSyDXX0iD2Ng5zfH0n0Fq4if3diqx8PG8A1s"
+			}
 		},
 		"android": {
 			"package": "com.lufumart.app",
 			"versionCode": 10,
-			"permissions": ["NOTIFICATIONS"],
+			"permissions": [
+				"NOTIFICATIONS",
+				"ACCESS_COARSE_LOCATION",
+				"ACCESS_FINE_LOCATION",
+				"FOREGROUND_SERVICE"
+			],
+			"config": {
+				"googleMaps": {
+					"apiKey": "AIzaSyDXX0iD2Ng5zfH0n0Fq4if3diqx8PG8A1s"
+				}
+			},
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"

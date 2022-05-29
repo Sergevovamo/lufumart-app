@@ -41,10 +41,9 @@ const styles = StyleSheet.create({
 	inputSignContainer: {
 		backgroundColor: '#ffffff',
 		padding: 20,
-		marginTop: -height / 3.5,
+		marginTop: 5,
 		borderRadius: 20,
 		width: width / 1.2,
-		height: height,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',

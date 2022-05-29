@@ -41,3 +41,7 @@ export const ADD_PRODUCT_TO_CART = 'add_product_to_cart';
 export const REMOVE_PRODUCT_TO_CART = 'remove_product_to_cart';
 export const DECREASE_PRODUCT_TO_CART = 'decrease_product_to_cart';
 export const CALCULATE_TOTAL = 'calculate_total';
+
+// App Settings
+export const SHOW_TABBAR = 'show_tabbar';
+export const HIDE_TABBAR = 'hide_tabbar';

@@ -45,30 +45,11 @@ const styles = StyleSheet.create({
 	product: {
 		width: 250,
 		height: 200,
-		...Platform.select({
-			ios: {
-				shadowColor: 'gray',
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.25,
-				shadowRadius: 3.5,
-			},
-			android: {
-				elevation: -5, // its negative to allow effective box shadow
-				position: 'relative',
-				borderWidth: 1,
-				borderColor: '#f3f3f3',
-				zIndex: 50,
-			},
-		}),
 		marginHorizontal: 8,
-		backgroundColor: '#fff',
+		borderRadius: 10,
+		backgroundColor: '#f3f7ff',
 	},
 	imageContainer: {
-		backgroundColor: '#fff',
-		marginVertical: 5,
 		height: 200,
 		width: '100%',
 		justifyContent: 'center',

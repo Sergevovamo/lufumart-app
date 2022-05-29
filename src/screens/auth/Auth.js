@@ -19,7 +19,7 @@ const Auth = () => {
 					tabBarStyle: {
 						width: '85%',
 						height: Platform.ios ? '8%' : '10%',
-						marginTop: 10,
+						marginTop: 5,
 						borderTopLeftRadius: 5,
 						borderTopRightRadius: 5,
 						borderBottomLeftRadius: 5,
@@ -41,6 +41,7 @@ const Auth = () => {
 									style={{
 										color: focused ? '#f68b1e' : 'gray',
 										fontWeight: 'bold',
+										textTransform: 'uppercase',
 									}}
 								>
 									Sign in
@@ -59,6 +60,7 @@ const Auth = () => {
 									style={{
 										color: focused ? '#f68b1e' : 'gray',
 										fontWeight: 'bold',
+										textTransform: 'uppercase',
 									}}
 								>
 									Sign up

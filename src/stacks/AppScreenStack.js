@@ -2,14 +2,14 @@ import { View, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+	createStackNavigator,
+	CardStyleInterpolators,
+} from '@react-navigation/stack';
 import { Badge } from 'react-native-paper';
 
 import {
-	Octicons,
-	Feather,
 	Ionicons,
-	AntDesign,
 	SimpleLineIcons,
 	Fontisto,
 	MaterialCommunityIcons,
@@ -26,14 +26,17 @@ import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
 import { Settings } from '../screens/app/settings';
 import { Cart, Checkout, Search, Notifications } from '../screens/app/global';
+import { Auth } from '../screens/auth'; // Auth Screen
 
 import { auth } from '../store/actions/auth-actions';
+import { showTabbar } from '../store/actions/app-settings-actions';
 
 const HomeStack = createStackNavigator();
 const CategoriesStack = createStackNavigator();
 const FeedStack = createStackNavigator();
 const SavedStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
+const AuthStack = createStackNavigator();
 
 export const HomeStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
@@ -52,6 +55,12 @@ export const HomeStackScreen = ({ navigation }) => {
 		dispatch(auth());
 		// listen to cartProducts & update items in cart
 	}, [cartProducts]);
+
+	// showTabbar
+	const displayTabbar = () => {
+		navigation.navigate('HomeScreen');
+		dispatch(showTabbar());
+	};
 
 	return (
 		<HomeStack.Navigator>
@@ -190,7 +199,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				options={{
 					title: 'Details',
 					headerLeft: () => (
-						<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+						<TouchableOpacity onPress={displayTabbar}>
 							<Ionicons
 								name="arrow-back"
 								size={24}
@@ -314,6 +323,19 @@ export const HomeStackScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					),
+				}}
+			/>
+			<HomeStack.Screen
+				name="HomeAuthStackScreen"
+				component={AuthStackScreen}
+				options={{
+					headerShown: false,
+					// cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+					presentation: 'modal', // card
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
 				}}
 			/>
 		</HomeStack.Navigator>
@@ -721,5 +743,37 @@ export const SettingsStackScreen = ({ navigation }) => {
 				}}
 			/>
 		</SettingsStack.Navigator>
+	);
+};
+
+export const AuthStackScreen = ({ navigation }) => {
+	return (
+		<AuthStack.Navigator>
+			<AuthStack.Screen
+				name="AuthScreen"
+				component={Auth}
+				options={{
+					title: '',
+					// headerShown: false,
+					headerLeft: () => (
+						<TouchableOpacity
+							// onPress={() => navigation.navigate('HomeAuthStackScreen')}
+							onPress={() => navigation.goBack()}
+						>
+							<Ionicons
+								name="ios-close"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
+				}}
+			/>
+		</AuthStack.Navigator>
 	);
 };

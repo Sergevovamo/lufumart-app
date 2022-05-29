@@ -17,6 +17,7 @@ import {
 	addProductToCart,
 	decreaseCartProductQuantity,
 } from '../../../store/actions/product-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const FreeShippingProducts = () => {
 	const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const FreeShippingProducts = () => {
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
 		navigation.navigate('HomeDetailsScreen');
+		dispatch(hideTabbar());
 	};
 	return (
 		<>

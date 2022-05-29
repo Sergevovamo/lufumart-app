@@ -1,7 +1,8 @@
-import { View, Text } from 'react-native';
 import React from 'react';
-
+import { View, Text } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import {
 	MaterialIcons,
@@ -23,19 +24,18 @@ import {
 const Tab = createBottomTabNavigator();
 
 const AppTabStack = () => {
+	let showTabbar = useSelector((state) => state.appSettings.showTabbar);
+
 	return (
 		<Tab.Navigator
 			screenOptions={{
 				headerShown: false,
 				tabBarShowLabel: true,
-				tabBarHideOnKeyboard: true,
 				tabBarActiveTintColor: '#fff',
-				// tabBarInactiveTintColor: 'lightgray',
 				tabBarActiveBackgroundColor: '#00ab55',
-				// tabBarInactiveBackgroundColor: '#f68b1e',
 				tabBarStyle: [
 					{
-						display: 'flex',
+						display: showTabbar ? 'flex' : 'none',
 					},
 					null,
 				],

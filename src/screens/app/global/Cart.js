@@ -182,7 +182,7 @@ const Cart = () => {
 				>
 					<Text style={{ color: '#fff', fontSize: 18 }}>Checkout</Text>
 				</TouchableOpacity>
-				<View style={styles.recentlyViewed}>
+				{/* <View style={styles.recentlyViewed}>
 					<Text
 						style={{
 							fontSize: 20,
@@ -198,51 +198,7 @@ const Cart = () => {
 							SEE ALL
 						</Text>
 					</TouchableOpacity>
-				</View>
-				<ScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					style={{
-						paddingTop: 5,
-						width: '100%',
-						paddingBottom: 15,
-						paddingLeft: 10,
-					}}
-				>
-					{viewedProducts.map((item, index) => {
-						const { name, price, vat, imgUrl } = item;
-						return (
-							<TouchableOpacity key={index}>
-								<View style={styles.recentProduct}>
-									<View style={styles.recentImageContainer}>
-										<Image
-											source={{
-												uri: `${imgUrl}`,
-											}}
-											style={styles.recentImage}
-										/>
-									</View>
-									<View
-										style={{
-											paddingVertical: 5,
-											borderBottomColor: 'black',
-											borderBottomWidth: 1,
-										}}
-									/>
-									<View style={{ paddingHorizontal: 10 }}>
-										<Text style={{ paddingVertical: 5 }}>{name}</Text>
-										<Text style={{ fontWeight: 'bold' }}>
-											KSh. {numberWithCommas(price)}
-										</Text>
-										<Text style={{ color: 'gray' }}>
-											KSh. {numberWithCommas(vat)}
-										</Text>
-									</View>
-								</View>
-							</TouchableOpacity>
-						);
-					})}
-				</ScrollView>
+				</View> */}
 			</View>
 		</ScrollView>
 	);

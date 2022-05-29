@@ -2,10 +2,9 @@ import {
 	View,
 	Text,
 	TouchableOpacity,
-	Animated,
 	Platform,
 	StyleSheet,
-	StatusBar,
+	Image,
 	Dimensions,
 	ActivityIndicator,
 	ScrollView,
@@ -67,16 +66,13 @@ const Signup = ({ navigation }) => {
 
 	return (
 		<TextInputAvoidingView>
-			<ScrollView>
-				<Animated.View style={style.container}>
-					{/* <View style={[styles.centerAlign, { height: height / 6 }]}></View> */}
+			<ScrollView alwaysBounceVertical={false} bounces={false}>
+				<View style={style.container}>
 					<View
 						style={[
 							styles.centerAlign,
 							{
-								marginTop: 0,
 								backgroundColor: '#fffff7',
-								height: height / 0.75,
 							},
 						]}
 					>
@@ -309,7 +305,25 @@ const Signup = ({ navigation }) => {
 							</TouchableOpacity>
 						</View>
 					</View>
-				</Animated.View>
+					<View
+						style={{
+							marginTop: 40,
+							marginBottom: 40,
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<Image
+							style={{
+								width: Platform.OS === 'ios' ? 230 : 170,
+								height: Platform.OS === 'ios' ? 36 : 26,
+							}}
+							source={{
+								uri: 'https://res.cloudinary.com/lufumart-ecommerce/image/upload/q_auto/c_scale,w_499,h_78/v1649943020/lufumart-logo/Lufumart_Logo_owimai.png',
+							}}
+						/>
+					</View>
+				</View>
 			</ScrollView>
 		</TextInputAvoidingView>
 	);
