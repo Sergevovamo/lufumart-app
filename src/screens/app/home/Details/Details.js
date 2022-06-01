@@ -241,9 +241,7 @@ const Details = () => {
 										) : (
 											<TouchableOpacity
 												style={style.button}
-												onPress={() =>
-													navigation.navigate('HomeAuthStackScreen')
-												}
+												onPress={() => navigation.navigate('AuthStackScreen')}
 											>
 												<View
 													style={{
@@ -288,9 +286,7 @@ const Details = () => {
 										) : (
 											<TouchableOpacity
 												style={style.button}
-												onPress={() =>
-													navigation.navigate('HomeAuthStackScreen')
-												}
+												onPress={() => navigation.navigate('AuthStackScreen')}
 											>
 												<View
 													style={{

@@ -344,7 +344,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<HomeStack.Screen
-				name="HomeAuthStackScreen"
+				name="AuthStackScreen"
 				component={AuthStackScreen}
 				options={{
 					headerShown: false,
@@ -591,6 +591,19 @@ export const CategoriesStackScreen = ({ navigation }) => {
 					// 		</Badge>
 					// 	</View>
 					// ),
+				}}
+			/>
+			<CategoriesStack.Screen
+				name="AuthStackScreen"
+				component={AuthStackScreen}
+				options={{
+					headerShown: false,
+					// cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+					presentation: 'modal', // card
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
 				}}
 			/>
 		</CategoriesStack.Navigator>
