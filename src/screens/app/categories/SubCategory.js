@@ -17,8 +17,9 @@ import {
 	getProductSubCategoryByCategory,
 	getProductsBySubCategory, // limit 12
 	getCurrentSubCategoryTitle,
-	getProducts,
+	getProduct,
 } from '../../../store/actions/product-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import Tabs from './Tabs';
 
 const SubCategory = () => {
@@ -97,7 +98,14 @@ const SubCategory = () => {
 
 		dispatch(getMoreProductsBySubCategory(payload));
 		dispatch(getCurrentSubCategoryTitle(subCategory));
+		dispatch(hideTabbar());
 		navigation.navigate('ProductListScreen');
+	};
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('CategoriesDetailsScreen');
+		dispatch(hideTabbar());
 	};
 
 	return (
@@ -140,25 +148,39 @@ const SubCategory = () => {
 									/>
 									<View style={styles.itemContainer}>
 										{getProductSubCategories?.map((item, index) => {
-											const { name, imageUrl, subCategory } = item;
-											// console.log(name);
-											// console.log(item?.subCategory === sub?._id);
+											const { products } = item;
+											// console.log(item);
+											// console.log(item?._id === sub?._id);
 											return (
 												<Fragment key={index}>
-													{item?.subCategory === sub?._id && (
-														<TouchableOpacity style={styles.itemCard}>
-															<View style={styles.imageContainer}>
-																<Image
-																	source={{
-																		uri: `${imageUrl[0]}`,
-																	}}
-																	style={styles.image}
-																/>
-															</View>
-															<Text numberOfLines={1} style={styles.itemText}>
-																{name}
-															</Text>
-														</TouchableOpacity>
+													{item?._id === sub?._id && (
+														<Fragment>
+															{products?.map((product, index) => {
+																const { name, imageUrl } = product;
+																return (
+																	<TouchableOpacity
+																		key={index}
+																		style={styles.itemCard}
+																		onPress={() => viewedProduct(product)}
+																	>
+																		<View style={styles.imageContainer}>
+																			<Image
+																				source={{
+																					uri: `${imageUrl[0]}`,
+																				}}
+																				style={styles.image}
+																			/>
+																		</View>
+																		<Text
+																			numberOfLines={1}
+																			style={styles.itemText}
+																		>
+																			{name}
+																		</Text>
+																	</TouchableOpacity>
+																);
+															})}
+														</Fragment>
 													)}
 												</Fragment>
 											);

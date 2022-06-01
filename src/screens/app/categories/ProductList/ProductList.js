@@ -17,6 +17,7 @@ import {
 	getMoreProductsBySubCategory,
 	getProduct,
 } from '../../../../store/actions/product-actions';
+import { hideTabbar } from '../../../../store/actions/app-settings-actions';
 
 const ProductList = () => {
 	const dispatch = useDispatch();
@@ -78,9 +79,15 @@ const ProductList = () => {
 	const renderEmpty = () => (
 		<View style={styles.emptyText}>
 			<Text>No products at the moment</Text>
-			<Button onPress={() => requestAPI()} title="Refresh" />
+			{/* <Button onPress={() => requestAPI()} title="Refresh" /> */}
 		</View>
 	);
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('CategoriesDetailsScreen');
+		dispatch(hideTabbar());
+	};
 
 	return (
 		<View
@@ -107,7 +114,7 @@ const ProductList = () => {
 
 						let dollarPrice = parseInt(salePrice) / 108;
 						return (
-							<TouchableOpacity>
+							<TouchableOpacity onPress={() => viewedProduct(product)}>
 								<View style={styles.product}>
 									<View style={styles.imageContainer}>
 										<Image

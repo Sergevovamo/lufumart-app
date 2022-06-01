@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "Lufumart",
 		"slug": "lufumart",
-		"version": "0.1.9",
+		"version": "0.1.10",
 		"privacy": "public",
 		"owner": "sergevovamo",
 		"description": "Your Trusted Online Store",
@@ -27,7 +27,7 @@
 		},
 		"android": {
 			"package": "com.lufumart.app",
-			"versionCode": 10,
+			"versionCode": 11,
 			"permissions": [
 				"NOTIFICATIONS",
 				"ACCESS_COARSE_LOCATION",

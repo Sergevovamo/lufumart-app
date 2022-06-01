@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Platform,
 	View,
@@ -6,7 +7,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
 	MaterialIcons,
@@ -31,8 +32,15 @@ import FlashSales from './FlashSales';
 import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const Home = ({ navigation }) => {
+	const dispatch = useDispatch();
+
+	const browseCategories = () => {
+		navigation.navigate('HomeCategoriesScreen');
+		dispatch(hideTabbar());
+	};
 	return (
 		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
 			<ScrollView nestedScrollEnabled={true}>
@@ -45,10 +53,7 @@ const Home = ({ navigation }) => {
 						/>
 						<Text>Saved</Text>
 					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => navigation.navigate('HomeCategoriesScreen')}
-						style={styles.tab}
-					>
+					<TouchableOpacity onPress={browseCategories} style={styles.tab}>
 						<MaterialIcons name="category" size={24} color="black" />
 						<Text>Categories</Text>
 					</TouchableOpacity>

@@ -36,7 +36,7 @@ import {
 import { mapStyle } from './MapStyle';
 
 import ProductImage from './ProductImage';
-import RecentlyViewed from '../RecentlyViewed';
+// import RecentlyViewed from '../RecentlyViewed';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDXX0iD2Ng5zfH0n0Fq4if3diqx8PG8A1s';
@@ -496,10 +496,6 @@ const Details = () => {
 										<Text style={{ color: '#f68b1e' }}>SHARE</Text>
 									</TouchableOpacity>
 								</View>
-							</View>
-							<View>
-								<Text style={styles.promotionTitle}>RECENTLY VIEWED</Text>
-								<RecentlyViewed />
 							</View>
 						</View>
 					);

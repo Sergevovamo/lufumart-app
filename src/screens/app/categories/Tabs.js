@@ -22,7 +22,9 @@ const Tabs = () => {
 		(state) => state.products?.productCategories
 	);
 
-	const [selectedTab, setSelectedTab] = useState({});
+	const [selectedTab, setSelectedTab] = useState({
+		name: 'Electronics',
+	});
 
 	useEffect(() => {
 		dispatch(getProductCategories());
@@ -43,6 +45,7 @@ const Tabs = () => {
 				showsHorizontalScrollIndicator={true}
 				renderItem={({ item: category }) => {
 					const { name } = category;
+					// console.log(name);
 
 					return (
 						<TouchableOpacity onPress={() => setSelectedTab(category)}>

@@ -147,7 +147,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				options={{
 					title: 'Browse categories',
 					headerLeft: () => (
-						<TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+						<TouchableOpacity onPress={displayTabbar}>
 							<Ionicons
 								name="arrow-back"
 								size={24}
@@ -361,6 +361,7 @@ export const HomeStackScreen = ({ navigation }) => {
 };
 
 export const CategoriesStackScreen = ({ navigation }) => {
+	const dispatch = useDispatch();
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
 
 	const numberOfCartItems = useSelector(
@@ -370,6 +371,17 @@ export const CategoriesStackScreen = ({ navigation }) => {
 	const currentSubCategoryTitle = useSelector(
 		(state) => state.products?.currentSubCategoryTitle?.name
 	);
+
+	// showTabbar
+	const displayTabbar = () => {
+		navigation.navigate('CategoriesScreen');
+		dispatch(showTabbar());
+	};
+
+	const removeTabbar = () => {
+		navigation.navigate('CategoriesCartScreen');
+		dispatch(hideTabbar());
+	};
 
 	return (
 		<CategoriesStack.Navigator>
@@ -382,9 +394,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							{currentUser && (
 								<>
-									<TouchableOpacity
-										onPress={() => navigation.navigate('CategoriesCartScreen')}
-									>
+									<TouchableOpacity onPress={removeTabbar}>
 										<MaterialCommunityIcons
 											name="cart-outline"
 											size={24}
@@ -412,13 +422,82 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<CategoriesStack.Screen
+				name="CategoriesDetailsScreen"
+				component={Details}
+				options={{
+					title: 'Details',
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbar}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() =>
+											navigation.navigate('CategoriesDetailCartScreen')
+										}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{
+												paddingHorizontal: 15,
+											}}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
+						</View>
+					),
+				}}
+			/>
+			<CategoriesStack.Screen
 				name="CategoriesCartScreen"
 				component={Cart}
 				options={{
 					title: 'My Cart',
 					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbar}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<CategoriesStack.Screen
+				name="CategoriesDetailCartScreen"
+				component={Cart}
+				options={{
+					title: 'My Cart',
+					headerLeft: () => (
 						<TouchableOpacity
-							onPress={() => navigation.navigate('CategoriesScreen')}
+							onPress={() => navigation.navigate('CategoriesDetailsScreen')}
 						>
 							<Ionicons
 								name="arrow-back"
@@ -447,11 +526,20 @@ export const CategoriesStackScreen = ({ navigation }) => {
 							/>
 						</TouchableOpacity>
 					),
-					headerRight: () => (
-						<TouchableOpacity>
-							<Fontisto
-								name="more-v-a"
-								size={20}
+				}}
+			/>
+			<CategoriesStack.Screen
+				name="DeliveryAddressScreen"
+				component={DeliveryAddress}
+				options={{
+					title: 'Delivery Address',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('CheckoutScreen')}
+						>
+							<Ionicons
+								name="arrow-back"
+								size={24}
 								color="black"
 								style={{ paddingHorizontal: 15 }}
 							/>
@@ -465,9 +553,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				options={{
 					title: `${currentSubCategoryTitle}`,
 					headerLeft: () => (
-						<TouchableOpacity
-							onPress={() => navigation.navigate('CategoriesScreen')}
-						>
+						<TouchableOpacity onPress={displayTabbar}>
 							<Ionicons
 								name="arrow-back"
 								size={24}

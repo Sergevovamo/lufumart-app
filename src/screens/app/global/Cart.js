@@ -9,7 +9,7 @@ import {
 	ScrollView,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
 	AntDesign,
@@ -31,6 +31,7 @@ const { width, height } = Dimensions.get('screen');
 const Cart = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const route = useRoute();
 
 	const cartProductTotal = useSelector(
 		(state) => state.products?.cartDetails?.cartProductTotal
@@ -50,7 +51,11 @@ const Cart = () => {
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
-		navigation.navigate('HomeDetailsScreen');
+		if (route.name === 'CategoriesDetailCartScreen') {
+			navigation.navigate('CategoriesDetailsScreen');
+		} else {
+			navigation.navigate('HomeDetailsScreen');
+		}
 	};
 
 	return (

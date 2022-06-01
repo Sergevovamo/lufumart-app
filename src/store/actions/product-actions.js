@@ -169,10 +169,10 @@ export const getProducts = () => async (dispatch) => {
 
 // This function serves the screen on Category with limit 12
 export const getProductsBySubCategory = (payload) => async (dispatch) => {
-	const { subCategoryIds, limit } = payload;
+	const { subCategoryIds } = payload;
 	try {
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app?${subCategoryIds}&limit=${limit}&type=array`
+			`${PRODUCTS_SERVER}/lufumart-app/products-by-sub-category?${subCategoryIds}&type=array`
 		);
 		const data = await response.data;
 
@@ -185,7 +185,7 @@ export const getProductsBySubCategory = (payload) => async (dispatch) => {
 
 		await dispatch({
 			type: GET_PRODUCTS_SUB_CATEGORY,
-			payload: data?.products,
+			payload: data?.subCategories,
 		});
 		dispatch(clearErrors());
 	} catch (error) {
