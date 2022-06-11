@@ -1,78 +1,126 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { FlatList } from 'react-native';
 import {
-	View,
-	// Text,
-	StyleSheet,
-	Dimensions,
-	Image,
-	TouchableOpacity,
-	SafeAreaView,
-	ScrollView,
-} from 'react-native';
-import {
+	Box,
+	Text,
+	Heading,
 	VStack,
+	FormControl,
+	Link,
 	Input,
 	Button,
-	IconButton,
-	Icon,
-	Text,
-	NativeBaseProvider,
+	HStack,
 	Center,
-	Box,
-	Divider,
-	Heading,
+	Spinner,
+	Select,
+	CheckIcon,
+	WarningOutlineIcon,
+	NativeBaseProvider,
 } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
 import SettingsAccount from './SettingsAccount';
+import Country from './Country';
 import SettingsSecurity from './SettingsSecurity';
 import HelpCenter from './HelpCenter';
+import Logout from './Logout';
 
 const Settings = () => {
-	const currentUser = useSelector((state) => state.auth?.user?.current_user);
-	// console.log(currentUser);
+	const navigation = useNavigation();
+	let authUser = useSelector((state) => state.auth.isAuthenticated);
+
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-			<NativeBaseProvider>
-				<TextInputAvoidingView>
-					<Center flex={1} px="2">
-						<SearchBar />
-					</Center>
-				</TextInputAvoidingView>
-			</NativeBaseProvider>
-			{/* <ScrollView style={{ flex: 1 }}>
-				<View style={{ paddingTop: 30, paddingHorizontal: 20 }}>
-					<View>
-						<Text
-							style={{
-								color: '#090c0d',
-								fontSize: 29,
-								fontWeight: 'bold',
-								paddingTop: 5,
-							}}
-						>
-							{currentUser?.name}
-						</Text>
-						<Text style={{ color: '#5d616f', fontSize: 14, fontWeight: '500' }}>
-							{currentUser?.email}
-						</Text>
-					</View>
-
-					<View style={{ paddingTop: 10 }}>
-						<SettingsAccount />
-					</View>
-
-					<View style={{ paddingTop: 15 }}>
-						<SettingsSecurity />
-					</View>
-
-					<View style={{ paddingTop: 10 }}>
-						<HelpCenter />
-					</View>
-				</View>
-			</ScrollView> */}
-		</SafeAreaView>
+		<FlatList
+			data={data}
+			keyExtractor={(item, index) => `${item}-${index}`}
+			style={{ flexGrow: 0 }}
+			keyboardShouldPersistTaps="handled"
+			contentContainerStyle={{ padding: 5 }}
+			showsVerticalScrollIndicator={false}
+			renderItem={({ item: data }) => (
+				<NativeBaseProvider>
+					<TextInputAvoidingView>
+						<Center w="100%">
+							<Box
+								style={{
+									backgroundColor: '#fff',
+									borderRadius: 20,
+									paddingHorizontal: 20,
+								}}
+								safeArea
+								py="8"
+								w="95%"
+								maxW="350"
+							>
+								{authUser ? (
+									<SettingsAccount />
+								) : (
+									<>
+										<Text>Login to your account or register a new one!</Text>
+										<Button
+											mt="2"
+											colorScheme="green"
+											// onPress={handleSubmit(onSubmit)}
+											onPress={() => navigation.navigate('AuthStackScreen')}
+										>
+											<Text style={{ color: '#fff', fontSize: 15 }}>
+												Login or Register
+											</Text>
+										</Button>
+									</>
+								)}
+							</Box>
+							<Box
+								style={{
+									marginTop: 20,
+									backgroundColor: '#fff',
+									borderRadius: 20,
+									paddingHorizontal: 20,
+								}}
+								safeArea
+								py="8"
+								w="95%"
+								maxW="350"
+							>
+								<Country />
+							</Box>
+							<Box
+								style={{
+									marginTop: 20,
+									backgroundColor: '#fff',
+									borderRadius: 20,
+									paddingHorizontal: 20,
+								}}
+								safeArea
+								py="8"
+								w="95%"
+								maxW="350"
+							>
+								<HelpCenter />
+							</Box>
+							{authUser && (
+								<Box
+									style={{
+										marginTop: 20,
+										backgroundColor: '#fff',
+										borderRadius: 20,
+										paddingHorizontal: 20,
+									}}
+									safeArea
+									py="8"
+									w="95%"
+									maxW="350"
+								>
+									<Logout />
+								</Box>
+							)}
+						</Center>
+					</TextInputAvoidingView>
+				</NativeBaseProvider>
+			)}
+		/>
 	);
 };
 
@@ -113,3 +161,9 @@ function SearchBar() {
 		</VStack>
 	);
 }
+
+const data = [
+	{
+		name: 'Dummy Data Settings',
+	},
+];

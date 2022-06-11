@@ -1,155 +1,95 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import {
+	Ionicons,
+	MaterialIcons,
+	AntDesign,
+	Feather,
+} from '@expo/vector-icons';
 
 const HelpCenter = () => {
 	return (
 		<View>
 			<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Help & Support</Text>
 			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
-				<View
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<Feather name="phone-call" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						Ask a Question
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						FAQ
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						Help Center
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
 						Contact Us
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<AntDesign name="exclamationcircleo" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
-						Terms and Privacy Policy
+						About Us
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<Ionicons name="menu-outline" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
-						Licenses
+						Terms & Conditions
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+					}}
+				>
+					<MaterialIcons name="privacy-tip" size={24} color="black" />
+					<Text
+						style={{
+							fontSize: 17,
+							fontWeight: '300',
+							letterSpacing: 0.5,
+							marginLeft: 5,
 						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
+					>
+						Privacy Policy
+					</Text>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

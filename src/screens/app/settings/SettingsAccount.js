@@ -1,181 +1,118 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import {
+	Ionicons,
+	SimpleLineIcons,
+	FontAwesome5,
+	Fontisto,
+	MaterialCommunityIcons,
+} from '@expo/vector-icons';
 
 const SettingsAccount = () => {
 	return (
 		<View>
-			<Text style={{ fontSize: 20, fontWeight: 'bold', paddingTop: 10 }}>
+			<Text style={{ fontSize: 20, fontWeight: 'bold', paddingTop: 5 }}>
 				Account
 			</Text>
 			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
-				<View
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<SimpleLineIcons name="user" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
+						}}
+					>
+						Your Profile
+					</Text>
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+					}}
+				>
+					<Ionicons name="location-outline" size={24} color="black" />
+					<Text
+						style={{
+							fontSize: 17,
+							fontWeight: '300',
+							letterSpacing: 0.5,
+							marginLeft: 5,
 						}}
 					>
 						Delivery Address
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<FontAwesome5 name="shopping-basket" size={22} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
-						Choose Currency
+						Orders
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<MaterialCommunityIcons name="shopping" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
-						Your Country
+						Buy Again
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
+				</TouchableOpacity>
+			</View>
+			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}
 				>
+					<Fontisto name="shopping-sale" size={24} color="black" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginBottom: 30,
+							marginLeft: 5,
 						}}
 					>
-						Payment Methods
+						Store Receipts
 					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						Mobile Numbers
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						Language
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 17,
-							fontWeight: '300',
-							letterSpacing: 0.5,
-							marginBottom: 30,
-						}}
-					>
-						Notifications
-					</Text>
-					<Image
-						source={{
-							uri: 'https://raw.githubusercontent.com/arkhan13/coinbase-clone/master/assets/icons/1x/arrow.jpg',
-						}}
-						style={{ width: 10, height: 10 }}
-					/>
-				</View>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

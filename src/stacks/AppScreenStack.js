@@ -843,6 +843,10 @@ export const SettingsStackScreen = ({ navigation }) => {
 							</TouchableOpacity>
 						</View>
 					),
+					cardStyle: {
+						backgroundColor: '#f3f7ff',
+						opacity: 1,
+					},
 				}}
 			/>
 			<SettingsStack.Screen
