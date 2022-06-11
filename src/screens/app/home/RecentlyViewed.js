@@ -45,7 +45,7 @@ const RecentlyViewed = () => {
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item: product }) => {
 					const { name, salePrice, imageUrl } = product;
-					let dollarPrice = parseInt(salePrice) / 108;
+
 					return (
 						<TouchableOpacity onPress={() => viewedProduct(product)}>
 							<View style={styles.product}>
@@ -65,7 +65,7 @@ const RecentlyViewed = () => {
 										{name}
 									</Text>
 									<Text style={{ fontWeight: 'bold' }}>
-										US ${numberWithCommas(dollarPrice.toFixed(2))}
+										US ${numberWithCommas(salePrice)}
 									</Text>
 								</View>
 							</View>

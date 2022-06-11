@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { StatusBar } from 'expo-status-bar';
 
 import {
 	MaterialIcons,
@@ -43,6 +44,7 @@ const Home = ({ navigation }) => {
 	};
 	return (
 		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
+			<StatusBar style="default" />
 			<ScrollView nestedScrollEnabled={true}>
 				<View style={styles.tabContainer}>
 					<TouchableOpacity style={styles.tab}>

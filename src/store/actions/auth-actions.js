@@ -67,8 +67,7 @@ export const auth = () => async (dispatch) => {
 
 // Register User
 export const registerUser = (payload) => async (dispatch) => {
-	const { name, email, phone, gender, password, password_confirmation } =
-		payload;
+	const { name, email, phone, gender, password } = payload;
 	// console.log(payload);
 
 	try {
@@ -86,7 +85,7 @@ export const registerUser = (payload) => async (dispatch) => {
 			phone,
 			gender,
 			password,
-			password_confirmation,
+			password_confirmation: password,
 		});
 		console.log(body);
 

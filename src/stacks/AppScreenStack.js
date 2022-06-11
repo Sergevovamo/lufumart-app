@@ -32,7 +32,7 @@ import {
 	Search,
 	Notifications,
 } from '../screens/app/global';
-import { Auth } from '../screens/auth'; // Auth Screen
+import { Login, Signup, ForgotPassword } from '../screens/auth'; // Auth Screen
 
 import { auth } from '../store/actions/auth-actions';
 import { showTabbar, hideTabbar } from '../store/actions/app-settings-actions';
@@ -158,29 +158,33 @@ export const HomeStackScreen = ({ navigation }) => {
 					),
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('HomeCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{ paddingHorizontal: 15 }}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeCartScreen')}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+											style={{ paddingHorizontal: 15 }}
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
 						</View>
 					),
 				}}
@@ -868,7 +872,56 @@ export const AuthStackScreen = ({ navigation }) => {
 		<AuthStack.Navigator>
 			<AuthStack.Screen
 				name="AuthScreen"
-				component={Auth}
+				component={Login}
+				options={{
+					title: '',
+					headerLeft: () => (
+						<TouchableOpacity
+							// onPress={() => navigation.navigate('HomeAuthStackScreen')}
+							onPress={() => navigation.goBack()}
+						>
+							<Ionicons
+								name="ios-close"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
+				}}
+			/>
+			<AuthStack.Screen
+				name="AuthScreenSignup"
+				component={Signup}
+				options={{
+					title: '',
+					// headerShown: false,
+					headerLeft: () => (
+						<TouchableOpacity
+							// onPress={() => navigation.navigate('HomeAuthStackScreen')}
+							onPress={() => navigation.goBack()}
+						>
+							<Ionicons
+								name="ios-close"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
+				}}
+			/>
+			<AuthStack.Screen
+				name="AuthScreenForgotPassword"
+				component={ForgotPassword}
 				options={{
 					title: '',
 					// headerShown: false,

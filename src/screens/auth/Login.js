@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import {
-	View,
-	Text,
-	Image,
-	TouchableOpacity,
-	Animated,
-	Platform,
-	StyleSheet,
-	ScrollView,
-	StatusBar,
-	Dimensions,
-	ActivityIndicator,
-} from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useForm, Controller } from 'react-hook-form';
-import { TextInput, HelperText } from 'react-native-paper';
+import {
+	Box,
+	Text,
+	Heading,
+	VStack,
+	FormControl,
+	Input,
+	Button,
+	HStack,
+	Center,
+	Spinner,
+	WarningOutlineIcon,
+	NativeBaseProvider,
+} from 'native-base';
 import { loginUser } from '../../store/actions/auth-actions';
 import { clearErrors } from '../../store/actions/error-actions';
-import { styles } from './styles';
 
 import TextInputAvoidingView from '../../components/KeyboardAvoidingWrapper';
-
-const { width, height } = Dimensions.get('screen');
 
 const Login = () => {
 	const navigation = useNavigation();
@@ -67,145 +65,181 @@ const Login = () => {
 	}, [error]);
 
 	return (
-		<TextInputAvoidingView>
-			<ScrollView alwaysBounceVertical={false} bounces={false}>
-				<View style={style.container}>
-					<View style={styles.centerAlign}>
-						<View style={styles.inputContainer}>
-							<Text
-								style={{
-									fontSize: 20,
-									fontWeight: 'bold',
-									textAlign: 'center',
+		<NativeBaseProvider>
+			<TextInputAvoidingView>
+				<Center px="3">
+					<Center w="100%">
+						<Box safeArea p="2" py="8" w="90%" maxW="290">
+							<Heading
+								size="lg"
+								fontWeight="600"
+								color="coolGray.800"
+								_dark={{
+									color: 'warmGray.50',
 								}}
 							>
-								SIGN IN
-							</Text>
-							<Controller
-								control={control}
-								type="email"
-								name="email"
-								render={({ field: { onChange, value, onBlur } }) => (
-									<TextInput
-										mode="outlined"
-										keyboardType="email-address"
-										label="Email address"
-										placeholder="Enter your email address"
-										value={value}
-										theme={{
-											colors: {
-												primary: '#f68b1e',
-												underlineColor: 'transparent',
-											},
-										}}
-										onBlur={onBlur}
-										onChangeText={(value) => onChange(value)}
-									/>
-								)}
-								rules={{
-									required: {
-										value: true,
-										message: 'Email address is required',
-									},
-									pattern: {
-										value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-										message: 'Invalid email address',
-									},
+								Welcome
+							</Heading>
+							<Heading
+								mt="1"
+								_dark={{
+									color: 'warmGray.200',
 								}}
-							/>
-							<HelperText type="error" style={styles.helper}>
-								{errors?.email?.message}
-							</HelperText>
-							<Controller
-								control={control}
-								name="password"
-								render={({ field: { onChange, value, onBlur } }) => (
-									<TextInput
-										mode="outlined"
-										label="Password"
-										secureTextEntry={showPassword ? false : true}
-										placeholder="Enter password"
-										value={value}
-										theme={{
-											colors: {
-												primary: '#f68b1e',
-												underlineColor: 'transparent',
-											},
-										}}
-										onBlur={onBlur}
-										onChangeText={(value) => onChange(value)}
-										right={
-											<TextInput.Icon
-												onPress={togglePassword}
-												name={showPassword ? 'eye-off' : 'eye'}
-											/>
-										}
-									/>
-								)}
-								rules={{
-									required: {
-										value: true,
-										message: 'Password is required',
-									},
-									minLength: {
-										value: 8,
-										message: 'Password should be atleast 8 characters',
-									},
-								}}
-							/>
-							<HelperText type="error">{errors?.password?.message}</HelperText>
+								color="coolGray.600"
+								fontWeight="medium"
+								size="xs"
+							>
+								Sign in to continue!
+							</Heading>
 
-							<TouchableOpacity
-								onPress={handleSubmit(onSubmit)}
-								style={style.button}
-							>
-								{buttonLoading ? (
-									<ActivityIndicator color="#fff" size="small" />
-								) : (
-									<Text style={{ color: '#fff', fontSize: 18 }}>Sign in</Text>
-								)}
-							</TouchableOpacity>
-						</View>
-					</View>
-					<View
-						style={{
-							marginTop: 40,
-							marginBottom: Platform.OS === 'ios' ? 80 : 40,
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
-						<Image
-							style={{
-								width: Platform.OS === 'ios' ? 230 : 170,
-								height: Platform.OS === 'ios' ? 36 : 26,
-							}}
-							source={{
-								uri: 'https://res.cloudinary.com/lufumart-ecommerce/image/upload/q_auto/c_scale,w_499,h_78/v1649943020/lufumart-logo/Lufumart_Logo_owimai.png',
-							}}
-						/>
-					</View>
-				</View>
-			</ScrollView>
-		</TextInputAvoidingView>
+							<VStack space={3} mt="5">
+								<FormControl
+									isInvalid={errors?.email?.message ? true : false}
+									isRequired
+								>
+									<FormControl.Label>Your email address</FormControl.Label>
+									<Controller
+										control={control}
+										type="email"
+										name="email"
+										render={({ field: { onChange, value } }) => (
+											<Input
+												keyboardType="email-address"
+												size="lg"
+												placeholder="Enter email address"
+												value={value}
+												onChangeText={(value) => onChange(value)}
+											/>
+										)}
+										rules={{
+											required: {
+												value: true,
+												message: 'Email address is required',
+											},
+											pattern: {
+												value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+												message: 'Invalid email address',
+											},
+										}}
+									/>
+
+									<FormControl.ErrorMessage
+										leftIcon={<WarningOutlineIcon size="xs" />}
+									>
+										{errors?.email?.message}
+									</FormControl.ErrorMessage>
+								</FormControl>
+								<FormControl
+									isInvalid={errors?.password?.message ? true : false}
+									isRequired
+								>
+									<FormControl.Label>Password</FormControl.Label>
+									<Controller
+										control={control}
+										name="password"
+										render={({ field: { onChange, value } }) => (
+											<Input
+												type={showPassword ? 'text' : 'password'}
+												size="lg"
+												placeholder="Enter password"
+												value={value}
+												onChangeText={(value) => onChange(value)}
+												InputRightElement={
+													<Button
+														size="xs"
+														rounded="none"
+														h="full"
+														onPress={togglePassword}
+													>
+														{showPassword ? 'Hide' : 'Show'}
+													</Button>
+												}
+											/>
+										)}
+										rules={{
+											required: {
+												value: true,
+												message: 'Password is required',
+											},
+											minLength: {
+												value: 8,
+												message: 'Password should be atleast 8 characters',
+											},
+										}}
+									/>
+
+									<FormControl.ErrorMessage
+										leftIcon={<WarningOutlineIcon size="xs" />}
+									>
+										{errors?.password?.message}
+									</FormControl.ErrorMessage>
+
+									<TouchableOpacity
+										style={{ alignSelf: 'flex-end' }}
+										onPress={() =>
+											navigation.navigate('AuthScreenForgotPassword')
+										}
+									>
+										<Text
+											style={{
+												color: '#f68b1e',
+												fontSize: 12,
+												marginTop: 5,
+												fontWeight: '500',
+												textDecorationLine: 'underline',
+											}}
+										>
+											Forgot Password?
+										</Text>
+									</TouchableOpacity>
+								</FormControl>
+								<Button
+									mt="2"
+									colorScheme="green"
+									onPress={handleSubmit(onSubmit)}
+								>
+									{buttonLoading ? (
+										<>
+											<Spinner
+												color="white"
+												accessibilityLabel="Loading posts"
+											/>
+										</>
+									) : (
+										<Text style={{ color: '#fff', fontSize: 18 }}>Sign in</Text>
+									)}
+								</Button>
+								<HStack mt="6" justifyContent="center">
+									<Text
+										fontSize="sm"
+										color="coolGray.600"
+										_dark={{
+											color: 'warmGray.200',
+										}}
+									>
+										Don't have an account?{' '}
+									</Text>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('AuthScreenSignup')}
+									>
+										<Text
+											style={{
+												color: '#f68b1e',
+												fontWeight: '500',
+												textDecorationLine: 'underline',
+											}}
+										>
+											Sign Up
+										</Text>
+									</TouchableOpacity>
+								</HStack>
+							</VStack>
+						</Box>
+					</Center>
+				</Center>
+			</TextInputAvoidingView>
+		</NativeBaseProvider>
 	);
 };
 
 export default Login;
-
-const style = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fffff7',
-	},
-	button: {
-		width: '100%',
-		height: 60,
-		padding: 15,
-		marginVertical: 15,
-		backgroundColor: '#00ab55',
-		justifyContent: 'center',
-		alignItems: 'center',
-		borderRadius: 10,
-	},
-});

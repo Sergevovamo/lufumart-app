@@ -151,8 +151,6 @@ const Details = () => {
 						imageUrl,
 					} = product;
 
-					let dollarPrice = parseInt(salePrice) / 108;
-
 					let filteredCartItem = cartProducts?.filter((product) => {
 						return product._id === _id;
 					});
@@ -165,6 +163,30 @@ const Details = () => {
 					);
 					// console.log(filteredCartItem);
 
+					// const getDescriptionInFrench = async () => {
+					// 	try {
+					// 		const response = await fetch(
+					// 			'https://libretranslate.com/translate',
+					// 			{
+					// 				method: 'POST',
+					// 				body: JSON.stringify({
+					// 					q: `${description}`,
+					// 					source: 'en',
+					// 					target: 'fr',
+					// 					format: 'text',
+					// 				}),
+					// 				headers: { 'Content-Type': 'application/json' },
+					// 			}
+					// 		);
+					// 		const res = await response.json();
+					// 		console.log(res);
+					// 		//   return json.movies;
+					// 	} catch (error) {
+					// 		console.error(error);
+					// 	}
+					// };
+					// getDescriptionInFrench();
+
 					return (
 						<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
 							<ProductImage imageUrl={imageUrl} />
@@ -176,7 +198,7 @@ const Details = () => {
 								<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
 								<Text style={{ marginTop: 5 }}>Items In Stock: {quantity}</Text>
 								<Text style={styles.price}>
-									US ${numberWithCommas(dollarPrice.toFixed(2))}
+									US ${numberWithCommas(salePrice)}
 								</Text>
 								{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 								<Text style={styles.location}>
@@ -338,7 +360,7 @@ const Details = () => {
 										</View>
 										<Text>{description}</Text>
 										<Text style={{ marginTop: 30 }}>Size: {size}</Text>
-										<Text>Weight: {weight}</Text>
+										{/* <Text>Weight: {weight}</Text> */}
 									</View>
 								</View>
 							</View>
