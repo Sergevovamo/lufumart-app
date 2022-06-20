@@ -867,6 +867,19 @@ export const SettingsStackScreen = ({ navigation }) => {
 					),
 				}}
 			/>
+			<SettingsStack.Screen
+				name="AuthStackScreen"
+				component={AuthStackScreen}
+				options={{
+					headerShown: false,
+					// cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+					presentation: 'modal', // card
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
+				}}
+			/>
 		</SettingsStack.Navigator>
 	);
 };
