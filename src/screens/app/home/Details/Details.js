@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import * as Location from 'expo-location';
+import { GOOGLE_MAPS_APIKEY } from '@env';
 import { numberWithCommas } from '../../../../utils/NumberWithCommas';
 
 import {
@@ -39,7 +40,6 @@ import ProductImage from './ProductImage';
 // import RecentlyViewed from '../RecentlyViewed';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const GOOGLE_MAPS_APIKEY = 'AIzaSyDXX0iD2Ng5zfH0n0Fq4if3diqx8PG8A1s';
 
 const Details = () => {
 	const dispatch = useDispatch();
@@ -82,6 +82,11 @@ const Details = () => {
 			});
 	}, []);
 
+	useEffect(async () => {
+		await checkPermission();
+		await getLocation();
+	}, []);
+
 	// useEffect(() => {
 	// 	dispatch(getCartProducts());
 	// }, []);
@@ -106,14 +111,23 @@ const Details = () => {
 			if (!granted) return;
 			const {
 				coords: { latitude, longitude },
-			} = await Location.getCurrentPositionAsync();
+			} = await Location.watchPositionAsync(
+				{ accuracy: Location.Accuracy.High },
+				(loc) => {
+					const { latitude, longitude } = JSON.parse(
+						JSON.stringify(loc.coords)
+					);
+					// console.log(loc);
 
-			setPosition({
-				latitude: latitude,
-				longitude: longitude,
-				latitudeDelta: 0.008,
-				longitudeDelta: 0.008,
-			});
+					setPosition((prevState) => ({
+						...prevState,
+						latitude: latitude,
+						longitude: longitude,
+						latitudeDelta: 0.008,
+						longitudeDelta: 0.008,
+					}));
+				}
+			);
 		} catch (err) {}
 	};
 
@@ -122,11 +136,6 @@ const Details = () => {
 
 		_map.current.animateToRegion(searchedRegion, 3 * 1000);
 	};
-
-	useEffect(async () => {
-		await checkPermission();
-		await getLocation();
-	}, []);
 
 	return (
 		<>
@@ -447,12 +456,7 @@ const Details = () => {
 									provider={PROVIDER_GOOGLE}
 									style={styles.map}
 									// customMapStyle={mapStyle}
-									initialRegion={{
-										latitude: position.latitude,
-										longitude: position.longitude,
-										latitudeDelta: 0.008,
-										longitudeDelta: 0.008,
-									}}
+									region={position}
 									showsUserLocation={true}
 									followsUserLocation={true}
 								>
@@ -600,7 +604,7 @@ const styles = StyleSheet.create({
 		marginTop: 5,
 	},
 	map: {
-		height: Platform.OS === 'ios' ? 180 : 150,
+		height: Platform.OS === 'ios' ? 450 : 350,
 		marginVertical: 0,
 		width: SCREEN_WIDTH * 0.92,
 	},

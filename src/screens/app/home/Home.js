@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	Platform,
 	View,
 	Text,
+	Alert,
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
+import { openSettings } from 'expo-linking';
 import { useDispatch } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
 
@@ -19,6 +21,8 @@ import {
 	Feather,
 	AntDesign,
 } from '@expo/vector-icons';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 import Carousel from '../../../components/Carousel';
 
@@ -35,8 +39,100 @@ import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
+
 const Home = ({ navigation }) => {
 	const dispatch = useDispatch();
+	const responseListener = useRef();
+	const notificationListener = useRef();
+
+	const [expoPushToken, setExpoPushToken] = useState('');
+	const [notification, setNotification] = useState(false);
+
+	useEffect(() => {
+		registerForPushNotificationsAsync().then((token) =>
+			setExpoPushToken(token)
+		);
+
+		notificationListener.current =
+			Notifications.addNotificationReceivedListener((notification) => {
+				setNotification(notification);
+			});
+
+		responseListener.current =
+			Notifications.addNotificationResponseReceivedListener((response) => {
+				console.log(response);
+			});
+
+		return () => {
+			Notifications.removeNotificationSubscription(
+				notificationListener.current
+			);
+			Notifications.removeNotificationSubscription(responseListener.current);
+		};
+	}, []);
+
+	async function registerForPushNotificationsAsync() {
+		let token;
+		if (Device.isDevice) {
+			const { status: existingStatus } =
+				await Notifications.getPermissionsAsync();
+			let finalStatus = existingStatus;
+			if (existingStatus !== 'granted') {
+				const { status } = await Notifications.requestPermissionsAsync();
+				finalStatus = status;
+			}
+			if (finalStatus !== 'granted') {
+				// alert('Failed to get push token for push notification!');
+				Alert.alert(
+					'Error',
+					'Sorry, we need your permission to enable Push Notifications. Please enable it in your privacy settings.',
+					[
+						{
+							text: 'OK',
+						},
+						{
+							text: 'Open Settings',
+							onPress: async () => openSettings(),
+						},
+					]
+				);
+				return;
+			}
+			token = (await Notifications.getExpoPushTokenAsync()).data;
+			console.log(token);
+		} else {
+			alert('Must use physical device for Push Notifications');
+		}
+
+		if (Platform.OS === 'android') {
+			Notifications.setNotificationChannelAsync('default', {
+				name: 'default',
+				importance: Notifications.AndroidImportance.MAX,
+				vibrationPattern: [0, 250, 250, 250],
+				lightColor: '#FF231F7C',
+			});
+		}
+
+		return token;
+	}
+
+	async function schedulePushNotification() {
+		await Notifications.scheduleNotificationAsync({
+			content: {
+				title: 'Ready for the Big Sale!',
+				body: "Only 2-Hours for the Big Deals '📬'",
+				data: { data: 'Lufumart Online Store' },
+			},
+			trigger: { seconds: 5 },
+		});
+	}
 
 	const browseCategories = () => {
 		navigation.navigate('HomeCategoriesScreen');
@@ -47,7 +143,12 @@ const Home = ({ navigation }) => {
 			<StatusBar style="default" />
 			<ScrollView nestedScrollEnabled={true}>
 				<View style={styles.tabContainer}>
-					<TouchableOpacity style={styles.tab}>
+					<TouchableOpacity
+						onPress={async () => {
+							await schedulePushNotification();
+						}}
+						style={styles.tab}
+					>
 						<MaterialCommunityIcons
 							name="heart-outline"
 							size={24}
