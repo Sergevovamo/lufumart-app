@@ -1,7 +1,9 @@
 node_modules/
 .expo/
 .env
-keys.json
+app.json
+google-services.json
+service-account.json
 dist/
 npm-debug.*
 *.jks
