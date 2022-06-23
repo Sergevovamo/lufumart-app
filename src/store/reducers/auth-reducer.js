@@ -7,12 +7,14 @@ import {
 	LOGIN_FAIL,
 	LOGOUT_SUCCESS,
 	CURRENT_USER_ADDRESS,
+	CURRENT_PUSH_TOKEN,
 } from '../actions/types';
 
 const initialState = {
 	isAuthenticated: null,
 	currentUserAddress: null,
 	user: null,
+	expoPushToken: null,
 };
 
 export default function AuthReducer(state = initialState, action) {
@@ -41,6 +43,11 @@ export default function AuthReducer(state = initialState, action) {
 			return {
 				...state,
 				currentUserAddress: action.payload,
+			};
+		case CURRENT_PUSH_TOKEN:
+			return {
+				...state,
+				expoPushToken: action.payload,
 			};
 		case AUTH_ERROR:
 		case LOGIN_FAIL:

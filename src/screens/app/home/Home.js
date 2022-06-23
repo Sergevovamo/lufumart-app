@@ -38,6 +38,7 @@ import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
+import { currentPushToken } from '../../../store/actions/auth-actions';
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -51,14 +52,22 @@ const Home = ({ navigation }) => {
 	const dispatch = useDispatch();
 	const responseListener = useRef();
 	const notificationListener = useRef();
+	const mounted = useRef(false);
 
-	const [expoPushToken, setExpoPushToken] = useState('');
 	const [notification, setNotification] = useState(false);
 
 	useEffect(() => {
-		registerForPushNotificationsAsync().then((token) =>
-			setExpoPushToken(token)
-		);
+		// set a clean up flag
+		mounted.current = true;
+
+		registerForPushNotificationsAsync().then((token) => {
+			if (mounted.current) {
+				const payload = {
+					pushToken: token,
+				};
+				dispatch(currentPushToken(payload));
+			}
+		});
 
 		notificationListener.current =
 			Notifications.addNotificationReceivedListener((notification) => {
@@ -75,10 +84,12 @@ const Home = ({ navigation }) => {
 				notificationListener.current
 			);
 			Notifications.removeNotificationSubscription(responseListener.current);
+			// cancel subscription to useEffect
+			mounted.current = false;
 		};
 	}, []);
 
-	async function registerForPushNotificationsAsync() {
+	const registerForPushNotificationsAsync = async () => {
 		let token;
 		if (Device.isDevice) {
 			const { status: existingStatus } =
@@ -106,7 +117,7 @@ const Home = ({ navigation }) => {
 				return;
 			}
 			token = (await Notifications.getExpoPushTokenAsync()).data;
-			console.log(token);
+			// console.log(token);
 		} else {
 			alert('Must use physical device for Push Notifications');
 		}
@@ -121,7 +132,7 @@ const Home = ({ navigation }) => {
 		}
 
 		return token;
-	}
+	};
 
 	async function schedulePushNotification() {
 		await Notifications.scheduleNotificationAsync({

@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import {
+	ActivityIndicator,
+	StyleSheet,
+	Text,
+	View,
+	Button,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { auth } from '../store/actions/auth-actions';
 
@@ -9,6 +18,8 @@ import AppTabStack from './AppTabStack';
 import AuthScreenStack from './AuthScreenStack';
 
 const RootStack = () => {
+	const netinfo = useNetInfo();
+
 	// const dispatch = useDispatch();
 	// let authUser = useSelector((state) => state.auth.isAuthenticated);
 
@@ -26,6 +37,20 @@ const RootStack = () => {
 	// if (isLoading) {
 	// 	return <ActivityIndicator size="large" style={styles.loading} />;
 	// }
+	if (!netinfo.isConnected) {
+		return (
+			<>
+				<StatusBar style="default" />
+				<View
+					style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+				>
+					<MaterialIcons name="wifi-off" size={150} color="red" />
+					<Text>You have no internet connection</Text>
+					<Button title="Try again?" />
+				</View>
+			</>
+		);
+	}
 
 	return (
 		<NavigationContainer>

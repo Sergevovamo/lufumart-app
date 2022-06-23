@@ -910,13 +910,6 @@ export const SettingsStackScreen = ({ navigation }) => {
 };
 
 export const AuthStackScreen = ({ navigation }) => {
-	const dispatch = useDispatch();
-
-	// showTabbar
-	const displayTabbar = () => {
-		navigation.goBack();
-		dispatch(showTabbar());
-	};
 	return (
 		<AuthStack.Navigator>
 			<AuthStack.Screen
@@ -925,7 +918,7 @@ export const AuthStackScreen = ({ navigation }) => {
 				options={{
 					title: '',
 					headerLeft: () => (
-						<TouchableOpacity onPress={displayTabbar}>
+						<TouchableOpacity onPress={() => navigation.goBack()}>
 							<Ionicons
 								name="ios-close"
 								size={24}

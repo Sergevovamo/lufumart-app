@@ -21,7 +21,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
-import { hideTabbar } from '../../../store/actions/app-settings-actions';
+import {
+	hideTabbar,
+	showTabbar,
+} from '../../../store/actions/app-settings-actions';
 import SettingsAccount from './SettingsAccount';
 import Country from './Country';
 import SettingsSecurity from './SettingsSecurity';
@@ -32,6 +35,12 @@ const Settings = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	let authUser = useSelector((state) => state.auth.isAuthenticated);
+
+	useEffect(() => {
+		if (authUser) {
+			dispatch(showTabbar());
+		}
+	}, [authUser]);
 
 	const removeTabbar = () => {
 		navigation.navigate('AuthStackScreen');

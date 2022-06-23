@@ -8,6 +8,7 @@ import {
 	LOGIN_SUCCESS,
 	LOGOUT_SUCCESS,
 	CURRENT_USER_ADDRESS,
+	CURRENT_PUSH_TOKEN,
 } from './types';
 import {
 	returnErrors,
@@ -184,5 +185,41 @@ export const currentUserAddress = (payload) => async (dispatch) => {
 		});
 	} catch (error) {
 		console.log(error);
+	}
+};
+
+export const currentPushToken = (payload) => async (dispatch) => {
+	const authToken = await tokenConfig();
+	const { pushToken } = payload;
+
+	try {
+		// Request body
+		const body = JSON.stringify({ token: pushToken });
+
+		const response = await axios.put(
+			`${USERS_URL}/expo-push-token`,
+			body,
+			authToken
+		);
+		// console.log(response.data);
+		const { token } = await response.data;
+
+		dispatch({
+			type: CURRENT_PUSH_TOKEN,
+			payload: token,
+		});
+		Toast.show({
+			type: 'success',
+			text1: `Notifications activated successfully`,
+		});
+	} catch (error) {
+		// console.log(error.response.data);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'PUSH_TOKEN_FAIL'
+			)
+		);
 	}
 };
