@@ -1,5 +1,8 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import {
 	Ionicons,
 	SimpleLineIcons,
@@ -9,6 +12,14 @@ import {
 } from '@expo/vector-icons';
 
 const SettingsAccount = () => {
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+
+	const goToDeliveryScreen = () => {
+		navigation.navigate('SettingsDeliveryAddressScreen');
+		dispatch(hideTabbar());
+	};
+
 	return (
 		<View>
 			<Text style={{ fontSize: 20, fontWeight: 'bold', paddingTop: 5 }}>
@@ -36,6 +47,7 @@ const SettingsAccount = () => {
 			</View>
 			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
 				<TouchableOpacity
+					onPress={goToDeliveryScreen}
 					style={{
 						flexDirection: 'row',
 						alignItems: 'center',

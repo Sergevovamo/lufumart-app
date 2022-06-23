@@ -826,6 +826,14 @@ export const SavedStackScreen = ({ navigation }) => {
 };
 
 export const SettingsStackScreen = ({ navigation }) => {
+	const dispatch = useDispatch();
+
+	// showTabbar
+	const displayTabbarDelivery = () => {
+		navigation.navigate('SettingsScreen');
+		dispatch(showTabbar());
+	};
+
 	return (
 		<SettingsStack.Navigator>
 			<SettingsStack.Screen
@@ -847,6 +855,23 @@ export const SettingsStackScreen = ({ navigation }) => {
 						backgroundColor: '#f3f7ff',
 						opacity: 1,
 					},
+				}}
+			/>
+			<SettingsStack.Screen
+				name="SettingsDeliveryAddressScreen"
+				component={DeliveryAddress}
+				options={{
+					title: 'Delivery Address',
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbarDelivery}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
 				}}
 			/>
 			<SettingsStack.Screen
@@ -885,6 +910,13 @@ export const SettingsStackScreen = ({ navigation }) => {
 };
 
 export const AuthStackScreen = ({ navigation }) => {
+	const dispatch = useDispatch();
+
+	// showTabbar
+	const displayTabbar = () => {
+		navigation.goBack();
+		dispatch(showTabbar());
+	};
 	return (
 		<AuthStack.Navigator>
 			<AuthStack.Screen
@@ -893,10 +925,7 @@ export const AuthStackScreen = ({ navigation }) => {
 				options={{
 					title: '',
 					headerLeft: () => (
-						<TouchableOpacity
-							// onPress={() => navigation.navigate('HomeAuthStackScreen')}
-							onPress={() => navigation.goBack()}
-						>
+						<TouchableOpacity onPress={displayTabbar}>
 							<Ionicons
 								name="ios-close"
 								size={24}

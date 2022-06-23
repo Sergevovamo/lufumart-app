@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, FlatList, StyleSheet, Dimensions, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Location from 'expo-location';
+import { GOOGLE_MAPS_APIKEY } from '@env';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const GOOGLE_MAPS_APIKEY = 'AIzaSyDXX0iD2Ng5zfH0n0Fq4if3diqx8PG8A1s';
 
 import { currentUserAddress } from '../../../store/actions/auth-actions';
 
@@ -43,14 +43,23 @@ const DeliveryAddress = () => {
 			if (!granted) return;
 			const {
 				coords: { latitude, longitude },
-			} = await Location.getCurrentPositionAsync();
+			} = await Location.watchPositionAsync(
+				{ accuracy: Location.Accuracy.High },
+				(loc) => {
+					const { latitude, longitude } = JSON.parse(
+						JSON.stringify(loc.coords)
+					);
+					// console.log(loc);
 
-			setPosition({
-				latitude: latitude,
-				longitude: longitude,
-				latitudeDelta: 0.008,
-				longitudeDelta: 0.008,
-			});
+					setPosition((prevState) => ({
+						...prevState,
+						latitude: latitude,
+						longitude: longitude,
+						latitudeDelta: 0.008,
+						longitudeDelta: 0.008,
+					}));
+				}
+			);
 		} catch (err) {}
 	};
 
@@ -135,7 +144,7 @@ const DeliveryAddress = () => {
 									ref={_map}
 									provider={PROVIDER_GOOGLE}
 									style={styles.map}
-									initialRegion={{
+									region={{
 										latitude: position.latitude,
 										longitude: position.longitude,
 										latitudeDelta: 0.008,

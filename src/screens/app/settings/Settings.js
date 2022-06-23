@@ -21,6 +21,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import SettingsAccount from './SettingsAccount';
 import Country from './Country';
 import SettingsSecurity from './SettingsSecurity';
@@ -28,8 +29,14 @@ import HelpCenter from './HelpCenter';
 import Logout from './Logout';
 
 const Settings = () => {
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	let authUser = useSelector((state) => state.auth.isAuthenticated);
+
+	const removeTabbar = () => {
+		navigation.navigate('AuthStackScreen');
+		dispatch(hideTabbar());
+	};
 
 	return (
 		<FlatList
@@ -41,83 +48,81 @@ const Settings = () => {
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item: data }) => (
 				<NativeBaseProvider>
-					<TextInputAvoidingView>
-						<Center w="100%">
-							<Box
-								style={{
-									backgroundColor: '#fff',
-									borderRadius: 20,
-									paddingHorizontal: 20,
-								}}
-								safeArea
-								py="8"
-								w="95%"
-								maxW="350"
-							>
-								{authUser ? (
-									<SettingsAccount />
-								) : (
-									<>
-										<Text>Login to your account or register a new one!</Text>
-										<Button
-											mt="2"
-											colorScheme="green"
-											// onPress={handleSubmit(onSubmit)}
-											onPress={() => navigation.navigate('AuthStackScreen')}
-										>
-											<Text style={{ color: '#fff', fontSize: 15 }}>
-												Login or Register
-											</Text>
-										</Button>
-									</>
-								)}
-							</Box>
-							<Box
-								style={{
-									marginTop: 20,
-									backgroundColor: '#fff',
-									borderRadius: 20,
-									paddingHorizontal: 20,
-								}}
-								safeArea
-								py="8"
-								w="95%"
-								maxW="350"
-							>
-								<Country />
-							</Box>
-							<Box
-								style={{
-									marginTop: 20,
-									backgroundColor: '#fff',
-									borderRadius: 20,
-									paddingHorizontal: 20,
-								}}
-								safeArea
-								py="8"
-								w="95%"
-								maxW="350"
-							>
-								<HelpCenter />
-							</Box>
-							{authUser && (
-								<Box
-									style={{
-										marginTop: 20,
-										backgroundColor: '#fff',
-										borderRadius: 20,
-										paddingHorizontal: 20,
-									}}
-									safeArea
-									py="8"
-									w="95%"
-									maxW="350"
-								>
-									<Logout />
-								</Box>
+					<Center w="100%">
+						<Box
+							style={{
+								backgroundColor: '#fff',
+								borderRadius: 20,
+								paddingHorizontal: 20,
+							}}
+							safeArea
+							py="8"
+							w="95%"
+							maxW="350"
+						>
+							{authUser ? (
+								<SettingsAccount />
+							) : (
+								<>
+									<Text>Login to your account or register a new one!</Text>
+									<Button
+										mt="2"
+										colorScheme="green"
+										// onPress={handleSubmit(onSubmit)}
+										onPress={removeTabbar}
+									>
+										<Text style={{ color: '#fff', fontSize: 15 }}>
+											Login or Register
+										</Text>
+									</Button>
+								</>
 							)}
-						</Center>
-					</TextInputAvoidingView>
+						</Box>
+						<Box
+							style={{
+								marginTop: 20,
+								backgroundColor: '#fff',
+								borderRadius: 20,
+								paddingHorizontal: 20,
+							}}
+							safeArea
+							py="8"
+							w="95%"
+							maxW="350"
+						>
+							<Country />
+						</Box>
+						<Box
+							style={{
+								marginTop: 20,
+								backgroundColor: '#fff',
+								borderRadius: 20,
+								paddingHorizontal: 20,
+							}}
+							safeArea
+							py="8"
+							w="95%"
+							maxW="350"
+						>
+							<HelpCenter />
+						</Box>
+						{authUser && (
+							<Box
+								style={{
+									marginTop: 20,
+									backgroundColor: '#fff',
+									borderRadius: 20,
+									paddingHorizontal: 20,
+								}}
+								safeArea
+								py="8"
+								w="95%"
+								maxW="350"
+							>
+								<Logout />
+							</Box>
+						)}
+					</Center>
 				</NativeBaseProvider>
 			)}
 		/>
