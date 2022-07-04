@@ -23,6 +23,7 @@ const { height } = Dimensions.get('screen');
 import { checkOutOrder } from '../../../store/actions/order-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
+import { auth } from '../../../store/actions/auth-actions';
 import { showTabbar } from '../../../store/actions/app-settings-actions';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 
@@ -89,6 +90,7 @@ const Checkout = () => {
 				deliveryAddress: currentUserAddress,
 			};
 			await dispatch(checkOutOrder(data));
+			dispatch(auth());
 			setButtonLoading(false);
 			actionSheetRef.current?.setModalVisible();
 		} else {

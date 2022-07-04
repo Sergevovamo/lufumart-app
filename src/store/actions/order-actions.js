@@ -29,11 +29,11 @@ export const calculateShippingFee = () => async (dispatch) => {
 			payload: data?.shippingFee,
 		});
 	} catch (error) {
-		console.log(error.response.data);
-		Toast.show({
-			type: 'error',
-			text1: 'Error! Something went wrong.',
-			text2: `${error.response.data.message}`,
+		// console.log(error.response.data);
+		let shippingFee = 0;
+		await dispatch({
+			type: CALCULATE_SHIPPING_COST,
+			payload: shippingFee,
 		});
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')

@@ -30,10 +30,8 @@ import {
 	getCartProducts,
 	decreaseCartProductQuantity,
 } from '../../../../store/actions/product-actions';
-import {
-	auth,
-	currentUserAddress,
-} from '../../../../store/actions/auth-actions';
+import { calculateShippingFee } from '../../../../store/actions/order-actions';
+import { currentUserAddress } from '../../../../store/actions/auth-actions';
 import { mapStyle } from './MapStyle';
 
 import ProductImage from './ProductImage';
@@ -59,28 +57,45 @@ const Details = () => {
 	});
 
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+
+	let userAddress = useSelector((state) => state.auth.currentUserAddress);
+
 	const product = useSelector((state) => state.products?.product);
+
 	const cartProducts = useSelector(
 		(state) => state.products?.cartDetails?.cartProducts
 	);
+
 	const cartProductQuantity = useSelector(
 		(state) => state.products?.cartDetails?.cartProductQuantity
 	);
+
+	const shippingFee = useSelector((state) => state.order?.shippingFee);
 	const productLoading = useSelector((state) => state.products?.isLoading);
 
 	useEffect(() => {
+		let isMounted = true;
 		fetch('https://assets7.lottiefiles.com/packages/lf20_rwq6ciql.json', {
 			method: 'GET',
 		})
 			.then((response) => response.json())
 			.then((responseData) => {
-				// console.log(responseData);
-				setLottieAnim(responseData);
+				if (isMounted) {
+					setLottieAnim(responseData);
+				}
 			})
 			.catch((error) => {
 				console.log(error);
 			});
+
+		return () => {
+			isMounted = false;
+		};
 	}, []);
+
+	useEffect(() => {
+		dispatch(calculateShippingFee());
+	}, [cartProducts]);
 
 	useEffect(async () => {
 		await checkPermission();
@@ -207,11 +222,14 @@ const Details = () => {
 								<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
 								<Text style={{ marginTop: 5 }}>Items In Stock: {quantity}</Text>
 								<Text style={styles.price}>
-									US ${numberWithCommas(salePrice)}
+									US ${numberWithCommas(salePrice.toFixed(2))}
 								</Text>
 								{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 								<Text style={styles.location}>
-									+ shipping from KSh 96 to Dagoretti South - Ngand'o/Riruta
+									+ shipping from USD ${shippingFee} to{' '}
+									{userAddress?.description
+										? userAddress?.description
+										: 'your location of choice'}
 								</Text>
 								{filteredCartItem?.length > 0 ? (
 									<View
@@ -456,7 +474,12 @@ const Details = () => {
 									provider={PROVIDER_GOOGLE}
 									style={styles.map}
 									// customMapStyle={mapStyle}
-									region={position}
+									region={{
+										latitude: position.latitude,
+										longitude: position.longitude,
+										latitudeDelta: 0.008,
+										longitudeDelta: 0.008,
+									}}
 									showsUserLocation={true}
 									followsUserLocation={true}
 								>
