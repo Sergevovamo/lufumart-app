@@ -25,6 +25,7 @@ import {
 	removeProductToCart,
 	decreaseCartProductQuantity,
 } from '../../../store/actions/product-actions';
+import { calculateShippingFee } from '../../../store/actions/order-actions';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -45,8 +46,16 @@ const Cart = () => {
 		(state) => state.products?.cartDetails?.cartProductQuantity
 	);
 
+	const shippingFee = useSelector((state) => state.order?.shippingFee);
+
 	useEffect(() => {
 		dispatch(getCartProducts());
+	}, []);
+
+	useEffect(() => {
+		if (cartProducts?.length > 0) {
+			dispatch(calculateShippingFee());
+		}
 	}, []);
 
 	const viewedProduct = (product) => {
@@ -63,14 +72,13 @@ const Cart = () => {
 			<View style={styles.container}>
 				{cartProducts?.length > 0 ? (
 					cartProducts?.map((item, index) => {
-						const { _id, name, price, salePrice, imageUrl } = item;
+						const { _id, name, salePrice, imageUrl } = item;
 
 						let filteredCartItemQuantity = cartProductQuantity?.filter(
 							(product) => {
 								return product.productId === _id;
 							}
 						);
-						let dollarPrice = parseInt(salePrice) / 108;
 
 						return (
 							<View key={index} style={styles.productContainer}>
@@ -87,7 +95,7 @@ const Cart = () => {
 									<View>
 										<Text>{name}</Text>
 										<Text style={{ marginTop: 5, fontWeight: 'bold' }}>
-											US ${numberWithCommas(dollarPrice.toFixed(2))}
+											US ${numberWithCommas(salePrice.toFixed(2))}
 										</Text>
 									</View>
 									<View
@@ -155,20 +163,29 @@ const Cart = () => {
 				</TouchableOpacity>
 				<View style={styles.productTotal}>
 					<View style={styles.productTotalContainer}>
-						<Text style={{ fontWeight: 'bold' }}>Sub Total</Text>
-						<Text style={{ fontWeight: 'bold' }}>
-							Ksh.{' '}
+						<Text>Sub Total</Text>
+						<Text>
+							USD $
 							{cartProductTotal?.subTotal
-								? numberWithCommas(parseInt(cartProductTotal?.subTotal))
+								? numberWithCommas(parseFloat(cartProductTotal?.subTotal))
 								: 0}
 						</Text>
 					</View>
 					<View style={styles.productTotalContainer}>
 						<Text style={{ color: 'gray' }}>VAT</Text>
 						<Text style={{ color: 'gray' }}>
-							Ksh.{' '}
+							USD $
 							{cartProductTotal?.vat
-								? numberWithCommas(parseInt(cartProductTotal?.vat))
+								? numberWithCommas(parseFloat(cartProductTotal?.vat))
+								: 0}
+						</Text>
+					</View>
+					<View style={styles.productTotalContainer}>
+						<Text style={{ color: 'gray' }}>Shipping Fee</Text>
+						<Text style={{ color: 'gray' }}>
+							USD $
+							{cartProductTotal?.vat
+								? numberWithCommas(parseFloat(shippingFee))
 								: 0}
 						</Text>
 					</View>
@@ -181,11 +198,11 @@ const Cart = () => {
 						}}
 					/>
 					<View style={styles.productTotalContainer}>
-						<Text>Total</Text>
-						<Text>
-							Ksh.{' '}
+						<Text style={{ fontWeight: 'bold' }}>Total</Text>
+						<Text style={{ fontWeight: 'bold' }}>
+							USD $
 							{cartProductTotal?.total
-								? numberWithCommas(parseInt(cartProductTotal?.total))
+								? numberWithCommas(parseFloat(cartProductTotal?.total))
 								: 0}
 						</Text>
 					</View>
@@ -275,7 +292,8 @@ const styles = StyleSheet.create({
 		width: '90%',
 		height: 60,
 		padding: 15,
-		marginVertical: 15,
+
+		marginVertical: 35,
 		backgroundColor: '#00ab55',
 		justifyContent: 'center',
 		alignItems: 'center',

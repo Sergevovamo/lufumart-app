@@ -88,7 +88,7 @@ export const registerUser = (payload) => async (dispatch) => {
 			password,
 			password_confirmation: password,
 		});
-		console.log(body);
+		// console.log(body);
 
 		const response = await axios.post(`${USERS_URL}/signup`, body, config);
 

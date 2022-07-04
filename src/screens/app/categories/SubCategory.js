@@ -65,7 +65,7 @@ const SubCategory = () => {
 	}, [productSubCategories]);
 
 	useEffect(() => {
-		fetch('https://assets7.lottiefiles.com/packages/lf20_rwq6ciql.json', {
+		fetch('https://assets10.lottiefiles.com/packages/lf20_vrahjepy.json', {
 			method: 'GET',
 		})
 			.then((response) => response.json())
@@ -213,7 +213,7 @@ export default SubCategory;
 
 const styles = StyleSheet.create({
 	loading: {
-		width: '15%',
+		width: '25%',
 	},
 	container: {
 		marginTop: 10,

@@ -44,6 +44,9 @@ export const REMOVE_PRODUCT_TO_CART = 'remove_product_to_cart';
 export const DECREASE_PRODUCT_TO_CART = 'decrease_product_to_cart';
 export const CALCULATE_TOTAL = 'calculate_total';
 
+export const CHECK_OUT_ORDER = 'check_out_order';
+export const CALCULATE_SHIPPING_COST = 'calculate_shipping_cost';
+
 // App Settings
 export const SHOW_TABBAR = 'show_tabbar';
 export const HIDE_TABBAR = 'hide_tabbar';
