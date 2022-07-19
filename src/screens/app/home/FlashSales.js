@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
 	View,
 	Text,
@@ -23,11 +23,22 @@ import { hideTabbar } from '../../../store/actions/app-settings-actions';
 const FlashSales = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const mounted = useRef(false);
 
 	const products = useSelector((state) => state.products?.products);
 
 	useEffect(() => {
-		dispatch(getProducts());
+		// set a clean up flag
+		mounted.current = true;
+
+		if (mounted.current) {
+			dispatch(getProducts());
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
 	}, []);
 
 	const viewedProduct = (product) => {

@@ -20,7 +20,7 @@ import {
 	NativeBaseProvider,
 } from 'native-base';
 import { useForm, Controller } from 'react-hook-form';
-import { registerUser } from '../../../store/actions/auth-actions';
+import { updateUserInfo } from '../../../store/actions/auth-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
@@ -28,6 +28,8 @@ import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
 const Profile = ({ navigation }) => {
 	const dispatch = useDispatch();
 	let error = useSelector((state) => state.error);
+	let currentUser = useSelector((state) => state.auth.user?.current_user);
+	// console.log(currentUser);
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
@@ -35,7 +37,7 @@ const Profile = ({ navigation }) => {
 	const {
 		control,
 		handleSubmit,
-		getValues,
+		reset,
 		formState: { errors },
 	} = useForm({ mode: 'onBlur' });
 
@@ -44,19 +46,27 @@ const Profile = ({ navigation }) => {
 	};
 
 	const onSubmit = async (data) => {
-		// Attempt to authenticate user
+		// Attempt to update userInfo
 
 		setButtonLoading(true);
-		await dispatch(registerUser(data));
+		await dispatch(updateUserInfo(data));
 	};
 
 	useEffect(() => {
+		reset({
+			name: currentUser?.name,
+			email: currentUser?.email,
+			phone: `0${currentUser?.phone.toString()}`,
+		});
+	}, []);
+
+	useEffect(() => {
 		// Check for register error
-		if (error.id === 'REGISTER_FAIL') {
+		if (error.id === 'UPDATE_USER') {
 			setButtonLoading(false);
 			Toast.show({
 				type: 'error',
-				text1: 'An account with given email already exists!',
+				text1: 'An error occured during account update',
 				text2: 'Oops, something went wrong',
 			});
 			dispatch(clearErrors());
@@ -69,14 +79,21 @@ const Profile = ({ navigation }) => {
 		<FlatList
 			data={data}
 			keyExtractor={(item, index) => `${item}-${index}`}
-			style={{ flexGrow: 0 }}
+			style={{ flexGrow: 1 }}
 			keyboardShouldPersistTaps="handled"
 			contentContainerStyle={{ padding: 5 }}
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item: data }) => (
 				<NativeBaseProvider>
 					<TextInputAvoidingView>
-						<Center px="3">
+						<Center
+							px="3"
+							style={{
+								backgroundColor: '#fff',
+								borderRadius: 20,
+								paddingHorizontal: 20,
+							}}
+						>
 							<Center w="100%">
 								<Box safeArea p="2" py="8" w="90%" maxW="290">
 									<Heading
@@ -87,7 +104,7 @@ const Profile = ({ navigation }) => {
 											color: 'warmGray.50',
 										}}
 									>
-										We're glad to have you
+										Your Details
 									</Heading>
 									<Heading
 										mt="1"
@@ -98,7 +115,8 @@ const Profile = ({ navigation }) => {
 										fontWeight="medium"
 										size="xs"
 									>
-										Sign up to continue!
+										You can edit your personal details here. When you're done,
+										tap "Save"
 									</Heading>
 
 									<VStack space={3} mt="5">
@@ -112,7 +130,6 @@ const Profile = ({ navigation }) => {
 												name="name"
 												render={({ field: { onChange, value } }) => (
 													<Input
-														keyboardType="email-address"
 														size="lg"
 														placeholder="Enter name"
 														value={value}
@@ -207,106 +224,6 @@ const Profile = ({ navigation }) => {
 											</FormControl.ErrorMessage>
 										</FormControl>
 
-										<FormControl
-											isInvalid={errors?.gender?.message ? true : false}
-											isRequired
-										>
-											<FormControl.Label>Choose your gender</FormControl.Label>
-
-											<Controller
-												control={control}
-												name="gender"
-												render={({ field: { onChange, value, onBlur } }) => (
-													<Select
-														value={value}
-														onValueChange={(value) => onChange(value)}
-														accessibilityLabel="Choose your Gender"
-														placeholder="Choose gender"
-														_selectedItem={{
-															bg: 'teal.600',
-															endIcon: <CheckIcon size={5} />,
-														}}
-														mt="1"
-													>
-														<Select.Item label="Male" value="Male" />
-														<Select.Item label="Female" value="Female" />
-														<Select.Item
-															label="Rather not say"
-															value="Rather not say"
-														/>
-													</Select>
-												)}
-												rules={{
-													required: {
-														value: true,
-														message: 'Please make a selection!',
-													},
-												}}
-											/>
-											<FormControl.ErrorMessage
-												leftIcon={<WarningOutlineIcon size="xs" />}
-											>
-												{errors?.gender?.message}
-											</FormControl.ErrorMessage>
-										</FormControl>
-										<FormControl
-											isInvalid={errors?.password?.message ? true : false}
-											isRequired
-										>
-											<FormControl.Label>Password</FormControl.Label>
-											<Controller
-												control={control}
-												name="password"
-												render={({ field: { onChange, value } }) => (
-													<Input
-														type={showPassword ? 'text' : 'password'}
-														size="lg"
-														placeholder="Enter password"
-														value={value}
-														onChangeText={(value) => onChange(value)}
-														InputRightElement={
-															<Button
-																size="xs"
-																rounded="none"
-																h="full"
-																onPress={togglePassword}
-															>
-																{showPassword ? 'Hide' : 'Show'}
-															</Button>
-														}
-													/>
-												)}
-												rules={{
-													required: {
-														value: true,
-														message: 'Password is required',
-													},
-													minLength: {
-														value: 8,
-														message: 'Password should be atleast 8 characters',
-													},
-												}}
-											/>
-
-											<FormControl.ErrorMessage
-												leftIcon={<WarningOutlineIcon size="xs" />}
-											>
-												{errors?.password?.message}
-											</FormControl.ErrorMessage>
-
-											<Link
-												href="https://docs.google.com/document/d/1zyycAX15prrhTrIR5H-g3nUVEOUgTvvyQzZwIoHQSSg/edit?usp=sharing"
-												_text={{
-													fontSize: 'xs',
-													fontWeight: '500',
-													color: 'orange.500',
-												}}
-												alignSelf="flex-end"
-												mt="1"
-											>
-												Privacy Policy
-											</Link>
-										</FormControl>
 										<Button
 											mt="2"
 											colorScheme="green"
@@ -321,34 +238,10 @@ const Profile = ({ navigation }) => {
 												</>
 											) : (
 												<Text style={{ color: '#fff', fontSize: 18 }}>
-													Sign up
+													Save
 												</Text>
 											)}
 										</Button>
-										<HStack mt="6" justifyContent="center">
-											<Text
-												fontSize="sm"
-												color="coolGray.600"
-												_dark={{
-													color: 'warmGray.200',
-												}}
-											>
-												Already have an account?{' '}
-											</Text>
-											<TouchableOpacity
-												onPress={() => navigation.navigate('AuthScreen')}
-											>
-												<Text
-													style={{
-														color: '#f68b1e',
-														fontWeight: '500',
-														textDecorationLine: 'underline',
-													}}
-												>
-													Sign in
-												</Text>
-											</TouchableOpacity>
-										</HStack>
 									</VStack>
 								</Box>
 							</Center>

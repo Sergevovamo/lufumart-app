@@ -43,6 +43,7 @@ const Details = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const route = useRoute();
+	const mounted = useRef(false);
 	// console.log(route.name);
 
 	const _map = useRef(null);
@@ -94,12 +95,60 @@ const Details = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(calculateShippingFee());
+		let isMounted = true;
+
+		if (isMounted) {
+			dispatch(calculateShippingFee());
+		}
+
+		return () => {
+			isMounted = false;
+		};
 	}, [cartProducts]);
 
 	useEffect(async () => {
+		// set a clean up flag
+		mounted.current = true;
+
 		await checkPermission();
+
+		const getLocation = async () => {
+			mounted.current = true;
+			try {
+				const { granted } = await Location.requestForegroundPermissionsAsync();
+				if (!granted) return;
+				if (mounted.current) {
+					const {
+						coords: { latitude, longitude },
+					} = await Location.watchPositionAsync(
+						{ accuracy: Location.Accuracy.High },
+						(loc) => {
+							const { latitude, longitude } = JSON.parse(
+								JSON.stringify(loc.coords)
+							);
+							// console.log(loc);
+
+							if (mounted.current) {
+								setPosition((prevState) => ({
+									...prevState,
+									latitude: latitude,
+									longitude: longitude,
+									latitudeDelta: 0.008,
+									longitudeDelta: 0.008,
+								}));
+							}
+						}
+					);
+				}
+			} catch (err) {}
+		};
+
 		await getLocation();
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
 	}, []);
 
 	// useEffect(() => {
@@ -118,32 +167,6 @@ const Details = () => {
 	const askPermission = async () => {
 		const permission = await Location.requestForegroundPermissionsAsync();
 		return permission.status === 'granted';
-	};
-
-	const getLocation = async () => {
-		try {
-			const { granted } = await Location.requestForegroundPermissionsAsync();
-			if (!granted) return;
-			const {
-				coords: { latitude, longitude },
-			} = await Location.watchPositionAsync(
-				{ accuracy: Location.Accuracy.High },
-				(loc) => {
-					const { latitude, longitude } = JSON.parse(
-						JSON.stringify(loc.coords)
-					);
-					// console.log(loc);
-
-					setPosition((prevState) => ({
-						...prevState,
-						latitude: latitude,
-						longitude: longitude,
-						latitudeDelta: 0.008,
-						longitudeDelta: 0.008,
-					}));
-				}
-			);
-		} catch (err) {}
 	};
 
 	const goSearchedRegion = (searchedRegion) => {
@@ -173,6 +196,7 @@ const Details = () => {
 						price,
 						description,
 						imageUrl,
+						owner,
 					} = product;
 
 					let filteredCartItem = cartProducts?.filter((product) => {
@@ -226,7 +250,8 @@ const Details = () => {
 								</Text>
 								{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 								<Text style={styles.location}>
-									+ shipping from USD ${shippingFee} to{' '}
+									+ shipping fee of USD ${shippingFee ? shippingFee : 0} from{' '}
+									{owner?.name} to{' '}
 									{userAddress?.description
 										? userAddress?.description
 										: 'your location of choice'}
@@ -370,7 +395,7 @@ const Details = () => {
 									<View style={[styles.promotionDetail, { marginTop: 5 }]}>
 										<AntDesign name="Safety" size={24} color="black" />
 										<Text style={styles.promotionText}>
-											Easy and safer payments via the Lufumart App
+											Easy and safer payments via MaxiCash
 										</Text>
 									</View>
 								</View>

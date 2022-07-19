@@ -14,7 +14,7 @@ import LottieView from 'lottie-react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import Toast from 'react-native-toast-message';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 
@@ -32,6 +32,7 @@ const actionSheetRef = createRef();
 const sheet_height = height * 0.5;
 
 const Checkout = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	let error = useSelector((state) => state.error);
@@ -122,6 +123,14 @@ const Checkout = () => {
 		dispatch(showTabbar());
 	};
 
+	const goToDeliveryScreen = () => {
+		if (route.name === 'CategoriesCheckoutScreen') {
+			navigation.navigate('CategoriesDeliveryAddressScreen');
+		} else {
+			navigation.navigate('DeliveryAddressScreen');
+		}
+	};
+
 	return (
 		<>
 			<ActionSheet
@@ -184,7 +193,7 @@ const Checkout = () => {
 							</View>
 							<TouchableOpacity
 								style={styles.locationWrapper}
-								onPress={() => navigation.navigate('DeliveryAddressScreen')}
+								onPress={goToDeliveryScreen}
 							>
 								<View>
 									<Text numberOfLines={2}>

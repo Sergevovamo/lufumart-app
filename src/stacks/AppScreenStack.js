@@ -1,5 +1,5 @@
-import { View, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -24,7 +24,12 @@ import {
 import { Categories, ProductList } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
 import { LikedItems } from '../screens/app/saved';
-import { Settings } from '../screens/app/settings';
+import {
+	Settings,
+	Profile,
+	Orders,
+	ChangePassword,
+} from '../screens/app/settings';
 import {
 	Cart,
 	Checkout,
@@ -514,7 +519,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<CategoriesStack.Screen
-				name="CheckoutScreen"
+				name="CategoriesCheckoutScreen"
 				component={Checkout}
 				options={{
 					title: 'Checkout',
@@ -533,13 +538,13 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<CategoriesStack.Screen
-				name="DeliveryAddressScreen"
+				name="CategoriesDeliveryAddressScreen"
 				component={DeliveryAddress}
 				options={{
 					title: 'Delivery Address',
 					headerLeft: () => (
 						<TouchableOpacity
-							onPress={() => navigation.navigate('CheckoutScreen')}
+							onPress={() => navigation.navigate('CategoriesCheckoutScreen')}
 						>
 							<Ionicons
 								name="arrow-back"
@@ -730,7 +735,7 @@ export const FeedStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<FeedStack.Screen
-				name="CheckoutScreen"
+				name="FeedCheckoutScreen"
 				component={Checkout}
 				options={{
 					title: 'Checkout',
@@ -829,7 +834,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
 
 	// showTabbar
-	const displayTabbarDelivery = () => {
+	const displayTabbarSettings = () => {
 		navigation.navigate('SettingsScreen');
 		dispatch(showTabbar());
 	};
@@ -863,7 +868,58 @@ export const SettingsStackScreen = ({ navigation }) => {
 				options={{
 					title: 'Delivery Address',
 					headerLeft: () => (
-						<TouchableOpacity onPress={displayTabbarDelivery}>
+						<TouchableOpacity onPress={displayTabbarSettings}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<SettingsStack.Screen
+				name="SettingsProfileScreen"
+				component={Profile}
+				options={{
+					title: 'Profile',
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbarSettings}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<SettingsStack.Screen
+				name="SettingsChangePasswordScreen"
+				component={ChangePassword}
+				options={{
+					title: 'Change Password',
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbarSettings}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<SettingsStack.Screen
+				name="SettingsOrdersScreen"
+				component={Orders}
+				options={{
+					title: 'Your Orders',
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons
 								name="arrow-back"
 								size={24}

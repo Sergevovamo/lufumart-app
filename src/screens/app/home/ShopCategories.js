@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
 	View,
 	Text,
@@ -15,13 +15,24 @@ import { getProductHomeCategories } from '../../../store/actions/product-actions
 const ShopCategories = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const mounted = useRef(false);
 
 	const productCategories = useSelector(
 		(state) => state.products?.productHomeCategories
 	);
 
 	useEffect(() => {
-		dispatch(getProductHomeCategories());
+		// set a clean up flag
+		mounted.current = true;
+
+		if (mounted.current) {
+			dispatch(getProductHomeCategories());
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
 	}, []);
 	return (
 		<View style={styles.container}>

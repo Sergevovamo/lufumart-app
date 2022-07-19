@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import {
-	PRODUCT_LOADING,
+	ORDER_LOADING,
+	GET_CUSTOMER_ORDERS,
 	CHECK_OUT_ORDER,
 	CALCULATE_SHIPPING_COST,
 } from './types';
@@ -14,7 +15,7 @@ export const calculateShippingFee = () => async (dispatch) => {
 	const token = await tokenConfig();
 	try {
 		await dispatch({
-			type: PRODUCT_LOADING,
+			type: ORDER_LOADING,
 		});
 
 		const response = await axios.get(
@@ -52,7 +53,7 @@ export const checkOutOrder = (payload) => async (dispatch) => {
 		});
 
 		await dispatch({
-			type: PRODUCT_LOADING,
+			type: ORDER_LOADING,
 		});
 
 		const response = await axios.post(`${ORDER_SERVER}/create`, body, token);
@@ -71,6 +72,38 @@ export const checkOutOrder = (payload) => async (dispatch) => {
 		});
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'CHECKOUT_ORDER')
+		);
+	}
+};
+
+export const getCustomerOrders = () => async (dispatch) => {
+	const token = await tokenConfig();
+
+	try {
+		await dispatch({
+			type: ORDER_LOADING,
+		});
+
+		const response = await axios.get(`${ORDER_SERVER}/customer-orders`, token);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_CUSTOMER_ORDERS,
+			payload: data,
+		});
+	} catch (error) {
+		console.log(error.response);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching customer orders.`,
+		});
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'GET_CUSTOMER_ORDERS'
+			)
 		);
 	}
 };

@@ -15,6 +15,7 @@ const DeliveryAddress = () => {
 	const dispatch = useDispatch();
 	const _map = useRef(null);
 	const textInput = useRef(3);
+	const mounted = useRef(false);
 
 	const [position, setPosition] = useState({
 		latitude: -4.3758745,
@@ -22,6 +23,19 @@ const DeliveryAddress = () => {
 		latitudeDelta: 0.008,
 		longitudeDelta: 0.008,
 	});
+
+	useEffect(async () => {
+		// set a clean up flag
+		mounted.current = true;
+
+		await checkPermission();
+		await getLocation();
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, []);
 
 	const checkPermission = async () => {
 		const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -38,6 +52,7 @@ const DeliveryAddress = () => {
 	};
 
 	const getLocation = async () => {
+		mounted.current = true;
 		try {
 			const { granted } = await Location.requestForegroundPermissionsAsync();
 			if (!granted) return;
@@ -50,14 +65,15 @@ const DeliveryAddress = () => {
 						JSON.stringify(loc.coords)
 					);
 					// console.log(loc);
-
-					setPosition((prevState) => ({
-						...prevState,
-						latitude: latitude,
-						longitude: longitude,
-						latitudeDelta: 0.008,
-						longitudeDelta: 0.008,
-					}));
+					if (mounted.current) {
+						setPosition((prevState) => ({
+							...prevState,
+							latitude: latitude,
+							longitude: longitude,
+							latitudeDelta: 0.008,
+							longitudeDelta: 0.008,
+						}));
+					}
 				}
 			);
 		} catch (err) {}
@@ -68,11 +84,6 @@ const DeliveryAddress = () => {
 
 		_map.current.animateToRegion(searchedRegion, 3 * 1000);
 	};
-
-	useEffect(async () => {
-		await checkPermission();
-		await getLocation();
-	}, []);
 
 	return (
 		<View style={{ flex: 1, paddingTop: 1, backgroundColor: '#fffff7' }}>

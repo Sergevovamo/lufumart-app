@@ -4,6 +4,8 @@ import {
 	AUTH_ERROR,
 	REGISTER_SUCCESS,
 	LOGIN_SUCCESS,
+	UPDATE_USER,
+	CHANGE_PASSWORD,
 	LOGIN_FAIL,
 	LOGOUT_SUCCESS,
 	CURRENT_USER_ADDRESS,
@@ -33,6 +35,8 @@ export default function AuthReducer(state = initialState, action) {
 			};
 		case REGISTER_SUCCESS:
 		case LOGIN_SUCCESS:
+		case UPDATE_USER:
+		case CHANGE_PASSWORD:
 			return {
 				...state,
 				...action.payload,

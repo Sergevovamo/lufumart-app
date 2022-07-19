@@ -20,6 +20,8 @@ export const AUTH_ERROR = 'auth_error';
 export const CLEAR_ERRORS = 'clear_errors';
 export const CURRENT_USER_ADDRESS = 'current_user_address';
 export const CURRENT_PUSH_TOKEN = 'current_push_token';
+export const UPDATE_USER = 'update_user';
+export const CHANGE_PASSWORD = 'change_password';
 
 export const PRODUCT_LOADING = 'product_loading';
 export const PAGINATION_LOADING = 'pagination_loading';
@@ -44,8 +46,10 @@ export const REMOVE_PRODUCT_TO_CART = 'remove_product_to_cart';
 export const DECREASE_PRODUCT_TO_CART = 'decrease_product_to_cart';
 export const CALCULATE_TOTAL = 'calculate_total';
 
+export const ORDER_LOADING = 'product_loading';
 export const CHECK_OUT_ORDER = 'check_out_order';
 export const CALCULATE_SHIPPING_COST = 'calculate_shipping_cost';
+export const GET_CUSTOMER_ORDERS = 'get_customer_orders';
 
 // App Settings
 export const SHOW_TABBAR = 'show_tabbar';

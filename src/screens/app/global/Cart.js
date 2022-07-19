@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
 	View,
 	Text,
@@ -33,6 +33,7 @@ const Cart = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const route = useRoute();
+	const mounted = useRef(false);
 
 	const cartProductTotal = useSelector(
 		(state) => state.products?.cartDetails?.cartProductTotal
@@ -49,14 +50,33 @@ const Cart = () => {
 	const shippingFee = useSelector((state) => state.order?.shippingFee);
 
 	useEffect(() => {
-		dispatch(getCartProducts());
+		// set a clean up flag
+		mounted.current = true;
+
+		if (mounted.current) {
+			dispatch(getCartProducts());
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
 	}, []);
 
 	useEffect(() => {
+		// set a clean up flag
+		mounted.current = true;
+
 		if (cartProducts?.length > 0) {
-			dispatch(calculateShippingFee());
+			if (mounted.current) {
+				dispatch(calculateShippingFee());
+			}
 		}
-	}, []);
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [cartProducts]);
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
@@ -64,6 +84,16 @@ const Cart = () => {
 			navigation.navigate('CategoriesDetailsScreen');
 		} else {
 			navigation.navigate('HomeDetailsScreen');
+		}
+	};
+
+	const goToCheckoutScreen = () => {
+		if (route.name === 'CategoriesCartScreen') {
+			navigation.navigate('CategoriesCheckoutScreen');
+		} else if (route.name === 'CategoriesDetailCartScreen') {
+			navigation.navigate('CategoriesCheckoutScreen');
+		} else {
+			navigation.navigate('CheckoutScreen');
 		}
 	};
 
@@ -130,6 +160,11 @@ const Cart = () => {
 										</View>
 										<View style={{ flexDirection: 'row' }}>
 											<TouchableOpacity
+												style={{
+													padding: 5,
+													backgroundColor: '#f3f7ff',
+													borderRadius: 50,
+												}}
 												onPress={() => dispatch(removeProductToCart(_id))}
 											>
 												<MaterialIcons name="delete" size={25} color="black" />
@@ -180,15 +215,6 @@ const Cart = () => {
 								: 0}
 						</Text>
 					</View>
-					<View style={styles.productTotalContainer}>
-						<Text style={{ color: 'gray' }}>Shipping Fee</Text>
-						<Text style={{ color: 'gray' }}>
-							USD $
-							{cartProductTotal?.vat
-								? numberWithCommas(parseFloat(shippingFee))
-								: 0}
-						</Text>
-					</View>
 					<View
 						style={{
 							paddingVertical: 10,
@@ -207,10 +233,20 @@ const Cart = () => {
 						</Text>
 					</View>
 				</View>
-				<TouchableOpacity
-					onPress={() => navigation.navigate('CheckoutScreen')}
-					style={styles.button}
+				<View
+					style={{
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						paddingVertical: 15,
+						paddingHorizontal: 18,
+					}}
 				>
+					<Text style={{ color: 'gray' }}>
+						You will be charged shipping fee of USD $
+						{shippingFee ? numberWithCommas(parseFloat(shippingFee)) : 0}
+					</Text>
+				</View>
+				<TouchableOpacity onPress={goToCheckoutScreen} style={styles.button}>
 					<Text style={{ color: '#fff', fontSize: 18 }}>Checkout</Text>
 				</TouchableOpacity>
 			</View>
@@ -231,6 +267,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		width: width * 0.9,
 		height: 150,
+		borderRadius: 10,
 		...Platform.select({
 			ios: {
 				shadowColor: 'gray',
@@ -254,11 +291,12 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		width: '40%',
 		height: '100%',
+		padding: 5,
 		justifyContent: 'flex-start',
 		backgroundColor: '#fff',
 	},
 	image: {
-		resizeMode: 'cover',
+		resizeMode: 'contain',
 		width: '100%',
 		height: '100%',
 	},
@@ -292,7 +330,7 @@ const styles = StyleSheet.create({
 		width: '90%',
 		height: 60,
 		padding: 15,
-
+		marginTop: 20,
 		marginVertical: 35,
 		backgroundColor: '#00ab55',
 		justifyContent: 'center',

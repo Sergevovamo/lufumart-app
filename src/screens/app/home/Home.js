@@ -446,7 +446,7 @@ const data = [
 		title: 'Laptop Bag',
 		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394323/samples/ecommerce/leather-bag-gray.jpg',
 		description: 'Your laptop backpack bag',
-		id: 3,
+		id: 2,
 	},
 	{
 		title: 'Watch',

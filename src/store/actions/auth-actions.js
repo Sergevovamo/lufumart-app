@@ -7,6 +7,8 @@ import {
 	REGISTER_SUCCESS,
 	LOGIN_SUCCESS,
 	LOGOUT_SUCCESS,
+	UPDATE_USER,
+	CHANGE_PASSWORD,
 	CURRENT_USER_ADDRESS,
 	CURRENT_PUSH_TOKEN,
 } from './types';
@@ -44,13 +46,13 @@ export const auth = () => async (dispatch) => {
 	// console.log(token);
 
 	try {
-		const response = await axios.get(`${USERS_URL}/profile`, token);
-		const data = await response.data;
-		// console.log(data);
-
 		await dispatch({
 			type: USER_LOADING,
 		});
+
+		const response = await axios.get(`${USERS_URL}/profile`, token);
+		const data = await response.data;
+		// console.log(data);
 
 		await dispatch({
 			type: AUTH_USER,
@@ -89,15 +91,14 @@ export const registerUser = (payload) => async (dispatch) => {
 			password_confirmation: password,
 		});
 		// console.log(body);
+		await dispatch({
+			type: USER_LOADING,
+		});
 
 		const response = await axios.post(`${USERS_URL}/signup`, body, config);
 
 		const data = await response.data;
 		await save('userToken', data.token);
-
-		await dispatch({
-			type: USER_LOADING,
-		});
 
 		await dispatch({
 			type: REGISTER_SUCCESS,
@@ -130,6 +131,10 @@ export const loginUser = (payload) => async (dispatch) => {
 			},
 		};
 
+		await dispatch({
+			type: USER_LOADING,
+		});
+
 		// Request body
 		const body = JSON.stringify({ email, password });
 
@@ -137,10 +142,6 @@ export const loginUser = (payload) => async (dispatch) => {
 		// console.log(response.data);
 		const data = await response.data;
 		await save('userToken', data.token);
-
-		await dispatch({
-			type: USER_LOADING,
-		});
 
 		await dispatch({
 			type: LOGIN_SUCCESS,
@@ -156,6 +157,80 @@ export const loginUser = (payload) => async (dispatch) => {
 			returnErrors(error.response.data, error.response.status, 'LOGIN_FAIL')
 		);
 		dispatch(loginFail());
+	}
+};
+
+export const updateUserInfo = (payload) => async (dispatch) => {
+	const token = await tokenConfig();
+	const { name, email, phone } = payload;
+
+	try {
+		// Request body
+		const body = JSON.stringify({ name, email, phone });
+
+		await dispatch({
+			type: USER_LOADING,
+		});
+
+		const response = await axios.put(`${USERS_URL}/profile`, body, token);
+		const data = await response.data;
+
+		await dispatch({
+			type: UPDATE_USER,
+			payload: data,
+		});
+		dispatch(auth());
+		Toast.show({
+			type: 'success',
+			text1: `Your user details are updated successfully.`,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		dispatch(
+			returnErrors(error.response.data, error.response.status, 'UPDATE_USER')
+		);
+	}
+};
+
+export const changePassword = (payload) => async (dispatch) => {
+	const token = await tokenConfig();
+	const { current_password, new_password } = payload;
+
+	try {
+		// Request body
+		const body = JSON.stringify({ current_password, new_password });
+
+		await dispatch({
+			type: USER_LOADING,
+		});
+
+		const response = await axios.put(
+			`${USERS_URL}/update-password`,
+			body,
+			token
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: CHANGE_PASSWORD,
+			payload: data,
+		});
+		dispatch(auth());
+		Toast.show({
+			type: 'success',
+			text1: `Password updated successfully.`,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		dispatch(
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'CHANGE_PASSWORD'
+			)
+		);
 	}
 };
 

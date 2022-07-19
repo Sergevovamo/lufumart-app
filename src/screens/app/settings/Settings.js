@@ -27,7 +27,6 @@ import {
 } from '../../../store/actions/app-settings-actions';
 import SettingsAccount from './SettingsAccount';
 import Country from './Country';
-import SettingsSecurity from './SettingsSecurity';
 import HelpCenter from './HelpCenter';
 import Logout from './Logout';
 
@@ -35,6 +34,7 @@ const Settings = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	let authUser = useSelector((state) => state.auth.isAuthenticated);
+	let userAddress = useSelector((state) => state.auth.currentUserAddress);
 
 	useEffect(() => {
 		if (authUser) {
@@ -87,20 +87,23 @@ const Settings = () => {
 								</>
 							)}
 						</Box>
-						<Box
-							style={{
-								marginTop: 20,
-								backgroundColor: '#fff',
-								borderRadius: 20,
-								paddingHorizontal: 20,
-							}}
-							safeArea
-							py="8"
-							w="95%"
-							maxW="350"
-						>
-							<Country />
-						</Box>
+						{userAddress?.country?.length > 0 && (
+							<Box
+								style={{
+									marginTop: 20,
+									backgroundColor: '#fff',
+									borderRadius: 20,
+									paddingHorizontal: 20,
+								}}
+								safeArea
+								py="8"
+								w="95%"
+								maxW="350"
+							>
+								<Country />
+							</Box>
+						)}
+
 						<Box
 							style={{
 								marginTop: 20,
@@ -139,42 +142,6 @@ const Settings = () => {
 };
 
 export default Settings;
-
-function SearchBar() {
-	return (
-		<VStack my="4" space={5} w="100%" maxW="300px">
-			<VStack w="100%" space={5} alignSelf="center">
-				<Heading fontSize="lg">Material</Heading>
-				<Input
-					placeholder="Search People & Places"
-					width="100%"
-					borderRadius="4"
-					py="3"
-					px="1"
-					fontSize="14"
-					InputLeftElement={
-						<Icon
-							m="2"
-							ml="3"
-							size="6"
-							color="gray.400"
-							as={<MaterialIcons name="search" />}
-						/>
-					}
-					InputRightElement={
-						<Icon
-							m="2"
-							mr="3"
-							size="6"
-							color="gray.400"
-							as={<MaterialIcons name="mic" />}
-						/>
-					}
-				/>
-			</VStack>
-		</VStack>
-	);
-}
 
 const data = [
 	{

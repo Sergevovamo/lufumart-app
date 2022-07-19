@@ -11,7 +11,15 @@ const HelpCenter = () => {
 	return (
 		<View>
 			<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Help & Support</Text>
-			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+			<View
+				style={{
+					flexDirection: 'column',
+					paddingTop: 30,
+					paddingBottom: 15,
+					borderBottomWidth: 1,
+					borderBottomColor: 'gray',
+				}}
+			>
 				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
@@ -24,14 +32,23 @@ const HelpCenter = () => {
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginLeft: 5,
+							marginLeft: 15,
 						}}
 					>
 						Contact Us
 					</Text>
 				</TouchableOpacity>
 			</View>
-			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+			<View
+				style={{
+					flexDirection: 'column',
+					paddingTop: 15,
+					paddingTop: 15,
+					paddingBottom: 15,
+					borderBottomWidth: 1,
+					borderBottomColor: 'gray',
+				}}
+			>
 				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
@@ -44,14 +61,22 @@ const HelpCenter = () => {
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginLeft: 5,
+							marginLeft: 15,
 						}}
 					>
 						About Us
 					</Text>
 				</TouchableOpacity>
 			</View>
-			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+			<View
+				style={{
+					flexDirection: 'column',
+					paddingTop: 15,
+					paddingBottom: 15,
+					borderBottomWidth: 1,
+					borderBottomColor: 'gray',
+				}}
+			>
 				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
@@ -64,14 +89,22 @@ const HelpCenter = () => {
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginLeft: 5,
+							marginLeft: 15,
 						}}
 					>
 						Terms & Conditions
 					</Text>
 				</TouchableOpacity>
 			</View>
-			<View style={{ flexDirection: 'column', paddingTop: 30 }}>
+			<View
+				style={{
+					flexDirection: 'column',
+					paddingTop: 15,
+					paddingBottom: 15,
+					borderBottomWidth: 1,
+					borderBottomColor: 'gray',
+				}}
+			>
 				<TouchableOpacity
 					style={{
 						flexDirection: 'row',
@@ -84,7 +117,7 @@ const HelpCenter = () => {
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginLeft: 5,
+							marginLeft: 15,
 						}}
 					>
 						Privacy Policy
