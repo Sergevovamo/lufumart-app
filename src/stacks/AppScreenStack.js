@@ -238,7 +238,7 @@ export const HomeStackScreen = ({ navigation }) => {
 											size={24}
 											color="black"
 											style={{
-												paddingHorizontal: 15,
+												paddingHorizontal: 5,
 											}}
 										/>
 									</TouchableOpacity>
@@ -408,7 +408,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 											name="cart-outline"
 											size={24}
 											color="black"
-											style={{ paddingHorizontal: 15 }}
+											style={{ paddingHorizontal: 5 }}
 										/>
 									</TouchableOpacity>
 									<Badge
@@ -459,7 +459,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 											size={24}
 											color="black"
 											style={{
-												paddingHorizontal: 15,
+												paddingHorizontal: 5,
 											}}
 										/>
 									</TouchableOpacity>

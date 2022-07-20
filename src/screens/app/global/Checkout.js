@@ -20,6 +20,7 @@ import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 
 const { height } = Dimensions.get('screen');
 
+import { getCartProducts } from '../../../store/actions/product-actions';
 import { checkOutOrder } from '../../../store/actions/order-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
@@ -77,13 +78,14 @@ const Checkout = () => {
 	}, []);
 
 	const checkOut = async () => {
-		if (!currentUserAddress) {
-			Toast.show({
+		if (cartProducts?.length === 0) {
+			return Toast.show({
 				type: 'error',
-				text1: 'Please choose delivery address',
-				text2: `You must set delivery address to complete your order.`,
+				text1: 'Your cart is empty.',
+				text2: `You do not have items in cart.`,
 			});
 		}
+
 		if (currentUserAddress && cartProducts?.length > 0) {
 			setButtonLoading(true);
 			const data = {
@@ -91,14 +93,15 @@ const Checkout = () => {
 				deliveryAddress: currentUserAddress,
 			};
 			await dispatch(checkOutOrder(data));
+			dispatch(getCartProducts());
 			dispatch(auth());
 			setButtonLoading(false);
 			actionSheetRef.current?.setModalVisible();
 		} else {
 			Toast.show({
 				type: 'error',
-				text1: 'Your cart is empty.',
-				text2: `You do not have items in cart.`,
+				text1: 'Please choose delivery address',
+				text2: `You must set delivery address to complete your order.`,
 			});
 		}
 	};
@@ -138,7 +141,6 @@ const Checkout = () => {
 				gestureEnabled
 				indicatorColor="#f68b1e"
 				overlayColor="#000000"
-				closable={false}
 				defaultOverlayOpacity={0.5}
 				bounciness={10}
 				ref={actionSheetRef}

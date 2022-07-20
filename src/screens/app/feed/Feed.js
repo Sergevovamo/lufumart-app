@@ -13,17 +13,13 @@ const Feed = () => {
 		<Tab.Navigator
 			screenOptions={{
 				tabBarIndicatorStyle: { backgroundColor: 'transparent' },
-				tabBarScrollEnabled: true,
 				tabBarStyle: {
-					width: '85%',
-					height: Platform.OS === 'ios' ? '8%' : '10%',
-					marginTop: Platform.OS === 'ios' ? 25 : 30,
+					width: Platform.OS === 'ios' ? '85%' : '90%',
+					marginTop: Platform.OS === 'ios' ? 20 : 35,
 					borderTopLeftRadius: 5,
 					borderTopRightRadius: 5,
 					borderBottomLeftRadius: 5,
 					borderBottomRightRadius: 5,
-					justifyContent: 'center',
-					alignItems: 'center',
 					marginLeft: 'auto',
 					marginRight: 'auto',
 					marginBottom: 10,
