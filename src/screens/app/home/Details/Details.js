@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import {
 	View,
 	Text,
@@ -9,6 +9,7 @@ import {
 	Dimensions,
 	Platform,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,6 +25,7 @@ import {
 	MaterialIcons,
 	Fontisto,
 } from '@expo/vector-icons';
+import NetInfo from '@react-native-community/netinfo';
 
 import {
 	addProductToCart,
@@ -39,6 +41,9 @@ import ProductImage from './ProductImage';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
+
 const Details = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
@@ -50,6 +55,9 @@ const Details = () => {
 	const textInput = useRef(2);
 
 	const [LottieAnim, setLottieAnim] = useState();
+	const [translatedData, setTranslatedData] = useState([]);
+	const [visible, setVisible] = useState(true);
+	const [isOffline, setOfflineStatus] = useState(false);
 	const [position, setPosition] = useState({
 		latitude: -4.3758745,
 		longitude: 15.3396506,
@@ -72,7 +80,7 @@ const Details = () => {
 	);
 
 	const shippingFee = useSelector((state) => state.order?.shippingFee);
-	const productLoading = useSelector((state) => state.products?.isLoading);
+	const isLoading = useSelector((state) => state.products?.isLoading);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -95,15 +103,26 @@ const Details = () => {
 	}, []);
 
 	useEffect(() => {
-		let isMounted = true;
+		// set a clean up flag
+		// mounted.current = true;
+		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+			const offline = !(state.isConnected && state.isInternetReachable);
+			setOfflineStatus(offline);
+		});
 
-		if (isMounted) {
-			dispatch(calculateShippingFee());
-		}
+		// if (mounted.current) {
+		fetchShippingFee();
+		// }
+		return () => removeNetInfoSubscription();
 
-		return () => {
-			isMounted = false;
-		};
+		// return () => {
+		// 	// cancel subscription to useEffect
+		// 	mounted.current = false;
+		// };
+	}, []);
+
+	const fetchShippingFee = useCallback(() => {
+		dispatch(calculateShippingFee());
 	}, [cartProducts]);
 
 	useEffect(async () => {
@@ -120,7 +139,7 @@ const Details = () => {
 				if (mounted.current) {
 					const {
 						coords: { latitude, longitude },
-					} = await Location.watchPositionAsync(
+					} = Location.watchPositionAsync(
 						{ accuracy: Location.Accuracy.High },
 						(loc) => {
 							const { latitude, longitude } = JSON.parse(
@@ -150,10 +169,6 @@ const Details = () => {
 			mounted.current = false;
 		};
 	}, []);
-
-	// useEffect(() => {
-	// 	dispatch(getCartProducts());
-	// }, []);
 
 	const checkPermission = async () => {
 		const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -191,6 +206,7 @@ const Details = () => {
 						brand,
 						size,
 						weight,
+						locality,
 						quantity,
 						salePrice,
 						price,
@@ -198,6 +214,7 @@ const Details = () => {
 						imageUrl,
 						owner,
 					} = product;
+					// console.log(name);
 
 					let filteredCartItem = cartProducts?.filter((product) => {
 						return product._id === _id;
@@ -214,7 +231,7 @@ const Details = () => {
 					// const getDescriptionInFrench = async () => {
 					// 	try {
 					// 		const response = await fetch(
-					// 			'https://libretranslate.com/translate',
+					// 			'https://translate.argosopentech.com/translate',
 					// 			{
 					// 				method: 'POST',
 					// 				body: JSON.stringify({
@@ -227,7 +244,8 @@ const Details = () => {
 					// 			}
 					// 		);
 					// 		const res = await response.json();
-					// 		console.log(res);
+					// 		console.log(res?.translatedText);
+					// 		setTranslatedData(res?.translatedText);
 					// 		//   return json.movies;
 					// 	} catch (error) {
 					// 		console.error(error);
@@ -236,338 +254,337 @@ const Details = () => {
 					// getDescriptionInFrench();
 
 					return (
-						<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
-							<ProductImage imageUrl={imageUrl} />
-							<View style={styles.productDetails}>
-								<TouchableOpacity style={styles.button}>
-									<Text style={{ color: '#fff' }}>Official Store</Text>
-								</TouchableOpacity>
-								<Text style={{ marginTop: 5 }}>{name}</Text>
-								<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
-								<Text style={{ marginTop: 5 }}>Items In Stock: {quantity}</Text>
-								<Text style={styles.price}>
-									US ${numberWithCommas(salePrice.toFixed(2))}
-								</Text>
-								{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
-								<Text style={styles.location}>
-									+ shipping fee of USD ${shippingFee ? shippingFee : 0} from{' '}
-									{owner?.name} to{' '}
-									{userAddress?.description
-										? userAddress?.description
-										: 'your location of choice'}
-								</Text>
-								{filteredCartItem?.length > 0 ? (
-									<View
-										style={{
-											flexDirection: 'row',
-											justifyContent: 'center',
-											alignItems: 'center',
-										}}
-									>
-										{currentUser ? (
-											<>
-												<TouchableOpacity
-													disabled={
-														filteredCartItemQuantity[0]?.quantity === 1
-															? true
-															: false
-													}
-													onPress={() =>
-														dispatch(decreaseCartProductQuantity(_id))
-													}
-													style={{
-														width: '20%',
-														height: 60,
-														padding: 15,
-														marginVertical: 15,
-														backgroundColor:
+						<>
+							<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
+								<ProductImage imageUrl={imageUrl} />
+								<View style={styles.productDetails}>
+									<TouchableOpacity style={styles.button}>
+										<Text style={{ color: '#fff' }}>
+											{locality && 'Global'}
+										</Text>
+									</TouchableOpacity>
+									<Text style={{ marginTop: 5 }}>{name}</Text>
+									<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
+									<Text style={{ marginTop: 5 }}>
+										Items In Stock: {quantity}
+									</Text>
+									<Text style={styles.price}>
+										US ${numberWithCommas(salePrice.toFixed(2))}
+									</Text>
+									{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
+									<Text style={styles.location}>
+										+ shipping fee of USD ${shippingFee ? shippingFee : 0} from{' '}
+										{owner?.name} to{' '}
+										{userAddress?.description
+											? userAddress?.description
+											: 'your location of choice'}
+									</Text>
+									{filteredCartItem?.length > 0 ? (
+										<View
+											style={{
+												flexDirection: 'row',
+												justifyContent: 'center',
+												alignItems: 'center',
+											}}
+										>
+											{currentUser ? (
+												<>
+													<TouchableOpacity
+														disabled={
 															filteredCartItemQuantity[0]?.quantity === 1
-																? '#a0f2c9'
-																: '#00ab55',
-														justifyContent: 'center',
-														alignItems: 'center',
-														borderRadius: 10,
-													}}
+																? true
+																: false
+														}
+														onPress={() =>
+															dispatch(decreaseCartProductQuantity(_id))
+														}
+														style={{
+															width: '20%',
+															height: 60,
+															padding: 15,
+															marginVertical: 15,
+															backgroundColor:
+																filteredCartItemQuantity[0]?.quantity === 1
+																	? '#a0f2c9'
+																	: '#00ab55',
+															justifyContent: 'center',
+															alignItems: 'center',
+															borderRadius: 10,
+														}}
+													>
+														<AntDesign
+															name="minuscircle"
+															size={22}
+															color="#fff"
+														/>
+													</TouchableOpacity>
+													<View
+														style={{
+															width: '60%',
+															alignItems: 'center',
+														}}
+													>
+														<Text style={{ fontSize: 20 }}>
+															{filteredCartItemQuantity[0]?.quantity}
+														</Text>
+													</View>
+													<TouchableOpacity
+														onPress={() => dispatch(addProductToCart(_id))}
+														style={style.iconButton}
+													>
+														<AntDesign
+															name="pluscircle"
+															size={22}
+															color="#fff"
+														/>
+													</TouchableOpacity>
+												</>
+											) : (
+												<TouchableOpacity
+													style={style.button}
+													onPress={() => navigation.navigate('AuthStackScreen')}
 												>
-													<AntDesign
-														name="minuscircle"
-														size={22}
-														color="#fff"
-													/>
+													<View
+														style={{
+															width: '50%',
+															flexDirection: 'row',
+															justifyContent: 'space-around',
+															alignItems: 'center',
+														}}
+													>
+														<Text style={{ color: '#fff', fontSize: 18 }}>
+															Sign in
+														</Text>
+													</View>
 												</TouchableOpacity>
-												<View
-													style={{
-														width: '60%',
-														alignItems: 'center',
-													}}
-												>
-													<Text style={{ fontSize: 20 }}>
-														{filteredCartItemQuantity[0]?.quantity}
-													</Text>
-												</View>
+											)}
+										</View>
+									) : (
+										<>
+											{currentUser ? (
 												<TouchableOpacity
 													onPress={() => dispatch(addProductToCart(_id))}
-													style={style.iconButton}
+													style={style.button}
 												>
-													<AntDesign name="pluscircle" size={22} color="#fff" />
+													<View
+														style={{
+															width: '50%',
+															flexDirection: 'row',
+															justifyContent: 'space-around',
+															alignItems: 'center',
+														}}
+													>
+														<MaterialIcons
+															name="add-shopping-cart"
+															size={24}
+															color="#fff"
+														/>
+														<Text style={{ color: '#fff', fontSize: 18 }}>
+															Add to Cart
+														</Text>
+													</View>
 												</TouchableOpacity>
-											</>
-										) : (
-											<TouchableOpacity
-												style={style.button}
-												onPress={() => navigation.navigate('AuthStackScreen')}
-											>
-												<View
-													style={{
-														width: '50%',
-														flexDirection: 'row',
-														justifyContent: 'space-around',
-														alignItems: 'center',
-													}}
+											) : (
+												<TouchableOpacity
+													style={style.button}
+													onPress={() => navigation.navigate('AuthStackScreen')}
 												>
-													<Text style={{ color: '#fff', fontSize: 18 }}>
-														Sign in
-													</Text>
-												</View>
-											</TouchableOpacity>
-										)}
-									</View>
-								) : (
-									<>
-										{currentUser ? (
-											<TouchableOpacity
-												onPress={() => dispatch(addProductToCart(_id))}
-												style={style.button}
-											>
-												<View
-													style={{
-														width: '50%',
-														flexDirection: 'row',
-														justifyContent: 'space-around',
-														alignItems: 'center',
-													}}
-												>
-													<MaterialIcons
-														name="add-shopping-cart"
-														size={24}
-														color="#fff"
-													/>
-													<Text style={{ color: '#fff', fontSize: 18 }}>
-														Add to Cart
-													</Text>
-												</View>
-											</TouchableOpacity>
-										) : (
-											<TouchableOpacity
-												style={style.button}
-												onPress={() => navigation.navigate('AuthStackScreen')}
-											>
-												<View
-													style={{
-														width: '50%',
-														flexDirection: 'row',
-														justifyContent: 'space-around',
-														alignItems: 'center',
-													}}
-												>
-													<Text style={{ color: '#fff', fontSize: 18 }}>
-														Sign in
-													</Text>
-												</View>
-											</TouchableOpacity>
-										)}
-									</>
-								)}
-							</View>
-							<View>
-								<Text style={styles.promotionTitle}>PROMOTIONS</Text>
-								<View style={styles.promotionInnerContainer}>
-									<View style={styles.promotionDetail}>
-										<MaterialCommunityIcons
-											name="truck-delivery-outline"
-											size={24}
-											color="black"
-										/>
-										<Text style={styles.promotionText}>
-											14 day buyer protection
-										</Text>
-									</View>
-									<View style={[styles.promotionDetail, { marginTop: 5 }]}>
-										<AntDesign name="Safety" size={24} color="black" />
-										<Text style={styles.promotionText}>
-											Easy and safer payments via MaxiCash
-										</Text>
+													<View
+														style={{
+															width: '50%',
+															flexDirection: 'row',
+															justifyContent: 'space-around',
+															alignItems: 'center',
+														}}
+													>
+														<Text style={{ color: '#fff', fontSize: 18 }}>
+															Sign in
+														</Text>
+													</View>
+												</TouchableOpacity>
+											)}
+										</>
+									)}
+								</View>
+								<View>
+									<Text style={styles.promotionTitle}>PROMOTIONS</Text>
+									<View style={styles.promotionInnerContainer}>
+										<View style={styles.promotionDetail}>
+											<MaterialCommunityIcons
+												name="truck-delivery-outline"
+												size={24}
+												color="black"
+											/>
+											<Text style={styles.promotionText}>
+												14 day buyer protection
+											</Text>
+										</View>
+										<View style={[styles.promotionDetail, { marginTop: 5 }]}>
+											<AntDesign name="Safety" size={24} color="black" />
+											<Text style={styles.promotionText}>
+												Easy and safer payments via MaxiCash
+											</Text>
+										</View>
 									</View>
 								</View>
-							</View>
-							{/* <View>
+								{/* <View>
 							<Text style={styles.promotionTitle}>DELIVERY & RETURNS</Text>
 						</View> */}
-							<View>
-								<Text style={styles.promotionTitle}>PRODUCT DETAILS</Text>
-								<View style={styles.itemInnerContainer}>
-									<View>
-										<View style={styles.itemHeader}>
-											<Text style={styles.itemTitle}>Description</Text>
+								<View>
+									<Text style={styles.promotionTitle}>PRODUCT DETAILS</Text>
+									<View style={styles.itemInnerContainer}>
+										<View>
+											<View style={styles.itemHeader}>
+												<Text style={styles.itemTitle}>Description</Text>
+											</View>
+											<Text>{description}</Text>
+											<Text style={{ marginTop: 30 }}>Size: {size}</Text>
+											{/* <Text>Weight: {weight}</Text> */}
 										</View>
-										<Text>{description}</Text>
-										<Text style={{ marginTop: 30 }}>Size: {size}</Text>
-										{/* <Text>Weight: {weight}</Text> */}
 									</View>
 								</View>
-							</View>
-							{/* <View>
-							<Text style={styles.promotionTitle}>CUSTOMERS ALSO VIEWED</Text>
-						</View>
-						<View>
-							<Text style={styles.promotionTitle}>
-								VERIFIED CUSTOMER FEEDBACK
-							</Text>
-						</View>
-						<View>
-							<Text style={styles.promotionTitle}>CUSTOMERS ALSO BOUGHT</Text>
-						</View> */}
-							{/* <View>
-							<Text style={styles.promotionTitle}>SELLER INFORMATION</Text>
-							<View style={styles.sellerInnerContainer}>
-								<View style={styles.itemHeader}>
-									<Text style={styles.itemTitle}>Avenue Phones</Text>
-									<AntDesign name="right" size={18} color="black" />
-								</View>
-							</View>
-						</View> */}
 
-							<GooglePlacesAutocomplete
-								nearbyPlacesAPI="GooglePlacesSearch"
-								placeholder="Search your delivery location"
-								listViewDisplayed={false}
-								debounce={400}
-								ref={textInput}
-								minLength={2}
-								enablePoweredByContainer={true}
-								// returnKeyType={'default'}
-								fetchDetails={true}
-								autoFocus={true}
-								textInputProps={{
-									placeholderTextColor: 'gray',
-									returnKeyType: 'search',
-								}}
-								styles={autoComplete}
-								query={{
-									key: GOOGLE_MAPS_APIKEY,
-									language: 'en',
-								}}
-								onPress={(data, details = null) => {
-									const searchedRegion = {
-										latitude: details.geometry.location.lat,
-										longitude: details.geometry.location.lng,
-										latitudeDelta: 0.05,
-										longitudeDelta: 0.05,
-									};
-
-									setPosition({
-										latitude: details.geometry.location.lat,
-										longitude: details.geometry.location.lng,
-										address: data.description,
-										coordinate: `${details.geometry.location.lat},${details.geometry.location.lng}`,
-									});
-
-									const address = {
-										name: details.name,
-										country: details.address_components,
-										vicinity: details.vicinity,
-										latitude: details.geometry.location.lat,
-										longitude: details.geometry.location.lng,
-										description: data.description,
-									};
-									// save user current address
-									dispatch(currentUserAddress(address));
-									goSearchedRegion(searchedRegion);
-								}}
-								onFail={(error) => console.error(error)}
-							/>
-
-							<View
-								style={{
-									marginTop: 10,
-									alignItems: 'center',
-									justifyContent: 'center',
-								}}
-							>
-								<MapView
-									ref={_map}
-									provider={PROVIDER_GOOGLE}
-									style={styles.map}
-									// customMapStyle={mapStyle}
-									region={{
-										latitude: position.latitude,
-										longitude: position.longitude,
-										latitudeDelta: 0.008,
-										longitudeDelta: 0.008,
+								<GooglePlacesAutocomplete
+									nearbyPlacesAPI="GooglePlacesSearch"
+									placeholder="Search your delivery location"
+									listViewDisplayed={false}
+									debounce={400}
+									ref={textInput}
+									minLength={2}
+									enablePoweredByContainer={true}
+									// returnKeyType={'default'}
+									fetchDetails={true}
+									autoFocus={true}
+									textInputProps={{
+										placeholderTextColor: 'gray',
+										returnKeyType: 'search',
 									}}
-									showsUserLocation={true}
-									followsUserLocation={true}
+									styles={autoComplete}
+									query={{
+										key: GOOGLE_MAPS_APIKEY,
+										language: 'en',
+									}}
+									onPress={(data, details = null) => {
+										const searchedRegion = {
+											latitude: details.geometry.location.lat,
+											longitude: details.geometry.location.lng,
+											latitudeDelta: 0.05,
+											longitudeDelta: 0.05,
+										};
+
+										setPosition({
+											latitude: details.geometry.location.lat,
+											longitude: details.geometry.location.lng,
+											address: data.description,
+											coordinate: `${details.geometry.location.lat},${details.geometry.location.lng}`,
+										});
+
+										const address = {
+											name: details.name,
+											country: details.address_components,
+											vicinity: details.vicinity,
+											latitude: details.geometry.location.lat,
+											longitude: details.geometry.location.lng,
+											description: data.description,
+										};
+										// save user current address
+										dispatch(currentUserAddress(address));
+										goSearchedRegion(searchedRegion);
+									}}
+									onFail={(error) => console.error(error)}
+								/>
+
+								<View
+									style={{
+										marginTop: 10,
+										alignItems: 'center',
+										justifyContent: 'center',
+									}}
 								>
-									<Marker coordinate={position} />
-								</MapView>
-							</View>
-							<View>
-								<Text style={styles.promotionTitle}>SELLER INFORMATION</Text>
-							</View>
-							<View style={styles.sellerContainer}>
-								<View style={styles.popularText}>
-									<Text style={{ fontSize: 8, color: '#fff' }}>
-										POPULAR SELLER
-									</Text>
-								</View>
-								<View style={styles.sellerHeader}>
-									<View style={styles.sellerInfo}>
-										<Fontisto name="shopping-store" size={24} color="black" />
-										<Text style={{ marginLeft: 5 }}>Orbcomm System</Text>
-									</View>
-									<TouchableOpacity style={styles.buttonSeller}>
-										<Text style={{ color: '#fff' }}>Follow</Text>
-									</TouchableOpacity>
-								</View>
-								<View
-									style={{
-										paddingVertical: 1,
-										borderBottomColor: 'gray',
-										borderBottomWidth: 1,
-									}}
-								/>
-								<View style={styles.imageContainer}>
-									{img?.map((image, index) => (
-										<Image
-											key={index}
-											source={{
-												uri: `${image}`,
-											}}
-											style={styles.image}
-										/>
-									))}
-								</View>
-								<View
-									style={{
-										paddingVertical: 1,
-										borderBottomColor: 'gray',
-										borderBottomWidth: 1,
-									}}
-								/>
-								<View style={styles.sellerFooter}>
-									<View style={styles.footerTitle}>
-										<Text>Check the latest arrivals</Text>
-										<Text style={{ paddingVertical: 10 }}>74 followers</Text>
-									</View>
-									<TouchableOpacity
-										style={{ flexDirection: 'row', alignItems: 'center' }}
+									<MapView
+										ref={_map}
+										provider={PROVIDER_GOOGLE}
+										style={styles.map}
+										// customMapStyle={mapStyle}
+										region={{
+											latitude: position.latitude,
+											longitude: position.longitude,
+											latitudeDelta: 0.008,
+											longitudeDelta: 0.008,
+										}}
+										showsUserLocation={true}
+										followsUserLocation={true}
 									>
-										<MaterialIcons name="ios-share" size={20} color="#f68b1e" />
-										<Text style={{ color: '#f68b1e' }}>SHARE</Text>
-									</TouchableOpacity>
+										<Marker coordinate={position} />
+									</MapView>
+								</View>
+								<View>
+									<Text style={styles.promotionTitle}>SELLER INFORMATION</Text>
+								</View>
+								<View style={styles.sellerContainer}>
+									<View style={styles.popularText}>
+										<Text style={{ fontSize: 8, color: '#fff' }}>
+											POPULAR SELLER
+										</Text>
+									</View>
+									<View style={styles.sellerHeader}>
+										<View style={styles.sellerInfo}>
+											<Fontisto name="shopping-store" size={24} color="black" />
+											<Text style={{ marginLeft: 5 }}>Orbcomm System</Text>
+										</View>
+										<TouchableOpacity style={styles.buttonSeller}>
+											<Text style={{ color: '#fff' }}>Follow</Text>
+										</TouchableOpacity>
+									</View>
+									<View
+										style={{
+											paddingVertical: 1,
+											borderBottomColor: 'gray',
+											borderBottomWidth: 1,
+										}}
+									/>
+									<View style={styles.imageContainer}>
+										{img?.map((image, index) => (
+											<Image
+												key={index}
+												source={{
+													uri: `${image}`,
+												}}
+												style={styles.image}
+											/>
+										))}
+									</View>
+									<View
+										style={{
+											paddingVertical: 1,
+											borderBottomColor: 'gray',
+											borderBottomWidth: 1,
+										}}
+									/>
+									<View style={styles.sellerFooter}>
+										<View style={styles.footerTitle}>
+											<Text>Check the latest arrivals</Text>
+											<Text style={{ paddingVertical: 10 }}>74 followers</Text>
+										</View>
+										<TouchableOpacity
+											style={{ flexDirection: 'row', alignItems: 'center' }}
+										>
+											<MaterialIcons
+												name="ios-share"
+												size={20}
+												color="#f68b1e"
+											/>
+											<Text style={{ color: '#f68b1e' }}>SHARE</Text>
+										</TouchableOpacity>
+									</View>
 								</View>
 							</View>
-						</View>
+							<NoInternetModal
+								show={isOffline}
+								onRetry={fetchShippingFee}
+								isRetrying={isLoading}
+							/>
+						</>
 					);
 				}}
 			/>
@@ -575,7 +592,27 @@ const Details = () => {
 	);
 };
 
-export default Details;
+export default memo(Details);
+
+const NoInternetModal = ({ show, onRetry, isRetrying }) => (
+	<Modal isVisible={show} style={styles.modal} animationInTiming={600}>
+		<View style={styles.modalContainer}>
+			<Text style={styles.modalTitle}>Connection Error</Text>
+			<Text style={styles.modalText}>
+				Oops! Looks like your device is not connected to the Internet.
+			</Text>
+			<Button onPress={onRetry} disabled={isRetrying}>
+				Try Again
+			</Button>
+		</View>
+	</Modal>
+);
+
+const Button = ({ children, ...props }) => (
+	<TouchableOpacity style={styles.buttonNet} {...props}>
+		<Text style={styles.buttonTextNet}>{children}</Text>
+	</TouchableOpacity>
+);
 
 const style = StyleSheet.create({
 	button: {
@@ -834,6 +871,49 @@ const styles = StyleSheet.create({
 	},
 	footerTitle: {
 		flexDirection: 'column',
+	},
+	// Image Modal
+	imageModal: {
+		// flex: 1,
+		// alignItems: 'center',
+		justifyContent: 'center',
+		// margin: 0,
+	},
+
+	// Network Connection modal
+	modal: {
+		justifyContent: 'flex-end',
+		margin: 0,
+	},
+	modalContainer: {
+		backgroundColor: '#fff',
+		paddingHorizontal: 16,
+		paddingTop: 20,
+		paddingBottom: 40,
+		alignItems: 'center',
+	},
+	modalTitle: {
+		fontSize: 22,
+		fontWeight: '600',
+	},
+	modalText: {
+		fontSize: 18,
+		color: '#555',
+		marginTop: 14,
+		textAlign: 'center',
+		marginBottom: 10,
+	},
+	buttonNet: {
+		backgroundColor: '#000',
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		width: '100%',
+		alignItems: 'center',
+		marginTop: 10,
+	},
+	buttonTextNet: {
+		color: '#fff',
+		fontSize: 20,
 	},
 });
 

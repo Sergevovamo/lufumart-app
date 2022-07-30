@@ -10,9 +10,13 @@ import {
 	DELETE_PRODUCT_CATEGORY,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	GET_MORE_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
 	GET_MORE_PRODUCTS_SUB_CATEGORY,
 	RESET_GET_MORE_PRODUCTS_SUB_CATEGORY,
+	GET_PRODUCTS_FLASH_SALE,
+	GET_PRODUCTS_FREE_SHIPPING,
+	GET_PRODUCTS_NEW_ARRIVALS,
 	GET_CART_PRODUCTS,
 	ADD_PRODUCT_TO_CART,
 	REMOVE_PRODUCT_TO_CART,
@@ -31,7 +35,11 @@ const initialState = {
 	productHomeCategories: null,
 	productSubCategoriesByCategory: null,
 	product: null,
-	products: null,
+	products: [],
+	getMoreProducts: [],
+	getFlashSaleProducts: null,
+	getFreeShippingProducts: null,
+	getNewArrivalsProducts: null,
 	getProductsBySubCategory: null,
 	getMoreProductsBySubCategory: [],
 	cartDetails: null,
@@ -95,6 +103,34 @@ export default function ProductReducer(state = initialState, action) {
 				isAuthenticated: false,
 				isLoading: false,
 				products: action.payload,
+			};
+		case GET_MORE_PRODUCTS:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				getMoreProducts: [...state.getMoreProducts, ...action.payload],
+			};
+		case GET_PRODUCTS_FLASH_SALE:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				getFlashSaleProducts: action.payload,
+			};
+		case GET_PRODUCTS_FREE_SHIPPING:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				getFreeShippingProducts: action.payload,
+			};
+		case GET_PRODUCTS_NEW_ARRIVALS:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				getNewArrivalsProducts: action.payload,
 			};
 		case GET_PRODUCTS_SUB_CATEGORY:
 			return {

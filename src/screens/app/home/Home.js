@@ -5,6 +5,7 @@ import {
 	Text,
 	Alert,
 	ScrollView,
+	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
@@ -26,7 +27,7 @@ import * as Notifications from 'expo-notifications';
 
 import Carousel from '../../../components/Carousel';
 
-import TopSellingItems from './TopSellingItems';
+import ExploreProducts from './ExploreProducts';
 import RecentlyViewed from './RecentlyViewed';
 import ShopCategories from './ShopCategories';
 // import Laptops from './Laptops';
@@ -34,6 +35,7 @@ import ShopCategories from './ShopCategories';
 // import DataStorage from './DataStorage';
 import DiscountProducts from './DiscountProducts';
 import FlashSales from './FlashSales';
+import NewArrivals from './NewArrivals';
 import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
@@ -48,6 +50,20 @@ Notifications.setNotificationHandler({
 	}),
 });
 
+const VirtualizedView = (props) => {
+	return (
+		<FlatList
+			data={[]}
+			ListEmptyComponent={null}
+			keyExtractor={() => 'dummy'}
+			renderItem={null}
+			ListHeaderComponent={() => (
+				<React.Fragment>{props.children}</React.Fragment>
+			)}
+		/>
+	);
+};
+
 const Home = ({ navigation }) => {
 	const dispatch = useDispatch();
 	const responseListener = useRef();
@@ -55,6 +71,17 @@ const Home = ({ navigation }) => {
 	const mounted = useRef(false);
 
 	const [notification, setNotification] = useState(false);
+
+	// useEffect(() => {
+	// 	const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+	// 		const offline = !(state.isConnected && state.isInternetReachable);
+	// 		setOfflineStatus(offline);
+	// 	});
+
+	// 	fetchUsers();
+
+	// 	return () => removeNetInfoSubscription();
+	// }, []);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -149,12 +176,18 @@ const Home = ({ navigation }) => {
 		navigation.navigate('HomeCategoriesScreen');
 		dispatch(hideTabbar());
 	};
+
+	const exploreMoreProducts = () => {
+		navigation.navigate('ExploreMoreProducts');
+		dispatch(hideTabbar());
+	};
 	return (
 		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
 			<StatusBar style="default" />
-			<ScrollView nestedScrollEnabled={true}>
+
+			<VirtualizedView>
 				<View style={styles.tabContainer}>
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						onPress={async () => {
 							await schedulePushNotification();
 						}}
@@ -166,18 +199,18 @@ const Home = ({ navigation }) => {
 							color="black"
 						/>
 						<Text>Saved</Text>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 					<TouchableOpacity onPress={browseCategories} style={styles.tab}>
 						<MaterialIcons name="category" size={24} color="black" />
 						<Text>Categories</Text>
 					</TouchableOpacity>
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						onPress={() => navigation.navigate('HomeFeaturedDealsScreen')}
 						style={styles.tab}
 					>
 						<Ionicons name="flash-outline" size={24} color="black" />
 						<Text>Deals</Text>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 				</View>
 				<Carousel data={data} />
 
@@ -199,7 +232,7 @@ const Home = ({ navigation }) => {
 					<FlashSales />
 				</View>
 
-				<TouchableOpacity style={styles.titleOnlyHeader}>
+				{/* <TouchableOpacity style={styles.titleOnlyHeader}>
 					<Text
 						style={{
 							fontSize: 20,
@@ -212,9 +245,9 @@ const Home = ({ navigation }) => {
 					</Text>
 					<AntDesign name="right" size={24} color="#f68b1e" />
 				</TouchableOpacity>
-				<RecentlyViewed />
+				<RecentlyViewed /> */}
 
-				<View style={styles.titleHeader}>
+				{/* <View style={styles.titleHeader}>
 					<Text
 						style={{
 							fontSize: Platform.OS === 'ios' ? 25 : 22,
@@ -231,8 +264,28 @@ const Home = ({ navigation }) => {
 					<TouchableOpacity style={styles.titleButton}>
 						<Text style={{ color: '#fff' }}>Shop now</Text>
 					</TouchableOpacity>
+				</View> */}
+				{/* <DiscountProducts /> */}
+
+				<View style={styles.titleHeader}>
+					<Text
+						style={{
+							fontSize: Platform.OS === 'ios' ? 25 : 22,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						New Arrivals
+					</Text>
+					<Text style={{ fontSize: 15, color: '#f68b1e' }}>
+						Exclusive new products
+					</Text>
+					<TouchableOpacity style={styles.titleButton}>
+						<Text style={{ color: '#fff' }}>Shop now</Text>
+					</TouchableOpacity>
 				</View>
-				<DiscountProducts />
+				<NewArrivals />
 
 				<TouchableOpacity style={styles.titleOnlyHeader}>
 					<Text
@@ -249,20 +302,6 @@ const Home = ({ navigation }) => {
 				</TouchableOpacity>
 				<FreeShippingProducts />
 
-				{/* <View style={styles.titleOnlyHeader}>
-				<Text
-					style={{
-						fontSize: 20,
-						color: '#000000',
-						fontWeight: 'bold',
-						paddingBottom: 5,
-					}}
-				>
-					Top Selling Items
-				</Text>
-			</View>
-			<TopSellingItems /> */}
-
 				<View style={styles.banner2}>
 					<Text style={styles.textHeader2}>Save on the brands you love</Text>
 					<Text
@@ -278,7 +317,7 @@ const Home = ({ navigation }) => {
 					<TouchableOpacity style={styles.bannerButton2}>
 						<Text style={{ color: '#00ab55' }}>Spend smart</Text>
 					</TouchableOpacity>
-					<FlashSales />
+					{/* <FlashSales /> */}
 				</View>
 
 				<View style={styles.titleOnlyHeader}>
@@ -295,7 +334,7 @@ const Home = ({ navigation }) => {
 				</View>
 				<ShopCategories />
 
-				<TouchableOpacity style={styles.titleOnlyHeader}>
+				{/* <TouchableOpacity style={styles.titleOnlyHeader}>
 					<Text
 						style={{
 							fontSize: 20,
@@ -307,10 +346,10 @@ const Home = ({ navigation }) => {
 						Get Kitchen Ware with up to 50% off today
 					</Text>
 					<AntDesign name="arrowright" size={24} color="#f68b1e" />
-				</TouchableOpacity>
-				<FreeShippingProducts />
+				</TouchableOpacity> */}
+				{/* <FreeShippingProducts /> */}
 
-				<View style={styles.titleHeader}>
+				{/* <View style={styles.titleHeader}>
 					<Text
 						style={{
 							fontSize: Platform.OS === 'ios' ? 25 : 22,
@@ -327,8 +366,8 @@ const Home = ({ navigation }) => {
 					<TouchableOpacity style={styles.titleButton}>
 						<Text style={{ color: '#fff' }}>Shop now</Text>
 					</TouchableOpacity>
-				</View>
-				<RecommendedForYou />
+				</View> */}
+				{/* <RecommendedForYou /> */}
 
 				<View style={styles.titleOnlyHeader}>
 					<Text
@@ -343,7 +382,25 @@ const Home = ({ navigation }) => {
 					</Text>
 				</View>
 				<RecommendedSellers />
-			</ScrollView>
+
+				<TouchableOpacity
+					onPress={exploreMoreProducts}
+					style={styles.titleOnlyHeader}
+				>
+					<Text
+						style={{
+							fontSize: 20,
+							color: '#f68b1e',
+							fontWeight: 'bold',
+							paddingBottom: 5,
+						}}
+					>
+						Explore Products
+					</Text>
+					<AntDesign name="arrowright" size={24} color="#f68b1e" />
+				</TouchableOpacity>
+				<ExploreProducts />
+			</VirtualizedView>
 		</View>
 	);
 };

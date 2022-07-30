@@ -41,7 +41,7 @@ const OpenOrders = () => {
 			style={{
 				flex: 1,
 				alignItems: 'center',
-				justifyContent: 'center',
+				justifyContent: 'flex-start',
 			}}
 		>
 			{orders?.length > 0 ? (

@@ -26,9 +26,9 @@ const RecommendedSellers = () => {
 
 	const products = useSelector((state) => state.products?.products);
 
-	useEffect(() => {
-		dispatch(getProducts());
-	}, []);
+	// useEffect(() => {
+	// 	dispatch(getProducts());
+	// }, []);
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));

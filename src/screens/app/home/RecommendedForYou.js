@@ -26,19 +26,19 @@ const RecommendedForYou = () => {
 
 	const products = useSelector((state) => state.products?.products);
 
-	useEffect(() => {
-		// set a clean up flag
-		mounted.current = true;
+	// useEffect(() => {
+	// 	// set a clean up flag
+	// 	mounted.current = true;
 
-		if (mounted.current) {
-			dispatch(getProducts());
-		}
+	// 	if (mounted.current) {
+	// 		dispatch(getProducts());
+	// 	}
 
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, []);
+	// 	return () => {
+	// 		// cancel subscription to useEffect
+	// 		mounted.current = false;
+	// 	};
+	// }, []);
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));

@@ -12,18 +12,16 @@ import { useNavigation } from '@react-navigation/native';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
 	getProduct,
-	getFreeShippingProducts,
+	getProducts,
 } from '../../../store/actions/product-actions';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
-const FreeShippingProducts = () => {
+const ExploreProducts = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
 
-	const products = useSelector(
-		(state) => state.products?.getFreeShippingProducts
-	);
+	const products = useSelector((state) => state.products?.products);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -40,7 +38,7 @@ const FreeShippingProducts = () => {
 	}, []);
 
 	const fetchProducts = useCallback(() => {
-		dispatch(getFreeShippingProducts());
+		dispatch(getProducts());
 	}, []);
 
 	const viewedProduct = (product) => {
@@ -48,50 +46,49 @@ const FreeShippingProducts = () => {
 		navigation.navigate('HomeDetailsScreen');
 		dispatch(hideTabbar());
 	};
-	return (
-		<>
-			<FlatList
-				data={products}
-				keyExtractor={(item, index) => `${item}-${index}`}
-				horizontal
-				style={{ flexGrow: 0 }}
-				contentContainerStyle={{ padding: 5 }}
-				showsHorizontalScrollIndicator={false}
-				renderItem={({ item: product }) => {
-					const { name, salePrice, imageUrl } = product;
 
-					return (
-						<TouchableOpacity onPress={() => viewedProduct(product)}>
-							<View style={styles.product}>
-								<View style={styles.imageContainer}>
-									<Image
-										source={{
-											uri: `${imageUrl[0]}`,
-										}}
-										style={styles.image}
-									/>
-								</View>
-								<View style={{ paddingHorizontal: 10 }}>
-									<Text
-										numberOfLines={2}
-										style={{ paddingVertical: 5, fontSize: 12 }}
-									>
-										{name}
-									</Text>
-									<Text style={{ fontWeight: 'bold' }}>
-										US ${numberWithCommas(salePrice)}
-									</Text>
-								</View>
+	return (
+		<FlatList
+			data={products}
+			keyExtractor={(item, index) => `${item}-${index}`}
+			horizontal
+			style={{ flexGrow: 0 }}
+			contentContainerStyle={{ padding: 5 }}
+			showsHorizontalScrollIndicator={false}
+			renderItem={({ item: product }) => {
+				const { name, salePrice, imageUrl } = product;
+
+				return (
+					<TouchableOpacity onPress={() => viewedProduct(product)}>
+						<View style={styles.product}>
+							<View style={styles.imageContainer}>
+								<Image
+									source={{
+										uri: `${imageUrl[0]}`,
+									}}
+									style={styles.image}
+								/>
 							</View>
-						</TouchableOpacity>
-					);
-				}}
-			/>
-		</>
+							<View style={{ paddingHorizontal: 10 }}>
+								<Text
+									numberOfLines={2}
+									style={{ paddingVertical: 5, fontSize: 12 }}
+								>
+									{name}
+								</Text>
+								<Text style={{ fontWeight: 'bold' }}>
+									US ${numberWithCommas(salePrice)}
+								</Text>
+							</View>
+						</View>
+					</TouchableOpacity>
+				);
+			}}
+		/>
 	);
 };
 
-export default memo(FreeShippingProducts);
+export default memo(ExploreProducts);
 
 const styles = StyleSheet.create({
 	product: {

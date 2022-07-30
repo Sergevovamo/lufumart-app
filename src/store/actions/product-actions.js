@@ -16,9 +16,13 @@ import {
 	DECREASE_PRODUCT_TO_CART,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	GET_MORE_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
 	GET_MORE_PRODUCTS_SUB_CATEGORY,
 	RESET_GET_MORE_PRODUCTS_SUB_CATEGORY,
+	GET_PRODUCTS_FLASH_SALE,
+	GET_PRODUCTS_FREE_SHIPPING,
+	GET_PRODUCTS_NEW_ARRIVALS,
 	CALCULATE_TOTAL,
 } from './types';
 import { returnErrors, clearErrors } from './error-actions';
@@ -135,15 +139,16 @@ export const getProductSubCategoryByCategory =
 
 export const getProducts = () => async (dispatch) => {
 	try {
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app?limit=20`
+			`${PRODUCTS_SERVER}/lufumart-app?limit=10`
 		);
 		const data = await response.data;
 
 		// console.log(data);
-		await dispatch({
-			type: PRODUCT_LOADING,
-		});
 
 		await dispatch({
 			type: GET_PRODUCTS,
@@ -151,7 +156,7 @@ export const getProducts = () => async (dispatch) => {
 		});
 		dispatch(clearErrors());
 	} catch (error) {
-		console.log(error?.response.data);
+		console.log(error);
 		Toast.show({
 			type: 'error',
 			text1: 'Error! Something went wrong.',
@@ -167,27 +172,126 @@ export const getProducts = () => async (dispatch) => {
 	}
 };
 
-// This function serves the screen on Category with limit 12
-export const getProductsBySubCategory = (payload) => async (dispatch) => {
-	const { subCategoryIds } = payload;
+export const getMoreProducts = () => async (dispatch) => {
 	try {
-		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app/products-by-sub-category?${subCategoryIds}&type=array`
-		);
-		const data = await response.data;
-
-		// totalProducts, page & products
-
-		// console.log(data);
 		await dispatch({
 			type: PRODUCT_LOADING,
 		});
 
+		const response = await axios.get(`${PRODUCTS_SERVER}/lufumart-app?limit=6`);
+		const data = await response.data;
+
+		// console.log(data);
+
 		await dispatch({
-			type: GET_PRODUCTS_SUB_CATEGORY,
-			payload: data?.subCategories,
+			type: GET_MORE_PRODUCTS,
+			payload: data?.products,
 		});
 		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+		Toast.show({
+			type: 'error',
+			text1: 'Error! Something went wrong.',
+			text2: `An error occurred while fetching products.`,
+		});
+		dispatch(
+			returnErrors(
+				error?.response?.data,
+				error?.response?.status,
+				'GET_PRODUCTS'
+			)
+		);
+	}
+};
+
+export const getFlashSaleProducts = () => async (dispatch) => {
+	try {
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		const response = await axios.get(
+			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/flash-sale-promotions`
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_PRODUCTS_FLASH_SALE,
+			payload: data?.products,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const getFreeShippingProducts = () => async (dispatch) => {
+	try {
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		const response = await axios.get(
+			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/free-shipping-promotions`
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_PRODUCTS_FREE_SHIPPING,
+			payload: data?.products,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const getNewArrivalsProducts = () => async (dispatch) => {
+	try {
+		await dispatch({
+			type: PRODUCT_LOADING,
+		});
+
+		const response = await axios.get(
+			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/new-arrivals-promotions`
+		);
+		const data = await response.data;
+
+		await dispatch({
+			type: GET_PRODUCTS_NEW_ARRIVALS,
+			payload: data?.products,
+		});
+		dispatch(clearErrors());
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// This function serves the screen on Category with limit 12
+export const getProductsBySubCategory = (payload) => async (dispatch) => {
+	const { subCategoryIds } = payload;
+
+	try {
+		if (subCategoryIds?.length > 0) {
+			const response = await axios.get(
+				`${PRODUCTS_SERVER}/lufumart-app/products-by-sub-category?${subCategoryIds}&type=array`
+			);
+			const data = await response.data;
+
+			// totalProducts, page & products
+
+			// console.log(data);
+			await dispatch({
+				type: PRODUCT_LOADING,
+			});
+
+			await dispatch({
+				type: GET_PRODUCTS_SUB_CATEGORY,
+				payload: data?.subCategories,
+			});
+			dispatch(clearErrors());
+		}
 	} catch (error) {
 		console.log(error?.response?.data);
 		Toast.show({

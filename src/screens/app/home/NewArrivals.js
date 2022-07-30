@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, memo } from 'react';
 import {
 	View,
 	Text,
@@ -12,33 +12,36 @@ import { useNavigation } from '@react-navigation/native';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
 	getProduct,
-	getProducts,
-	getCartProducts,
-	addProductToCart,
-	decreaseCartProductQuantity,
+	getNewArrivalsProducts,
 } from '../../../store/actions/product-actions';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
-const RecentlyViewed = () => {
+const NewArrivals = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
 
-	const products = useSelector((state) => state.products?.products);
+	const products = useSelector(
+		(state) => state.products?.getNewArrivalsProducts
+	);
 
-	// useEffect(() => {
-	// 	// set a clean up flag
-	// 	mounted.current = true;
+	useEffect(() => {
+		// set a clean up flag
+		mounted.current = true;
 
-	// 	if (mounted.current) {
-	// 		dispatch(getProducts());
-	// 	}
+		if (mounted.current) {
+			fetchProducts();
+		}
 
-	// 	return () => {
-	// 		// cancel subscription to useEffect
-	// 		mounted.current = false;
-	// 	};
-	// }, []);
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, []);
+
+	const fetchProducts = useCallback(() => {
+		dispatch(getNewArrivalsProducts());
+	}, []);
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
@@ -88,7 +91,7 @@ const RecentlyViewed = () => {
 	);
 };
 
-export default RecentlyViewed;
+export default memo(NewArrivals);
 
 const styles = StyleSheet.create({
 	product: {

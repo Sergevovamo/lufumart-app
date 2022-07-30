@@ -48,20 +48,22 @@ const SubCategory = () => {
 			return item._id;
 		});
 
-		// Convert array to query string
-		let paramsToQueryString = params
-			?.map(function (el, idx) {
-				return 'subCategoryIds[' + idx + ']=' + el;
-			})
-			.join('&');
+		// To fix possible undefined
+		if (params?.length > 0) {
+			// Convert array to query string
+			let paramsToQueryString = params
+				?.map(function (el, idx) {
+					return 'subCategoryIds[' + idx + ']=' + el;
+				})
+				.join('&');
 
-		let payload = {
-			// Pass sub category id as array
-			subCategoryIds: paramsToQueryString,
-			limit: '12',
-		};
-
-		dispatch(getProductsBySubCategory(payload));
+			let payload = {
+				// Pass sub category id as array
+				subCategoryIds: paramsToQueryString,
+				limit: '12',
+			};
+			dispatch(getProductsBySubCategory(payload));
+		}
 	}, [productSubCategories]);
 
 	useEffect(() => {

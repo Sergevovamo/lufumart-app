@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, memo } from 'react';
 import {
 	View,
 	Text,
@@ -12,63 +12,45 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
-import { numberWithCommas } from '../../../../utils/NumberWithCommas';
+import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
-	getMoreProductsBySubCategory,
 	getProduct,
-} from '../../../../store/actions/product-actions';
-import { hideTabbar } from '../../../../store/actions/app-settings-actions';
+	getMoreProducts,
+} from '../../../store/actions/product-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
-const ProductList = () => {
+const ExploreMoreProducts = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const mounted = useRef(false);
+
+	const isLoading = useSelector((state) => state.products?.isLoading);
+	const products = useSelector((state) => state.products?.getMoreProducts);
 
 	const [page, setPage] = useState(1);
 
 	useEffect(() => {
-		if (page > 1) {
-			requestAPI();
+		// set a clean up flag
+		mounted.current = true;
+
+		if (mounted.current) {
+			fetchProducts();
 		}
-		// console.log('CURRENT PAGE', page);
-	}, [page, requestAPI]);
 
-	// Sub category products
-	const products = useSelector((state) => state.products);
-	// Current Sub Category Title
-	const currentSubCategoryId = useSelector(
-		(state) => state.products?.currentSubCategoryTitle?._id
-	);
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, []);
 
-	// get products by sub category
-	const getMoreProductSubCategories = useSelector(
-		(state) => state.products?.getMoreProductsBySubCategory
-	);
+	const fetchProducts = useCallback(() => {
+		dispatch(getMoreProducts());
+	}, []);
 
-	// useCallback prevent re-renders to avoid duplicate calls in the api
-	const requestAPI = useCallback(() => {
-		let params = [`${currentSubCategoryId}`];
-
-		if (params.length > 0) {
-			// Convert array to query string
-			let paramsToQueryString = params
-				?.map(function (el, idx) {
-					return 'subCategoryId[' + idx + ']=' + el;
-				})
-				.join('&');
-
-			const data = {
-				page: page,
-				subCategoryId: paramsToQueryString,
-			};
-			dispatch(getMoreProductsBySubCategory(data));
-		}
-	}, [page]);
-
-	const fetchMoreData = () => {
-		if (!products.isListEnd && !products.moreLoading) {
-			setPage(page + 1);
-		}
-	};
+	const fetchMoreData = useCallback(() => {
+		dispatch(getMoreProducts());
+	}, []);
+	// console.log(products);
 
 	const renderFooter = () => (
 		<View style={styles.footerText}>
@@ -86,21 +68,15 @@ const ProductList = () => {
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
-		navigation.navigate('CategoriesDetailsScreen');
+		navigation.navigate('HomeDetailsScreen');
 		dispatch(hideTabbar());
 	};
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				backgroundColor: '#fffff7',
-				alignItems: 'center',
-			}}
-		>
-			{getMoreProductsBySubCategory?.length > 0 && (
+		<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+			{products?.length > 0 && (
 				<FlatList
-					data={getMoreProductSubCategories}
+					data={products}
 					keyExtractor={(item, index) => `${item}-${index}`}
 					numColumns={2}
 					style={{ flexGrow: 0 }}
@@ -145,7 +121,7 @@ const ProductList = () => {
 	);
 };
 
-export default ProductList;
+export default memo(ExploreMoreProducts);
 
 const styles = StyleSheet.create({
 	product: {
