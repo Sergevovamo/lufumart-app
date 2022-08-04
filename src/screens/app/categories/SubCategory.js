@@ -100,14 +100,14 @@ const SubCategory = () => {
 
 		dispatch(getMoreProductsBySubCategory(payload));
 		dispatch(getCurrentSubCategoryTitle(subCategory));
-		dispatch(hideTabbar());
+		// dispatch(hideTabbar());
 		navigation.navigate('ProductListScreen');
 	};
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
 		navigation.navigate('CategoriesDetailsScreen');
-		dispatch(hideTabbar());
+		// dispatch(hideTabbar());
 	};
 
 	return (

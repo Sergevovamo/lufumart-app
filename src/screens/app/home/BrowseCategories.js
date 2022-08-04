@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import {
 	View,
 	Text,
@@ -7,17 +7,48 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProductCategories } from '../../../store/actions/product-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const BrowseCategories = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
+	const mounted = useRef(false);
 
 	const productCategories = useSelector(
 		(state) => state.products?.productCategories
 	);
 
 	useEffect(() => {
+		mounted.current = true;
+		if (mounted.current) {
+			fetchCategories();
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, []);
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'HomeCategoriesScreen') {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
+
+	const fetchCategories = useCallback(() => {
 		dispatch(getProductCategories());
 	}, []);
 

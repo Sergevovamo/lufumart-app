@@ -34,6 +34,10 @@ import {
 } from '../../../../store/actions/product-actions';
 import { calculateShippingFee } from '../../../../store/actions/order-actions';
 import { currentUserAddress } from '../../../../store/actions/auth-actions';
+import {
+	showTabbar,
+	hideTabbar,
+} from '../../../../store/actions/app-settings-actions';
 import { mapStyle } from './MapStyle';
 
 import ProductImage from './ProductImage';
@@ -49,7 +53,6 @@ const Details = () => {
 	const navigation = useNavigation();
 	const route = useRoute();
 	const mounted = useRef(false);
-	// console.log(route.name);
 
 	const _map = useRef(null);
 	const textInput = useRef(2);
@@ -101,6 +104,25 @@ const Details = () => {
 			isMounted = false;
 		};
 	}, []);
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (
+			route.name === 'HomeDetailsScreen' ||
+			route.name === 'HomeExploreMoreDetailsScreen' ||
+			route.name === 'CategoriesDetailsScreen'
+		) {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -162,7 +184,9 @@ const Details = () => {
 			} catch (err) {}
 		};
 
-		await getLocation();
+		if (mounted.current) {
+			await getLocation();
+		}
 
 		return () => {
 			// cancel subscription to useEffect
@@ -273,8 +297,8 @@ const Details = () => {
 									</Text>
 									{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 									<Text style={styles.location}>
-										+ shipping fee of USD ${shippingFee ? shippingFee : 0} from{' '}
-										{owner?.name} to{' '}
+										+ shipping fee of USD ${shippingFee ? shippingFee : 0} from
+										Lufumart Seller to{' '}
 										{userAddress?.description
 											? userAddress?.description
 											: 'your location of choice'}
@@ -871,13 +895,6 @@ const styles = StyleSheet.create({
 	},
 	footerTitle: {
 		flexDirection: 'column',
-	},
-	// Image Modal
-	imageModal: {
-		// flex: 1,
-		// alignItems: 'center',
-		justifyContent: 'center',
-		// margin: 0,
 	},
 
 	// Network Connection modal

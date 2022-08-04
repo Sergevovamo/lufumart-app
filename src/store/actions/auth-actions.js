@@ -20,6 +20,7 @@ import {
 } from './error-actions';
 
 const USERS_URL = 'https://api-v1.lufumart.com/api/v1/auth';
+const SELLERS_URL = 'https://api-v1.lufumart.com/api/v1/seller/auth';
 
 // Setup config headers and token
 export const tokenConfig = async () => {
@@ -69,9 +70,8 @@ export const auth = () => async (dispatch) => {
 };
 
 // Register User
-export const registerUser = (payload) => async (dispatch) => {
+export const registerUser = (payload, isSeller) => async (dispatch) => {
 	const { name, email, phone, gender, password } = payload;
-	// console.log(payload);
 
 	try {
 		// Headers
@@ -90,26 +90,50 @@ export const registerUser = (payload) => async (dispatch) => {
 			password,
 			password_confirmation: password,
 		});
-		// console.log(body);
-		await dispatch({
-			type: USER_LOADING,
-		});
 
-		const response = await axios.post(`${USERS_URL}/signup`, body, config);
+		if (isSeller) {
+			await dispatch({
+				type: USER_LOADING,
+			});
 
-		const data = await response.data;
-		await save('userToken', data.token);
+			const response = await axios.post(`${SELLERS_URL}/signup`, body, config);
 
-		await dispatch({
-			type: REGISTER_SUCCESS,
-			payload: data,
-		});
-		dispatch(auth());
-		Toast.show({
-			type: 'success',
-			text1: 'Account created successfully!',
-			text2: `We're glad to have you on board`,
-		});
+			const data = await response.data;
+			await save('userToken', data.token);
+
+			await dispatch({
+				type: REGISTER_SUCCESS,
+				payload: data,
+			});
+			dispatch(auth());
+
+			Toast.show({
+				type: 'success',
+				text1: 'Account created successfully!',
+				text2: `We're glad to have you on board`,
+			});
+		} else {
+			await dispatch({
+				type: USER_LOADING,
+			});
+
+			const response = await axios.post(`${USERS_URL}/signup`, body, config);
+
+			const data = await response.data;
+			await save('userToken', data.token);
+
+			await dispatch({
+				type: REGISTER_SUCCESS,
+				payload: data,
+			});
+			dispatch(auth());
+
+			Toast.show({
+				type: 'success',
+				text1: 'Account created successfully!',
+				text2: `We're glad to have you on board`,
+			});
+		}
 	} catch (error) {
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'REGISTER_FAIL')

@@ -1,30 +1,24 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-import {
-	MaterialIcons,
-	MaterialCommunityIcons,
-	SimpleLineIcons,
-	Octicons,
-	Feather,
-	AntDesign,
-} from '@expo/vector-icons';
+import { MaterialIcons, SimpleLineIcons, AntDesign } from '@expo/vector-icons';
 
 import {
 	HomeStackScreen,
 	CategoriesStackScreen,
 	FeedStackScreen,
-	SavedStackScreen,
+	SellStackScreen,
 	SettingsStackScreen,
 } from './AppScreenStack';
 
 const Tab = createBottomTabNavigator();
 
 const AppTabStack = () => {
-	let showTabbar = useSelector((state) => state.appSettings.showTabbar);
+	let user = useSelector((state) => state.auth?.user?.current_user);
+	console.log(user.role);
+
+	let tabBarVisible = useSelector((state) => state.appSettings.showTabbar);
 
 	return (
 		<Tab.Navigator
@@ -35,7 +29,7 @@ const AppTabStack = () => {
 				tabBarActiveBackgroundColor: '#00ab55',
 				tabBarStyle: [
 					{
-						display: showTabbar ? 'flex' : 'none',
+						display: tabBarVisible ? 'flex' : 'none',
 					},
 					null,
 				],
@@ -67,6 +61,36 @@ const AppTabStack = () => {
 					),
 				}}
 			/>
+			{user.role === 'Seller' && (
+				<Tab.Screen
+					name="Selling"
+					component={SellStackScreen}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<AntDesign
+								name="tago"
+								size={24}
+								color={focused ? '#fff' : 'black'}
+							/>
+						),
+					}}
+				/>
+			)}
+			{user.role === 'Administrator' && (
+				<Tab.Screen
+					name="Selling"
+					component={SellStackScreen}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<AntDesign
+								name="tago"
+								size={24}
+								color={focused ? '#fff' : 'black'}
+							/>
+						),
+					}}
+				/>
+			)}
 			<Tab.Screen
 				name="Feed"
 				component={FeedStackScreen}
@@ -80,19 +104,6 @@ const AppTabStack = () => {
 					),
 				}}
 			/>
-			{/* <Tab.Screen
-				name="Saved"
-				component={SavedStackScreen}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<MaterialCommunityIcons
-							name="heart-outline"
-							size={24}
-							color={focused ? '#fff' : 'black'}
-						/>
-					),
-				}}
-			/> */}
 			<Tab.Screen
 				name="Settings"
 				component={SettingsStackScreen}

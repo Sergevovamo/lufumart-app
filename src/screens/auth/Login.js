@@ -149,6 +149,7 @@ const Login = () => {
 														size="xs"
 														rounded="none"
 														h="full"
+														colorScheme="orange"
 														onPress={togglePassword}
 													>
 														{showPassword ? 'Hide' : 'Show'}

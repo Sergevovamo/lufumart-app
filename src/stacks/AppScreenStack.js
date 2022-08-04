@@ -26,7 +26,7 @@ import {
 import ProductImageZoom from '../screens/app/home/Details/ProductImageZoom';
 import { Categories, ProductList } from '../screens/app/categories';
 import { Feed } from '../screens/app/feed';
-import { LikedItems } from '../screens/app/saved';
+import { Sell } from '../screens/app/sell';
 import {
 	Settings,
 	Profile,
@@ -48,7 +48,7 @@ import { showTabbar, hideTabbar } from '../store/actions/app-settings-actions';
 const HomeStack = createStackNavigator();
 const CategoriesStack = createStackNavigator();
 const FeedStack = createStackNavigator();
-const SavedStack = createStackNavigator();
+const SellStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 const AuthStack = createStackNavigator();
 
@@ -231,13 +231,16 @@ export const HomeStackScreen = ({ navigation }) => {
 				options={{
 					title: 'Explore Products',
 					headerLeft: () => (
-						<TouchableOpacity onPress={displayTabbar}>
-							<Ionicons
-								name="arrow-back"
-								size={24}
-								color="black"
-								style={{ paddingHorizontal: 15 }}
-							/>
+						<TouchableOpacity
+							onPress={displayTabbar}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 15,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
 						</TouchableOpacity>
 					),
 				}}
@@ -250,6 +253,61 @@ export const HomeStackScreen = ({ navigation }) => {
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 15,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeDetailCartScreen')}
+										style={{
+											padding: 10,
+											backgroundColor: '#f3f7ff',
+											borderRadius: 50,
+										}}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
+						</View>
+					),
+				}}
+			/>
+			<HomeStack.Screen
+				name="HomeExploreMoreDetailsScreen"
+				component={Details}
+				options={{
+					title: 'Details',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('ExploreMoreProducts')}
 							style={{
 								padding: 10,
 								backgroundColor: '#f3f7ff',
@@ -384,7 +442,7 @@ export const HomeStackScreen = ({ navigation }) => {
 					title: '',
 					headerLeft: () => (
 						<TouchableOpacity
-							onPress={() => navigation.navigate('HomeDetailsScreen')}
+							onPress={() => navigation.goBack()}
 							style={{
 								padding: 10,
 								backgroundColor: '#f3f7ff',
@@ -392,7 +450,6 @@ export const HomeStackScreen = ({ navigation }) => {
 								marginHorizontal: 5,
 							}}
 						>
-							{/* <Ionicons name="arrow-back" size={24} color="black" /> */}
 							<AntDesign name="close" size={24} color="black" />
 						</TouchableOpacity>
 					),
@@ -404,6 +461,7 @@ export const HomeStackScreen = ({ navigation }) => {
 					},
 				}}
 			/>
+
 			<HomeStack.Screen
 				name="DeliveryAddressScreen"
 				component={DeliveryAddress}
@@ -566,6 +624,84 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<CategoriesStack.Screen
+				name="ProductListScreen"
+				component={ProductList}
+				options={{
+					title: `${currentSubCategoryTitle}`,
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={displayTabbar}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<CategoriesStack.Screen
+				name="CategoriesProductListDetailsScreen"
+				component={Details}
+				options={{
+					title: 'Details',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('ProductListScreen')}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() =>
+											navigation.navigate('CategoriesDetailCartScreen')
+										}
+										style={{
+											padding: 10,
+											backgroundColor: '#f3f7ff',
+											borderRadius: 50,
+											marginHorizontal: 5,
+										}}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
+						</View>
+					),
+				}}
+			/>
+			<CategoriesStack.Screen
 				name="ImageScreen"
 				component={ProductImageZoom}
 				options={{
@@ -626,12 +762,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 								marginHorizontal: 5,
 							}}
 						>
-							<Ionicons
-								name="arrow-back"
-								size={24}
-								color="black"
-								// style={{ paddingHorizontal: 15 }}
-							/>
+							<Ionicons name="arrow-back" size={24} color="black" />
 						</TouchableOpacity>
 					),
 				}}
@@ -675,55 +806,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 					),
 				}}
 			/>
-			<CategoriesStack.Screen
-				name="ProductListScreen"
-				component={ProductList}
-				options={{
-					title: `${currentSubCategoryTitle}`,
-					headerLeft: () => (
-						<TouchableOpacity
-							onPress={displayTabbar}
-							style={{
-								padding: 10,
-								backgroundColor: '#f3f7ff',
-								borderRadius: 50,
-								marginHorizontal: 5,
-							}}
-						>
-							<Ionicons name="arrow-back" size={24} color="black" />
-						</TouchableOpacity>
-					),
-					// headerRight: () => (
-					// 	<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					// 		<TouchableOpacity
-					// 			onPress={() => navigation.navigate('HomeDetailCartScreen')}
-					// 		>
-					// 			<MaterialCommunityIcons
-					// 				name="cart-outline"
-					// 				size={24}
-					// 				color="black"
-					// 				style={{
-					// 					paddingHorizontal: 15,
-					// 				}}
-					// 			/>
-					// 		</TouchableOpacity>
-					// 		<Badge
-					// 			visible={numberOfCartItems?.length ? true : false}
-					// 			style={{
-					// 				marginBottom: 25,
-					// 				marginLeft: -15,
-					// 				marginRight: 10,
-					// 				color: '#fff',
-					// 				backgroundColor: '#f68b1e',
-					// 			}}
-					// 			size={15}
-					// 		>
-					// 			{numberOfCartItems?.length}
-					// 		</Badge>
-					// 	</View>
-					// ),
-				}}
-			/>
+
 			<CategoriesStack.Screen
 				name="AuthStackScreen"
 				component={AuthStackScreen}
@@ -738,6 +821,88 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				}}
 			/>
 		</CategoriesStack.Navigator>
+	);
+};
+
+export const SellStackScreen = ({ navigation }) => {
+	const numberOfCartItems = useSelector(
+		(state) => state.auth?.user?.current_user?.cart
+	);
+	return (
+		<SellStack.Navigator>
+			<SellStack.Screen
+				name="SellScreen"
+				component={Sell}
+				options={{
+					title: 'Selling',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.openDrawer()}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="menu" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<TouchableOpacity
+								onPress={() => navigation.navigate('SellCartScreen')}
+								style={{
+									padding: 10,
+									backgroundColor: '#f3f7ff',
+									borderRadius: 50,
+									marginHorizontal: 5,
+								}}
+							>
+								<MaterialCommunityIcons
+									name="cart-outline"
+									size={24}
+									color="black"
+								/>
+							</TouchableOpacity>
+							<Badge
+								visible={numberOfCartItems?.length ? true : false}
+								style={{
+									marginBottom: 25,
+									marginLeft: -15,
+									marginRight: 10,
+									color: '#fff',
+									backgroundColor: '#f68b1e',
+								}}
+								size={15}
+							>
+								{numberOfCartItems?.length}
+							</Badge>
+						</View>
+					),
+				}}
+			/>
+			<SellStack.Screen
+				name="SellCartScreen"
+				component={Cart}
+				options={{
+					title: 'My Cart',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('SellScreen')}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+				}}
+			/>
+		</SellStack.Navigator>
 	);
 };
 
@@ -886,69 +1051,6 @@ export const FeedStackScreen = ({ navigation }) => {
 				}}
 			/>
 		</FeedStack.Navigator>
-	);
-};
-
-export const SavedStackScreen = ({ navigation }) => {
-	const numberOfCartItems = useSelector(
-		(state) => state.auth?.user?.current_user?.cart
-	);
-	return (
-		<SavedStack.Navigator>
-			<SavedStack.Screen
-				name="SavedScreen"
-				component={LikedItems}
-				options={{
-					title: 'Saved & Liked Items',
-					headerRight: () => (
-						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<TouchableOpacity
-								onPress={() => navigation.navigate('SavedCartScreen')}
-							>
-								<MaterialCommunityIcons
-									name="cart-outline"
-									size={24}
-									color="black"
-									style={{ paddingHorizontal: 15 }}
-								/>
-							</TouchableOpacity>
-							<Badge
-								visible={numberOfCartItems?.length ? true : false}
-								style={{
-									marginBottom: 25,
-									marginLeft: -15,
-									marginRight: 10,
-									color: '#fff',
-									backgroundColor: '#f68b1e',
-								}}
-								size={15}
-							>
-								{numberOfCartItems?.length}
-							</Badge>
-						</View>
-					),
-				}}
-			/>
-			<SavedStack.Screen
-				name="SavedCartScreen"
-				component={Cart}
-				options={{
-					title: 'My Cart',
-					headerLeft: () => (
-						<TouchableOpacity
-							onPress={() => navigation.navigate('SavedScreen')}
-						>
-							<Ionicons
-								name="arrow-back"
-								size={24}
-								color="black"
-								style={{ paddingHorizontal: 15 }}
-							/>
-						</TouchableOpacity>
-					),
-				}}
-			/>
-		</SavedStack.Navigator>
 	);
 };
 

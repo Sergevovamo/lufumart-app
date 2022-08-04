@@ -1,5 +1,5 @@
-import { TouchableOpacity, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {
@@ -12,6 +12,7 @@ import {
 	Input,
 	Button,
 	HStack,
+	Checkbox,
 	Center,
 	Spinner,
 	Select,
@@ -31,11 +32,11 @@ const Signup = ({ navigation }) => {
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
+	const [isSelected, setSelection] = useState(false);
 
 	const {
 		control,
 		handleSubmit,
-		getValues,
 		formState: { errors },
 	} = useForm({ mode: 'onBlur' });
 
@@ -47,7 +48,9 @@ const Signup = ({ navigation }) => {
 		// Attempt to authenticate user
 
 		setButtonLoading(true);
-		await dispatch(registerUser(data));
+		await dispatch(registerUser(data, isSelected));
+		// Go back login screen
+		navigation.goBack();
 	};
 
 	useEffect(() => {
@@ -230,10 +233,6 @@ const Signup = ({ navigation }) => {
 													>
 														<Select.Item label="Male" value="Male" />
 														<Select.Item label="Female" value="Female" />
-														<Select.Item
-															label="Rather not say"
-															value="Rather not say"
-														/>
 													</Select>
 												)}
 												rules={{
@@ -268,6 +267,7 @@ const Signup = ({ navigation }) => {
 															<Button
 																size="xs"
 																rounded="none"
+																colorScheme="orange"
 																h="full"
 																onPress={togglePassword}
 															>
@@ -293,6 +293,16 @@ const Signup = ({ navigation }) => {
 											>
 												{errors?.password?.message}
 											</FormControl.ErrorMessage>
+											<HStack space={6} style={{ marginVertical: 15 }}>
+												<Checkbox
+													shadow={2}
+													value="test"
+													onChange={() => setSelection(!isSelected)}
+													colorScheme="orange"
+												>
+													Become a seller at Lufumart
+												</Checkbox>
+											</HStack>
 
 											<Link
 												href="https://docs.google.com/document/d/1zyycAX15prrhTrIR5H-g3nUVEOUgTvvyQzZwIoHQSSg/edit?usp=sharing"
@@ -361,6 +371,19 @@ const Signup = ({ navigation }) => {
 };
 
 export default Signup;
+
+const styles = StyleSheet.create({
+	checkboxContainer: {
+		flexDirection: 'row',
+		marginBottom: 20,
+	},
+	checkbox: {
+		alignSelf: 'center',
+	},
+	label: {
+		margin: 8,
+	},
+});
 
 const data = [
 	{

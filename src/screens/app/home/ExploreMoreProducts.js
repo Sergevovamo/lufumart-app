@@ -9,6 +9,7 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,6 +21,7 @@ import {
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const ExploreMoreProducts = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
@@ -42,6 +44,21 @@ const ExploreMoreProducts = () => {
 			mounted.current = false;
 		};
 	}, []);
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'ExploreMoreProducts') {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	const fetchProducts = useCallback(() => {
 		dispatch(getMoreProducts());
@@ -68,12 +85,19 @@ const ExploreMoreProducts = () => {
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
-		navigation.navigate('HomeDetailsScreen');
-		dispatch(hideTabbar());
+		navigation.navigate('HomeExploreMoreDetailsScreen');
 	};
 
 	return (
-		<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+		<View
+			style={{
+				flex: 1,
+				backgroundColor: '#fffff7',
+				alignItems: 'center',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
 			{products?.length > 0 && (
 				<FlatList
 					data={products}

@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 
-const ViewedItems = () => {
+const Sell = () => {
 	return (
 		<View
 			style={{
@@ -12,10 +12,10 @@ const ViewedItems = () => {
 			}}
 		>
 			<View style={{ backgroundColor: 'white', padding: 20 }}>
-				<Text>Saved & Liked Items</Text>
+				<Text>Sell</Text>
 			</View>
 		</View>
 	);
 };
 
-export default ViewedItems;
+export default Sell;

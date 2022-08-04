@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FlatList } from 'react-native';
 import {
@@ -18,7 +18,7 @@ import {
 	WarningOutlineIcon,
 	NativeBaseProvider,
 } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
 import {
@@ -46,19 +46,31 @@ const VirtualizedView = (props) => {
 
 const Settings = () => {
 	const dispatch = useDispatch();
+	const route = useRoute();
 	const navigation = useNavigation();
+	const mounted = useRef(false);
+
 	let authUser = useSelector((state) => state.auth.isAuthenticated);
 	let userAddress = useSelector((state) => state.auth.currentUserAddress);
 
 	useEffect(() => {
-		if (authUser) {
-			dispatch(showTabbar());
+		mounted.current = true;
+
+		if (route.name === 'SettingsScreen') {
+			if (mounted.current) {
+				dispatch(showTabbar());
+			}
 		}
-	}, [authUser]);
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	const removeTabbar = () => {
 		navigation.navigate('AuthStackScreen');
-		dispatch(hideTabbar());
+		// dispatch(hideTabbar());
 	};
 
 	return (

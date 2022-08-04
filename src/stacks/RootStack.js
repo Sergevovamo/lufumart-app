@@ -15,13 +15,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { auth } from '../store/actions/auth-actions';
 
 import AppTabStack from './AppTabStack';
+import { DrawerStackScreen } from './DrawerStackScreen';
 import AuthScreenStack from './AuthScreenStack';
 
 const RootStack = () => {
 	// const netinfo = useNetInfo();
 
 	// const dispatch = useDispatch();
-	// let authUser = useSelector((state) => state.auth.isAuthenticated);
+	let authUser = useSelector((state) => state.auth.isAuthenticated);
 
 	// const [isLoading, setIsLoading] = useState(false);
 
@@ -54,7 +55,8 @@ const RootStack = () => {
 
 	return (
 		<NavigationContainer>
-			<AppTabStack />
+			<DrawerStackScreen />
+			{/* <AppTabStack /> */}
 			{/* <AuthScreenStack /> */}
 		</NavigationContainer>
 	);

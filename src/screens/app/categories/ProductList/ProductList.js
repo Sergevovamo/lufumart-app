@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
 	View,
 	Text,
@@ -10,7 +10,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { numberWithCommas } from '../../../../utils/NumberWithCommas';
 import {
@@ -20,8 +20,10 @@ import {
 import { hideTabbar } from '../../../../store/actions/app-settings-actions';
 
 const ProductList = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const mounted = useRef(false);
 
 	const [page, setPage] = useState(1);
 
@@ -43,6 +45,21 @@ const ProductList = () => {
 	const getMoreProductSubCategories = useSelector(
 		(state) => state.products?.getMoreProductsBySubCategory
 	);
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'ProductListScreen') {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	// useCallback prevent re-renders to avoid duplicate calls in the api
 	const requestAPI = useCallback(() => {
@@ -86,8 +103,8 @@ const ProductList = () => {
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
-		navigation.navigate('CategoriesDetailsScreen');
-		dispatch(hideTabbar());
+		navigation.navigate('CategoriesProductListDetailsScreen');
+		// dispatch(hideTabbar());
 	};
 
 	return (

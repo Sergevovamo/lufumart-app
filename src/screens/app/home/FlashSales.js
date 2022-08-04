@@ -64,8 +64,8 @@ const FlashSales = () => {
 	const viewedProduct = useCallback((product) => {
 		dispatch(getProduct(product._id));
 		navigation.navigate('HomeDetailsScreen');
-		dispatch(hideTabbar());
 	}, []);
+
 	return (
 		<>
 			<FlatList

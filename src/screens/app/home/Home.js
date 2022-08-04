@@ -4,7 +4,6 @@ import {
 	View,
 	Text,
 	Alert,
-	ScrollView,
 	FlatList,
 	StyleSheet,
 	TouchableOpacity,
@@ -12,6 +11,7 @@ import {
 import { openSettings } from 'expo-linking';
 import { useDispatch } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
 	MaterialIcons,
@@ -30,16 +30,13 @@ import Carousel from '../../../components/Carousel';
 import ExploreProducts from './ExploreProducts';
 import RecentlyViewed from './RecentlyViewed';
 import ShopCategories from './ShopCategories';
-// import Laptops from './Laptops';
-// import Headphones from './Headphones';
-// import DataStorage from './DataStorage';
 import DiscountProducts from './DiscountProducts';
 import FlashSales from './FlashSales';
 import NewArrivals from './NewArrivals';
 import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
-import { hideTabbar } from '../../../store/actions/app-settings-actions';
+import { showTabbar } from '../../../store/actions/app-settings-actions';
 import { currentPushToken } from '../../../store/actions/auth-actions';
 
 Notifications.setNotificationHandler({
@@ -65,6 +62,7 @@ const VirtualizedView = (props) => {
 };
 
 const Home = ({ navigation }) => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const responseListener = useRef();
 	const notificationListener = useRef();
@@ -82,6 +80,20 @@ const Home = ({ navigation }) => {
 
 	// 	return () => removeNetInfoSubscription();
 	// }, []);
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'HomeScreen') {
+			if (mounted.current) {
+				dispatch(showTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -174,12 +186,10 @@ const Home = ({ navigation }) => {
 
 	const browseCategories = () => {
 		navigation.navigate('HomeCategoriesScreen');
-		dispatch(hideTabbar());
 	};
 
 	const exploreMoreProducts = () => {
 		navigation.navigate('ExploreMoreProducts');
-		dispatch(hideTabbar());
 	};
 	return (
 		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
@@ -397,7 +407,12 @@ const Home = ({ navigation }) => {
 					>
 						Explore Products
 					</Text>
-					<AntDesign name="arrowright" size={24} color="#f68b1e" />
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<Text style={{ paddingRight: 5, fontSize: 12, color: '#f68b1e' }}>
+							See More
+						</Text>
+						<AntDesign name="arrowright" size={18} color="#f68b1e" />
+					</View>
 				</TouchableOpacity>
 				<ExploreProducts />
 			</VirtualizedView>
