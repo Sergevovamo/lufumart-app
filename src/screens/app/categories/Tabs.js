@@ -29,11 +29,12 @@ const Tabs = () => {
 	useEffect(() => {
 		dispatch(getProductCategories());
 	}, []);
-	// console.log(selectedTab);
 
 	useEffect(() => {
+		// Change sub categories on category change
 		dispatch(getProductSubCategoryByCategory(selectedTab?._id));
 	}, [selectedTab]);
+
 	return (
 		<>
 			<FlatList

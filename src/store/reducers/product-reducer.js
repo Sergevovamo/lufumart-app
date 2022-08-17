@@ -4,6 +4,9 @@ import {
 	PAGINATION_LIST_END,
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
+	GET_PRODUCTS_BY_CATEGORY,
+	CURRENT_CATEGORY_TITLE,
+	CLEAR_PRODUCTS_BY_CATEGORY,
 	GET_PRODUCT_HOME_CATEGORIES,
 	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
 	CURRENT_SUB_CATEGORY_TITLE,
@@ -33,6 +36,7 @@ const initialState = {
 	productCategory: null,
 	productCategories: null,
 	productHomeCategories: null,
+	productsByCategory: [],
 	productSubCategoriesByCategory: null,
 	product: null,
 	products: [],
@@ -46,6 +50,7 @@ const initialState = {
 	cartProducts: null,
 	total: null,
 	// Currently view products based on Product Detail or Sub Category
+	currentCategoryTitle: null,
 	currentSubCategoryTitle: null,
 };
 
@@ -82,6 +87,27 @@ export default function ProductReducer(state = initialState, action) {
 				isAuthenticated: false,
 				isLoading: false,
 				productHomeCategories: action.payload,
+			};
+		case GET_PRODUCTS_BY_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				productsByCategory: [...state.productsByCategory, ...action.payload],
+			};
+		case CURRENT_CATEGORY_TITLE:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				currentCategoryTitle: action.payload,
+			};
+		case CLEAR_PRODUCTS_BY_CATEGORY:
+			return {
+				...state,
+				isAuthenticated: false,
+				isLoading: false,
+				productsByCategory: [],
 			};
 		case GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY:
 			return {

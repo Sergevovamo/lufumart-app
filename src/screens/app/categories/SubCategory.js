@@ -40,6 +40,7 @@ const SubCategory = () => {
 
 	useEffect(() => {
 		let categoryId = '627eaa45dfa8780fea3c8044';
+		// Run once on load
 		dispatch(getProductSubCategoryByCategory(categoryId));
 	}, []);
 
@@ -114,7 +115,7 @@ const SubCategory = () => {
 		<>
 			{productSubCategories?.length > 0 ? (
 				<FlatList
-					data={productSubCategories}
+					data={productSubCategories.slice(0, 5)}
 					ListHeaderComponent={Tabs}
 					keyExtractor={(item, index) => `${item}-${index}`}
 					style={{ flexGrow: 0 }}

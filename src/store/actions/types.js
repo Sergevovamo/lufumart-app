@@ -28,6 +28,9 @@ export const PAGINATION_LOADING = 'pagination_loading';
 export const PAGINATION_LIST_END = 'pagination_list_end';
 export const GET_PRODUCT_CATEGORY = 'get_product_category';
 export const GET_PRODUCT_CATEGORIES = 'get_product_categories';
+export const GET_PRODUCTS_BY_CATEGORY = 'get_products_by_category';
+export const CURRENT_CATEGORY_TITLE = 'current_category_title';
+export const CLEAR_PRODUCTS_BY_CATEGORY = 'clear_products_by_category';
 export const GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY =
 	'get_product_sub_categories_by_category';
 export const GET_PRODUCT_HOME_CATEGORIES = 'get_product_home_categories';

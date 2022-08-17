@@ -48,6 +48,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
+const ASPECT_RATIO = deviceWidth / deviceHeight;
+
 const Details = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
@@ -64,8 +66,8 @@ const Details = () => {
 	const [position, setPosition] = useState({
 		latitude: -4.3758745,
 		longitude: 15.3396506,
-		latitudeDelta: 0.008,
-		longitudeDelta: 0.008,
+		latitudeDelta: 0.0922,
+		longitudeDelta: 0.0922 * ASPECT_RATIO,
 	});
 
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
@@ -125,74 +127,52 @@ const Details = () => {
 	}, [route.name]);
 
 	useEffect(() => {
-		// set a clean up flag
-		// mounted.current = true;
-		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-			const offline = !(state.isConnected && state.isInternetReachable);
-			setOfflineStatus(offline);
-		});
-
-		// if (mounted.current) {
 		fetchShippingFee();
-		// }
-		return () => removeNetInfoSubscription();
-
-		// return () => {
-		// 	// cancel subscription to useEffect
-		// 	mounted.current = false;
-		// };
 	}, []);
 
 	const fetchShippingFee = useCallback(() => {
 		dispatch(calculateShippingFee());
 	}, [cartProducts]);
 
-	useEffect(async () => {
-		// set a clean up flag
-		mounted.current = true;
+	// useEffect(async () => {
+	// 	// set a clean up flag
+	// 	mounted.current = true;
 
-		await checkPermission();
+	// 	await checkPermission();
 
-		const getLocation = async () => {
-			mounted.current = true;
-			try {
-				const { granted } = await Location.requestForegroundPermissionsAsync();
-				if (!granted) return;
-				if (mounted.current) {
-					const {
-						coords: { latitude, longitude },
-					} = Location.watchPositionAsync(
-						{ accuracy: Location.Accuracy.High },
-						(loc) => {
-							const { latitude, longitude } = JSON.parse(
-								JSON.stringify(loc.coords)
-							);
-							// console.log(loc);
+	// 	const getLocation = async () => {
+	// 		mounted.current = true;
+	// 		try {
+	// 			const { granted } = await Location.requestForegroundPermissionsAsync();
+	// 			if (!granted) return;
+	// 			if (mounted.current) {
+	// 				const {
+	// 					coords: { latitude, longitude },
+	// 				} = Location.watchPositionAsync(
+	// 					{ accuracy: Location.Accuracy.High },
+	// 					(loc) => {
+	// 						const { latitude, longitude } = JSON.parse(
+	// 							JSON.stringify(loc.coords)
+	// 						);
+	// 						// console.log(loc);
 
-							if (mounted.current) {
-								setPosition((prevState) => ({
-									...prevState,
-									latitude: latitude,
-									longitude: longitude,
-									latitudeDelta: 0.008,
-									longitudeDelta: 0.008,
-								}));
-							}
-						}
-					);
-				}
-			} catch (err) {}
-		};
+	// 						if (mounted.current) {
+	// 							setPosition((prevState) => ({
+	// 								...prevState,
+	// 								latitude: latitude,
+	// 								longitude: longitude,
+	// 								latitudeDelta: 0.008,
+	// 								longitudeDelta: 0.008,
+	// 							}));
+	// 						}
+	// 					}
+	// 				);
+	// 			}
+	// 		} catch (err) {}
+	// 	};
 
-		if (mounted.current) {
-			await getLocation();
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, []);
+	// 	getLocation();
+	// }, []);
 
 	const checkPermission = async () => {
 		const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -492,8 +472,8 @@ const Details = () => {
 										const searchedRegion = {
 											latitude: details.geometry.location.lat,
 											longitude: details.geometry.location.lng,
-											latitudeDelta: 0.05,
-											longitudeDelta: 0.05,
+											latitudeDelta: 0.0043,
+											longitudeDelta: 0.0034,
 										};
 
 										setPosition({

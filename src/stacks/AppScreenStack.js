@@ -19,6 +19,7 @@ import {
 import {
 	Home,
 	BrowseCategories,
+	ProductCategories,
 	FeaturedDeals,
 	ExploreMoreProducts,
 	Details,
@@ -43,6 +44,7 @@ import {
 import { Login, Signup, ForgotPassword } from '../screens/auth'; // Auth Screen
 
 import { auth } from '../store/actions/auth-actions';
+import { resetProductsByCategory } from '../store/actions/product-actions';
 import { showTabbar, hideTabbar } from '../store/actions/app-settings-actions';
 
 const HomeStack = createStackNavigator();
@@ -56,6 +58,9 @@ export const HomeStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
 
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+	let currentCategoryTitle = useSelector(
+		(state) => state.products?.currentCategoryTitle
+	);
 
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
@@ -79,6 +84,11 @@ export const HomeStackScreen = ({ navigation }) => {
 	const removeTabbar = () => {
 		navigation.navigate('HomeCartScreen');
 		dispatch(hideTabbar());
+	};
+
+	const clearProductsByCategory = () => {
+		navigation.goBack();
+		dispatch(resetProductsByCategory());
 	};
 
 	return (
@@ -209,6 +219,26 @@ export const HomeStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<HomeStack.Screen
+				name="HomeProductsByCategoryScreen"
+				component={ProductCategories}
+				options={{
+					title: `${currentCategoryTitle}`,
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={clearProductsByCategory}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<HomeStack.Screen
 				name="HomeFeaturedDealsScreen"
 				component={FeaturedDeals}
 				options={{
@@ -308,6 +338,61 @@ export const HomeStackScreen = ({ navigation }) => {
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('ExploreMoreProducts')}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 15,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeDetailCartScreen')}
+										style={{
+											padding: 10,
+											backgroundColor: '#f3f7ff',
+											borderRadius: 50,
+										}}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
+						</View>
+					),
+				}}
+			/>
+			<HomeStack.Screen
+				name="HomeProductsByCategoryDetailsScreen"
+				component={Details}
+				options={{
+					title: 'Details',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.goBack()}
 							style={{
 								padding: 10,
 								backgroundColor: '#f3f7ff',

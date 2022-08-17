@@ -16,7 +16,6 @@ const Tab = createBottomTabNavigator();
 
 const AppTabStack = () => {
 	let user = useSelector((state) => state.auth?.user?.current_user);
-	console.log(user.role);
 
 	let tabBarVisible = useSelector((state) => state.appSettings.showTabbar);
 
@@ -61,7 +60,7 @@ const AppTabStack = () => {
 					),
 				}}
 			/>
-			{user.role === 'Seller' && (
+			{user?.role === 'Seller' && (
 				<Tab.Screen
 					name="Selling"
 					component={SellStackScreen}
@@ -76,7 +75,7 @@ const AppTabStack = () => {
 					}}
 				/>
 			)}
-			{user.role === 'Administrator' && (
+			{user?.role === 'Administrator' && (
 				<Tab.Screen
 					name="Selling"
 					component={SellStackScreen}

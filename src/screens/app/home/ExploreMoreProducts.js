@@ -9,9 +9,8 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {

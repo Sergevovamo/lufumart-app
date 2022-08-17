@@ -1,35 +1,38 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, memo } from 'react';
 import {
 	View,
 	Text,
 	Image,
-	FlatList,
 	StyleSheet,
+	FlatList,
+	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
-	getProductCategories,
+	getProduct,
 	getProductsByCategory,
-	getCurrentCategoryTitle,
 } from '../../../store/actions/product-actions';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
-const BrowseCategories = () => {
+const ProductCategories = () => {
 	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
 
-	const productCategories = useSelector(
-		(state) => state.products?.productCategories
-	);
+	const isLoading = useSelector((state) => state.products?.isLoading);
+	const products = useSelector((state) => state.products?.productsByCategory);
 
 	useEffect(() => {
+		// set a clean up flag
 		mounted.current = true;
+
 		if (mounted.current) {
-			fetchCategories();
+			fetchProducts();
 		}
 
 		return () => {
@@ -41,7 +44,7 @@ const BrowseCategories = () => {
 	useEffect(() => {
 		mounted.current = true;
 
-		if (route.name === 'HomeCategoriesScreen') {
+		if (route.name === 'HomeProductsByCategoryScreen') {
 			if (mounted.current) {
 				dispatch(hideTabbar());
 			}
@@ -53,21 +56,32 @@ const BrowseCategories = () => {
 		};
 	}, [route.name]);
 
-	const fetchCategories = useCallback(() => {
-		dispatch(getProductCategories());
+	const fetchProducts = useCallback(() => {
+		// dispatch(getProductsByCategory());
 	}, []);
 
-	const viewedProduct = (category) => {
-		dispatch(getProductsByCategory(category._id));
-		dispatch(getCurrentCategoryTitle(category.name));
-		navigation.navigate('HomeProductsByCategoryScreen');
-	};
+	const fetchMoreData = useCallback(() => {
+		// dispatch(getProductsByCategory());
+	}, []);
+
+	const renderFooter = () => (
+		<View style={styles.footerText}>
+			{products.moreLoading && <ActivityIndicator />}
+			{products.isListEnd && <Text>No more products at the moment</Text>}
+		</View>
+	);
 
 	const renderEmpty = () => (
 		<View style={styles.emptyText}>
 			<Text>No products at the moment</Text>
+			{/* <Button onPress={() => requestAPI()} title="Refresh" /> */}
 		</View>
 	);
+
+	const viewedProduct = (product) => {
+		dispatch(getProduct(product._id));
+		navigation.navigate('HomeProductsByCategoryDetailsScreen');
+	};
 
 	return (
 		<View
@@ -75,29 +89,32 @@ const BrowseCategories = () => {
 				flex: 1,
 				backgroundColor: '#fffff7',
 				alignItems: 'center',
+				justifyContent: 'center',
+				alignItems: 'center',
 			}}
 		>
-			{productCategories?.length > 0 && (
+			{products?.length > 0 && (
 				<FlatList
-					data={productCategories}
+					data={products}
 					keyExtractor={(item, index) => `${item}-${index}`}
 					numColumns={2}
 					style={{ flexGrow: 0 }}
 					ListEmptyComponent={renderEmpty}
-					// onEndReachedThreshold={0.2}
-					// onEndReached={fetchMoreData}
+					ListFooterComponent={renderFooter}
+					onEndReachedThreshold={0.2}
+					onEndReached={fetchMoreData}
 					contentContainerStyle={{ padding: 5 }}
 					showsHorizontalScrollIndicator={false}
-					renderItem={({ item: category }) => {
-						const { name, imageUrl } = category;
+					renderItem={({ item: product }) => {
+						const { name, salePrice, imageUrl } = product;
 
 						return (
-							<TouchableOpacity onPress={() => viewedProduct(category)}>
+							<TouchableOpacity onPress={() => viewedProduct(product)}>
 								<View style={styles.product}>
 									<View style={styles.imageContainer}>
 										<Image
 											source={{
-												uri: `${imageUrl && imageUrl}`,
+												uri: `${imageUrl && imageUrl[0]}`,
 											}}
 											style={styles.image}
 										/>
@@ -108,6 +125,9 @@ const BrowseCategories = () => {
 											style={{ paddingVertical: 5, fontSize: 12 }}
 										>
 											{name}
+										</Text>
+										<Text style={{ fontWeight: 'bold' }}>
+											US ${numberWithCommas(salePrice)}
 										</Text>
 									</View>
 								</View>
@@ -120,16 +140,9 @@ const BrowseCategories = () => {
 	);
 };
 
-export default BrowseCategories;
+export default memo(ProductCategories);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
 	product: {
 		width: 150,
 		height: 180,
@@ -148,5 +161,27 @@ const styles = StyleSheet.create({
 		resizeMode: 'contain',
 		width: '85%',
 		height: '100%',
+	},
+	title: {
+		fontSize: 25,
+		fontWeight: '700',
+		marginVertical: 15,
+		marginHorizontal: 10,
+	},
+	loading: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	footerText: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginVertical: 10,
+	},
+	emptyText: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 });
