@@ -59,7 +59,7 @@ const SettingsAccount = () => {
 						alignItems: 'center',
 					}}
 				>
-					<FontAwesome5 name="user-circle" size={24} color="black" />
+					<FontAwesome5 name="user-circle" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
@@ -88,7 +88,7 @@ const SettingsAccount = () => {
 						alignItems: 'center',
 					}}
 				>
-					<MaterialCommunityIcons name="security" size={24} color="black" />
+					<MaterialCommunityIcons name="security" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
@@ -117,7 +117,7 @@ const SettingsAccount = () => {
 							alignItems: 'center',
 						}}
 					>
-						<Ionicons name="location-outline" size={24} color="black" />
+						<Ionicons name="location-outline" size={24} color="gray" />
 						<Text
 							style={{
 								fontSize: 17,
@@ -157,7 +157,7 @@ const SettingsAccount = () => {
 						alignItems: 'center',
 					}}
 				>
-					<FontAwesome5 name="shopping-basket" size={22} color="black" />
+					<FontAwesome5 name="shopping-basket" size={22} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,

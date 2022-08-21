@@ -9,6 +9,11 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
+
+const ASPECT_RATIO = deviceWidth / deviceHeight;
+
 import { currentUserAddress } from '../../../store/actions/auth-actions';
 
 const DeliveryAddress = () => {
@@ -20,16 +25,17 @@ const DeliveryAddress = () => {
 	const [position, setPosition] = useState({
 		latitude: -4.3758745,
 		longitude: 15.3396506,
-		latitudeDelta: 0.008,
-		longitudeDelta: 0.008,
+		latitudeDelta: 0.0922,
+		longitudeDelta: 0.0922 * ASPECT_RATIO,
 	});
 
-	useEffect(async () => {
+	useEffect(() => {
 		// set a clean up flag
 		mounted.current = true;
-
-		await checkPermission();
-		await getLocation();
+		(async () => {
+			await checkPermission();
+			await getLocation();
+		})();
 
 		return () => {
 			// cancel subscription to useEffect
@@ -56,15 +62,21 @@ const DeliveryAddress = () => {
 		try {
 			const { granted } = await Location.requestForegroundPermissionsAsync();
 			if (!granted) return;
+
 			const {
 				coords: { latitude, longitude },
 			} = await Location.watchPositionAsync(
-				{ accuracy: Location.Accuracy.High },
+				{
+					accuracy: Location.Accuracy.High,
+					timeInterval: 10000,
+					distanceInterval: 80,
+				},
+
 				(loc) => {
 					const { latitude, longitude } = JSON.parse(
 						JSON.stringify(loc.coords)
 					);
-					// console.log(loc);
+
 					if (mounted.current) {
 						setPosition((prevState) => ({
 							...prevState,
@@ -120,8 +132,8 @@ const DeliveryAddress = () => {
 									const searchedRegion = {
 										latitude: details.geometry.location.lat,
 										longitude: details.geometry.location.lng,
-										latitudeDelta: 0.05,
-										longitudeDelta: 0.05,
+										latitudeDelta: 0.0043,
+										longitudeDelta: 0.0034,
 									};
 
 									setPosition({
@@ -158,8 +170,8 @@ const DeliveryAddress = () => {
 									region={{
 										latitude: position.latitude,
 										longitude: position.longitude,
-										latitudeDelta: 0.008,
-										longitudeDelta: 0.008,
+										latitudeDelta: 0.0922,
+										longitudeDelta: 0.0922 * ASPECT_RATIO,
 									}}
 									showsUserLocation={true}
 									followsUserLocation={true}

@@ -26,7 +26,7 @@ const HelpCenter = () => {
 						alignItems: 'center',
 					}}
 				>
-					<Feather name="phone-call" size={24} color="black" />
+					<Feather name="phone-call" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
@@ -55,7 +55,7 @@ const HelpCenter = () => {
 						alignItems: 'center',
 					}}
 				>
-					<AntDesign name="exclamationcircleo" size={24} color="black" />
+					<AntDesign name="exclamationcircleo" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
@@ -83,7 +83,7 @@ const HelpCenter = () => {
 						alignItems: 'center',
 					}}
 				>
-					<Ionicons name="menu-outline" size={24} color="black" />
+					<Ionicons name="menu-outline" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
@@ -111,7 +111,7 @@ const HelpCenter = () => {
 						alignItems: 'center',
 					}}
 				>
-					<MaterialIcons name="privacy-tip" size={24} color="black" />
+					<MaterialIcons name="privacy-tip" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,

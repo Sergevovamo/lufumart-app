@@ -21,13 +21,13 @@ const Logout = () => {
 						alignItems: 'center',
 					}}
 				>
-					<Feather name="log-out" size={24} color="black" />
+					<Feather name="log-out" size={24} color="gray" />
 					<Text
 						style={{
 							fontSize: 17,
 							fontWeight: '300',
 							letterSpacing: 0.5,
-							marginLeft: 5,
+							marginLeft: 15,
 						}}
 					>
 						Logout

@@ -12,6 +12,7 @@ import { openSettings } from 'expo-linking';
 import { useDispatch } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as Localization from 'expo-localization';
 
 import {
 	MaterialIcons,
@@ -67,6 +68,8 @@ const Home = ({ navigation }) => {
 	const responseListener = useRef();
 	const notificationListener = useRef();
 	const mounted = useRef(false);
+
+	console.log(Localization.locale);
 
 	const [notification, setNotification] = useState(false);
 
@@ -191,6 +194,7 @@ const Home = ({ navigation }) => {
 	const exploreMoreProducts = () => {
 		navigation.navigate('ExploreMoreProducts');
 	};
+
 	return (
 		<View style={{ flex: 1, backgroundColor: '#fffff7' }}>
 			<StatusBar style="default" />

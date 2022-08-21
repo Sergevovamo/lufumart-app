@@ -4,6 +4,7 @@ import { Provider as StoreProvider } from 'react-redux';
 import AppStore from './src/store/Store';
 import Toast from 'react-native-toast-message';
 import RootStack from './src/stacks/RootStack';
+// import i18n from './src/translations/i18n';
 
 const App = () => {
 	return (

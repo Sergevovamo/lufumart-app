@@ -1,0 +1,10 @@
+{
+	"translations": {
+		"HomeScreen": {
+			"screenTitle": "Home",
+			"categoriesIconText": "Categories",
+			"welcomeText": "Welcome to Lufumart",
+			"welcomeDescText": "We've Got a Feeling You'll Love"
+		}
+	}
+}

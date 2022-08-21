@@ -106,22 +106,21 @@ const Settings = () => {
 							</>
 						)}
 					</Box>
-					{userAddress?.country?.length > 0 && (
-						<Box
-							style={{
-								marginTop: 20,
-								backgroundColor: '#fff',
-								borderRadius: 20,
-								paddingHorizontal: 20,
-							}}
-							safeArea
-							py="8"
-							w="95%"
-							maxW="350"
-						>
-							<Country />
-						</Box>
-					)}
+
+					<Box
+						style={{
+							marginTop: 20,
+							backgroundColor: '#fff',
+							borderRadius: 20,
+							paddingHorizontal: 20,
+						}}
+						safeArea
+						py="8"
+						w="95%"
+						maxW="350"
+					>
+						<Country />
+					</Box>
 
 					<Box
 						style={{

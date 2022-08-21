@@ -513,8 +513,8 @@ const Details = () => {
 										region={{
 											latitude: position.latitude,
 											longitude: position.longitude,
-											latitudeDelta: 0.008,
-											longitudeDelta: 0.008,
+											latitudeDelta: 0.0922,
+											longitudeDelta: 0.0922 * ASPECT_RATIO,
 										}}
 										showsUserLocation={true}
 										followsUserLocation={true}
