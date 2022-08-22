@@ -10,6 +10,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Localization from 'expo-localization';
 
 import { getCustomerOrders } from '../../../store/actions/order-actions';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
@@ -21,6 +22,7 @@ const OpenOrders = () => {
 	const mounted = useRef(false);
 
 	const orders = useSelector((state) => state.order?.customerOrders);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	useEffect(() => {
 		// set a clean up flag
@@ -105,7 +107,11 @@ const OpenOrders = () => {
 					}}
 				>
 					<View style={{ backgroundColor: 'white', padding: 20 }}>
-						<Text>Your do not have any orders yet.</Text>
+						<Text>
+							{isEnglish
+								? 'Your do not have any orders yet.'
+								: "Vous n'avez pas encore de commandes."}
+						</Text>
 					</View>
 				</View>
 			)}

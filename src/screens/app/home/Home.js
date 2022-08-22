@@ -69,20 +69,9 @@ const Home = ({ navigation }) => {
 	const notificationListener = useRef();
 	const mounted = useRef(false);
 
-	console.log(Localization.locale);
-
 	const [notification, setNotification] = useState(false);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
-	// useEffect(() => {
-	// 	const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-	// 		const offline = !(state.isConnected && state.isInternetReachable);
-	// 		setOfflineStatus(offline);
-	// 	});
-
-	// 	fetchUsers();
-
-	// 	return () => removeNetInfoSubscription();
-	// }, []);
 	useEffect(() => {
 		mounted.current = true;
 
@@ -216,7 +205,7 @@ const Home = ({ navigation }) => {
 					</TouchableOpacity> */}
 					<TouchableOpacity onPress={browseCategories} style={styles.tab}>
 						<MaterialIcons name="category" size={24} color="black" />
-						<Text>Categories</Text>
+						<Text>{isEnglish ? 'Categories' : 'Catégories'}</Text>
 					</TouchableOpacity>
 					{/* <TouchableOpacity
 						onPress={() => navigation.navigate('HomeFeaturedDealsScreen')}
@@ -229,7 +218,9 @@ const Home = ({ navigation }) => {
 				<Carousel data={data} />
 
 				<View style={styles.banner}>
-					<Text style={styles.textHeader}>Welcome to Lufumart</Text>
+					<Text style={styles.textHeader}>
+						{isEnglish ? 'Welcome to Lufumart' : 'Bienvenue chez Lufumart'}
+					</Text>
 					<Text
 						style={{
 							color: '#fff',
@@ -238,10 +229,14 @@ const Home = ({ navigation }) => {
 							paddingHorizontal: 12,
 						}}
 					>
-						We've Got a Feeling You'll Love
+						{isEnglish
+							? "We've Got a Feeling You'll Love"
+							: 'Nous avons un sentiment que vous allez adorer'}
 					</Text>
 					<TouchableOpacity style={styles.bannerButton}>
-						<Text style={{ color: '#f68b1e' }}>Flash Sales</Text>
+						<Text style={{ color: '#f68b1e' }}>
+							{isEnglish ? 'Flash Sales' : 'Ventes flash'}
+						</Text>
 					</TouchableOpacity>
 					<FlashSales />
 				</View>
@@ -290,13 +285,17 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						New Arrivals
+						{isEnglish ? 'New Arrivals' : 'Nouvelles Arrivées'}
 					</Text>
 					<Text style={{ fontSize: 15, color: '#f68b1e' }}>
-						Exclusive new products
+						{isEnglish
+							? 'Exclusive new products'
+							: 'Nouveaux produits exclusifs'}
 					</Text>
 					<TouchableOpacity style={styles.titleButton}>
-						<Text style={{ color: '#fff' }}>Shop now</Text>
+						<Text style={{ color: '#fff' }}>
+							{isEnglish ? 'Shop now' : 'Achetez maintenant'}
+						</Text>
 					</TouchableOpacity>
 				</View>
 				<NewArrivals />
@@ -310,14 +309,20 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						Today's Deals - All With Free Shipping
+						{isEnglish
+							? "Today's Deals - All With Free Shipping"
+							: 'Offres du jour - Toutes avec livraison gratuite'}
 					</Text>
 					<AntDesign name="arrowright" size={24} color="#f68b1e" />
 				</TouchableOpacity>
 				<FreeShippingProducts />
 
 				<View style={styles.banner2}>
-					<Text style={styles.textHeader2}>Save on the brands you love</Text>
+					<Text style={styles.textHeader2}>
+						{isEnglish
+							? 'Save on the brands you love'
+							: 'Économisez sur les marques que vous aimez'}
+					</Text>
 					<Text
 						style={{
 							color: '#fff',
@@ -326,10 +331,14 @@ const Home = ({ navigation }) => {
 							paddingHorizontal: 18,
 						}}
 					>
-						Up to 40% off Certified Refurbished
+						{isEnglish
+							? 'Up to 40% off Certified Refurbished'
+							: "Jusqu'à 40 % de réduction sur les produits certifiés remis à neuf"}
 					</Text>
 					<TouchableOpacity style={styles.bannerButton2}>
-						<Text style={{ color: '#00ab55' }}>Spend smart</Text>
+						<Text style={{ color: '#00ab55' }}>
+							{isEnglish ? 'Spend smart' : 'Dépensez intelligemment'}
+						</Text>
 					</TouchableOpacity>
 					{/* <FlashSales /> */}
 				</View>
@@ -343,7 +352,7 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						Shop Categories
+						{isEnglish ? 'Shop Categories' : 'Catégories de la boutique'}
 					</Text>
 				</View>
 				<ShopCategories />
@@ -392,7 +401,7 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						Recommended Sellers
+						{isEnglish ? 'Recommended Sellers' : 'Vendeurs recommandés'}
 					</Text>
 				</View>
 				<RecommendedSellers />
@@ -409,11 +418,11 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						Explore Products
+						{isEnglish ? 'Explore Products' : 'Explorer les produits'}
 					</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<Text style={{ paddingRight: 5, fontSize: 12, color: '#f68b1e' }}>
-							See More
+							{isEnglish ? 'See More' : 'Voir plus'}
 						</Text>
 						<AntDesign name="arrowright" size={18} color="#f68b1e" />
 					</View>
@@ -511,23 +520,29 @@ const styles = StyleSheet.create({
 	},
 });
 
+let isEnglish = Localization.locale.slice(0, 2) === 'en';
+
 const data = [
 	{
-		title: 'Headphones',
-		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1644843143/samples/ecommerce/4873_vv32wo.jpg',
-		description: 'Listen to your top mixes',
+		title: `${isEnglish ? 'Watch' : 'Regardez'}`,
+		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394315/samples/ecommerce/analog-classic.jpg',
+		description: `${
+			isEnglish
+				? 'Keep track of your time all day long'
+				: 'Gardez une trace de votre temps tout au long de la journée'
+		}`,
 		id: 1,
 	},
 	{
-		title: 'Laptop Bag',
-		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394323/samples/ecommerce/leather-bag-gray.jpg',
-		description: 'Your laptop backpack bag',
+		title: '',
+		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1661154096/BRIDES-23-best-places-to-buy-bridesmaids-dresses-online-4783902-7ca9b1dad4c94f8ba53c579715891797_vxp2wk.gif',
+		description: '',
 		id: 2,
 	},
 	{
-		title: 'Watch',
-		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1627394315/samples/ecommerce/analog-classic.jpg',
-		description: 'Keep track of your time all day long',
+		title: '',
+		url: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1661154539/FA22_Customs_StrangerThings_Drop1_DesktopMobile_v2_qamt4r.gif',
+		description: '',
 		id: 3,
 	},
 ];

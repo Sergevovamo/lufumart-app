@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import * as Localization from 'expo-localization';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
 	getProduct,
@@ -21,6 +22,7 @@ const ExploreProducts = () => {
 	const navigation = useNavigation();
 	const mounted = useRef(false);
 
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 	const products = useSelector((state) => state.products?.products);
 
 	useEffect(() => {
@@ -56,7 +58,7 @@ const ExploreProducts = () => {
 			contentContainerStyle={{ padding: 5 }}
 			showsHorizontalScrollIndicator={false}
 			renderItem={({ item: product }) => {
-				const { name, salePrice, imageUrl } = product;
+				const { name, salePrice, imageUrl, translations } = product;
 
 				return (
 					<TouchableOpacity onPress={() => viewedProduct(product)}>
@@ -74,7 +76,9 @@ const ExploreProducts = () => {
 									numberOfLines={2}
 									style={{ paddingVertical: 5, fontSize: 12 }}
 								>
-									{name}
+									{isEnglish
+										? translations[0]?.en[0]?.name
+										: translations[0]?.fr[0]?.name}
 								</Text>
 								<Text style={{ fontWeight: 'bold' }}>
 									US ${numberWithCommas(salePrice)}

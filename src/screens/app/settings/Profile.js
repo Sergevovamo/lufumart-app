@@ -1,7 +1,8 @@
 import { TouchableOpacity, FlatList } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
+import * as Localization from 'expo-localization';
 import {
 	Box,
 	Text,
@@ -19,17 +20,23 @@ import {
 	WarningOutlineIcon,
 	NativeBaseProvider,
 } from 'native-base';
+import { useRoute } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
 import { updateUserInfo } from '../../../store/actions/auth-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
 
 const Profile = ({ navigation }) => {
 	const dispatch = useDispatch();
+	const route = useRoute();
+	const mounted = useRef(false);
+
 	let error = useSelector((state) => state.error);
 	let currentUser = useSelector((state) => state.auth.user?.current_user);
 	// console.log(currentUser);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
@@ -51,6 +58,21 @@ const Profile = ({ navigation }) => {
 		setButtonLoading(true);
 		await dispatch(updateUserInfo(data));
 	};
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'SettingsProfileScreen') {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	useEffect(() => {
 		reset({
@@ -104,7 +126,7 @@ const Profile = ({ navigation }) => {
 											color: 'warmGray.50',
 										}}
 									>
-										Your Details
+										{isEnglish ? 'Your Details' : 'Vos détails'}
 									</Heading>
 									<Heading
 										mt="1"
@@ -115,8 +137,9 @@ const Profile = ({ navigation }) => {
 										fontWeight="medium"
 										size="xs"
 									>
-										You can edit your personal details here. When you're done,
-										tap "Save"
+										{isEnglish
+											? `You can edit your personal details here. When you're done, tap "Save"`
+											: `Vous pouvez modifier vos données personnelles ici. Lorsque vous avez terminé, appuyez sur "Enregistrer"`}
 									</Heading>
 
 									<VStack space={3} mt="5">
@@ -124,14 +147,18 @@ const Profile = ({ navigation }) => {
 											isInvalid={errors?.name?.message ? true : false}
 											isRequired
 										>
-											<FormControl.Label>Your name</FormControl.Label>
+											<FormControl.Label>
+												{isEnglish ? 'Your name' : 'Votre nom'}
+											</FormControl.Label>
 											<Controller
 												control={control}
 												name="name"
 												render={({ field: { onChange, value } }) => (
 													<Input
 														size="lg"
-														placeholder="Enter name"
+														placeholder={
+															isEnglish ? 'Enter name' : 'Entrez le nom'
+														}
 														value={value}
 														onChangeText={(value) => onChange(value)}
 													/>
@@ -139,7 +166,11 @@ const Profile = ({ navigation }) => {
 												rules={{
 													required: {
 														value: true,
-														message: 'Name is required',
+														message: `${
+															isEnglish
+																? 'Name is required'
+																: 'Le nom est requis'
+														}`,
 													},
 												}}
 											/>
@@ -155,7 +186,11 @@ const Profile = ({ navigation }) => {
 											isInvalid={errors?.email?.message ? true : false}
 											isRequired
 										>
-											<FormControl.Label>Your email address</FormControl.Label>
+											<FormControl.Label>
+												{isEnglish
+													? 'Your email address'
+													: 'Votre adresse e-mail'}
+											</FormControl.Label>
 											<Controller
 												control={control}
 												type="email"
@@ -164,7 +199,11 @@ const Profile = ({ navigation }) => {
 													<Input
 														keyboardType="email-address"
 														size="lg"
-														placeholder="Enter email address"
+														placeholder={
+															isEnglish
+																? 'Enter email address'
+																: "Entrer l'adresse e-mail"
+														}
 														value={value}
 														onChangeText={(value) => onChange(value)}
 													/>
@@ -172,11 +211,19 @@ const Profile = ({ navigation }) => {
 												rules={{
 													required: {
 														value: true,
-														message: 'Email address is required',
+														message: `${
+															isEnglish
+																? 'Email address is required'
+																: 'Adresse e-mail est nécessaire'
+														}`,
 													},
 													pattern: {
 														value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-														message: 'Invalid email address',
+														message: `${
+															isEnglish
+																? 'Invalid email address'
+																: 'Adresse e-mail invalide'
+														}`,
 													},
 												}}
 											/>
@@ -192,7 +239,11 @@ const Profile = ({ navigation }) => {
 											isInvalid={errors?.phone?.message ? true : false}
 											isRequired
 										>
-											<FormControl.Label>Your mobile number</FormControl.Label>
+											<FormControl.Label>
+												{isEnglish
+													? 'Your mobile number'
+													: 'Ton numéro de téléphone'}
+											</FormControl.Label>
 											<Controller
 												control={control}
 												name="phone"
@@ -200,7 +251,11 @@ const Profile = ({ navigation }) => {
 													<Input
 														keyboardType="numeric"
 														size="lg"
-														placeholder="Enter mobile number"
+														placeholder={
+															isEnglish
+																? 'Enter mobile number'
+																: 'Entrez le numéro de téléphone portable'
+														}
 														value={value}
 														onChangeText={(value) => onChange(value)}
 													/>
@@ -208,11 +263,19 @@ const Profile = ({ navigation }) => {
 												rules={{
 													required: {
 														value: true,
-														message: 'Phone number is required',
+														message: `${
+															isEnglish
+																? 'Phone number is required'
+																: 'Le numéro de téléphone est requis'
+														}`,
 													},
 													pattern: {
 														value: /^(\+254|0)[1-9]\d{8}$/i,
-														message: 'Please enter a valid mobile number',
+														message: `${
+															isEnglish
+																? 'Please enter a valid mobile number'
+																: 'Veuillez entrer un numéro de portable valide'
+														}`,
 													},
 												}}
 											/>
@@ -238,7 +301,7 @@ const Profile = ({ navigation }) => {
 												</>
 											) : (
 												<Text style={{ color: '#fff', fontSize: 18 }}>
-													Save
+													{isEnglish ? 'Save' : 'Sauvegarder'}
 												</Text>
 											)}
 										</Button>

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useForm, Controller } from 'react-hook-form';
+import * as Localization from 'expo-localization';
 import {
 	Box,
 	Text,
@@ -19,6 +20,7 @@ import {
 	NativeBaseProvider,
 } from 'native-base';
 import { changePassword } from '../../../store/actions/auth-actions';
+import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
@@ -26,7 +28,11 @@ import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
 const ChangePassword = () => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
+	const route = useRoute();
+	const mounted = useRef(false);
+
 	let error = useSelector((state) => state.error);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
@@ -57,6 +63,21 @@ const ChangePassword = () => {
 		setButtonLoading(true);
 		await dispatch(changePassword(newData));
 	};
+
+	useEffect(() => {
+		mounted.current = true;
+
+		if (route.name === 'SettingsChangePasswordScreen') {
+			if (mounted.current) {
+				dispatch(hideTabbar());
+			}
+		}
+
+		return () => {
+			// cancel subscription to useEffect
+			mounted.current = false;
+		};
+	}, [route.name]);
 
 	useEffect(() => {
 		// Check for register error
@@ -94,7 +115,9 @@ const ChangePassword = () => {
 									color: 'warmGray.50',
 								}}
 							>
-								Password reset
+								{isEnglish
+									? 'Password reset'
+									: 'Réinitialisation du mot de passe'}
 							</Heading>
 							<Heading
 								mt="1"
@@ -105,7 +128,9 @@ const ChangePassword = () => {
 								fontWeight="medium"
 								size="xs"
 							>
-								Please provide your current password for password update.
+								{isEnglish
+									? 'Please provide your current password for password update.'
+									: 'Veuillez fournir votre mot de passe actuel pour la mise à jour du mot de passe.'}
 							</Heading>
 
 							<VStack space={3} mt="5">
@@ -113,7 +138,9 @@ const ChangePassword = () => {
 									isInvalid={errors?.password?.message ? true : false}
 									isRequired
 								>
-									<FormControl.Label>Current Password</FormControl.Label>
+									<FormControl.Label>
+										{isEnglish ? 'Current Password' : 'Mot de passe actuel'}
+									</FormControl.Label>
 									<Controller
 										control={control}
 										name="password"
@@ -121,7 +148,11 @@ const ChangePassword = () => {
 											<Input
 												type={showPassword ? 'text' : 'password'}
 												size="lg"
-												placeholder="Enter password"
+												placeholder={
+													isEnglish
+														? 'Enter password'
+														: 'Entrer le mot de passe'
+												}
 												value={value}
 												onChangeText={(value) => onChange(value)}
 												InputRightElement={
@@ -139,11 +170,19 @@ const ChangePassword = () => {
 										rules={{
 											required: {
 												value: true,
-												message: 'Current password is required',
+												message: `${
+													isEnglish
+														? 'Current password is required'
+														: 'Le mot de passe actuel est requis'
+												}`,
 											},
 											minLength: {
 												value: 8,
-												message: 'Password should be atleast 8 characters',
+												message: `${
+													isEnglish
+														? 'Password should be atleast 8 characters'
+														: 'Le mot de passe doit comporter au moins 8 caractères'
+												}`,
 											},
 										}}
 									/>
@@ -158,7 +197,9 @@ const ChangePassword = () => {
 									isInvalid={errors?.password?.message ? true : false}
 									isRequired
 								>
-									<FormControl.Label>New Password</FormControl.Label>
+									<FormControl.Label>
+										{isEnglish ? 'New Password' : 'Nouveau mot de passe'}
+									</FormControl.Label>
 									<Controller
 										control={control}
 										name="new_password"
@@ -166,7 +207,11 @@ const ChangePassword = () => {
 											<Input
 												type={showNewPassword ? 'text' : 'password'}
 												size="lg"
-												placeholder="Enter new password"
+												placeholder={
+													isEnglish
+														? 'Enter new password'
+														: 'Entrez un nouveau mot de passe'
+												}
 												value={value}
 												onChangeText={(value) => onChange(value)}
 												InputRightElement={
@@ -184,11 +229,19 @@ const ChangePassword = () => {
 										rules={{
 											required: {
 												value: true,
-												message: 'New password is required',
+												message: `${
+													isEnglish
+														? 'New password is required'
+														: 'Un nouveau mot de passe est requis'
+												}`,
 											},
 											minLength: {
 												value: 8,
-												message: 'Password should be atleast 8 characters',
+												message: `${
+													isEnglish
+														? 'Password should be atleast 8 characters'
+														: 'Le mot de passe doit comporter au moins 8 caractères'
+												}`,
 											},
 										}}
 									/>
@@ -213,7 +266,9 @@ const ChangePassword = () => {
 										</>
 									) : (
 										<Text style={{ color: '#fff', fontSize: 18 }}>
-											Update password
+											{isEnglish
+												? 'Update password'
+												: 'Mettre à jour le mot de passe'}
 										</Text>
 									)}
 								</Button>

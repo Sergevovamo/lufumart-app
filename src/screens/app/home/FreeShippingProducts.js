@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Localization from 'expo-localization';
 import { useNavigation } from '@react-navigation/native';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 import {
@@ -21,6 +22,7 @@ const FreeShippingProducts = () => {
 	const navigation = useNavigation();
 	const mounted = useRef(false);
 
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 	const products = useSelector(
 		(state) => state.products?.getFreeShippingProducts
 	);
@@ -58,7 +60,7 @@ const FreeShippingProducts = () => {
 				contentContainerStyle={{ padding: 5 }}
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item: product }) => {
-					const { name, salePrice, imageUrl } = product;
+					const { name, salePrice, imageUrl, translations } = product;
 
 					return (
 						<TouchableOpacity onPress={() => viewedProduct(product)}>
@@ -76,7 +78,9 @@ const FreeShippingProducts = () => {
 										numberOfLines={2}
 										style={{ paddingVertical: 5, fontSize: 12 }}
 									>
-										{name}
+										{isEnglish
+											? translations[0]?.en[0]?.name
+											: translations[0]?.fr[0]?.name}
 									</Text>
 									<Text style={{ fontWeight: 'bold' }}>
 										US ${numberWithCommas(salePrice)}

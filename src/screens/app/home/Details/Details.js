@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import * as Location from 'expo-location';
+import * as Localization from 'expo-localization';
 import { GOOGLE_MAPS_APIKEY } from '@env';
 import { numberWithCommas } from '../../../../utils/NumberWithCommas';
 
@@ -71,6 +72,7 @@ const Details = () => {
 	});
 
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	let userAddress = useSelector((state) => state.auth.currentUserAddress);
 
@@ -217,6 +219,7 @@ const Details = () => {
 						description,
 						imageUrl,
 						owner,
+						translations,
 					} = product;
 					// console.log(name);
 
@@ -230,32 +233,6 @@ const Details = () => {
 							return product.productId === _id;
 						}
 					);
-					// console.log(filteredCartItem);
-
-					// const getDescriptionInFrench = async () => {
-					// 	try {
-					// 		const response = await fetch(
-					// 			'https://translate.argosopentech.com/translate',
-					// 			{
-					// 				method: 'POST',
-					// 				body: JSON.stringify({
-					// 					q: `${description}`,
-					// 					source: 'en',
-					// 					target: 'fr',
-					// 					format: 'text',
-					// 				}),
-					// 				headers: { 'Content-Type': 'application/json' },
-					// 			}
-					// 		);
-					// 		const res = await response.json();
-					// 		console.log(res?.translatedText);
-					// 		setTranslatedData(res?.translatedText);
-					// 		//   return json.movies;
-					// 	} catch (error) {
-					// 		console.error(error);
-					// 	}
-					// };
-					// getDescriptionInFrench();
 
 					return (
 						<>
@@ -264,24 +241,34 @@ const Details = () => {
 								<View style={styles.productDetails}>
 									<TouchableOpacity style={styles.button}>
 										<Text style={{ color: '#fff' }}>
-											{locality && 'Global'}
+											{locality && isEnglish ? 'Global' : 'Mondiale'}
 										</Text>
 									</TouchableOpacity>
-									<Text style={{ marginTop: 5 }}>{name}</Text>
-									<Text style={{ marginTop: 5 }}>Brand: {brand}</Text>
 									<Text style={{ marginTop: 5 }}>
-										Items In Stock: {quantity}
+										{isEnglish
+											? translations[0]?.en[0]?.name
+											: translations[0]?.fr[0]?.name}
+									</Text>
+									<Text style={{ marginTop: 5 }}>
+										{isEnglish ? 'Brand' : 'Marque'} : {brand}
+									</Text>
+									<Text style={{ marginTop: 5 }}>
+										{isEnglish ? 'Items In Stock' : 'Articles en stock'}:{' '}
+										{quantity}
 									</Text>
 									<Text style={styles.price}>
 										US ${numberWithCommas(salePrice.toFixed(2))}
 									</Text>
 									{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 									<Text style={styles.location}>
-										+ shipping fee of USD ${shippingFee ? shippingFee : 0} from
-										Lufumart Seller to{' '}
+										{isEnglish ? '+ shipping fee of' : '+ frais de port de'} USD
+										${shippingFee ? shippingFee : 0} {isEnglish ? 'from' : 'de'}{' '}
+										{isEnglish ? 'Lufumart Seller to' : 'Vendeur Lufumart à'}{' '}
 										{userAddress?.description
 											? userAddress?.description
-											: 'your location of choice'}
+											: isEnglish
+											? 'your location of choice'
+											: 'votre emplacement de choix'}
 									</Text>
 									{filteredCartItem?.length > 0 ? (
 										<View
@@ -357,7 +344,7 @@ const Details = () => {
 														}}
 													>
 														<Text style={{ color: '#fff', fontSize: 18 }}>
-															Sign in
+															{isEnglish ? 'Sign in' : "S'identifier"}
 														</Text>
 													</View>
 												</TouchableOpacity>
@@ -384,7 +371,8 @@ const Details = () => {
 															color="#fff"
 														/>
 														<Text style={{ color: '#fff', fontSize: 18 }}>
-															Add to Cart
+															{' '}
+															{isEnglish ? 'Add to Cart' : 'Ajouter au chariot'}
 														</Text>
 													</View>
 												</TouchableOpacity>
@@ -402,7 +390,7 @@ const Details = () => {
 														}}
 													>
 														<Text style={{ color: '#fff', fontSize: 18 }}>
-															Sign in
+															{isEnglish ? 'Sign in' : "S'identifier"}
 														</Text>
 													</View>
 												</TouchableOpacity>
@@ -411,7 +399,9 @@ const Details = () => {
 									)}
 								</View>
 								<View>
-									<Text style={styles.promotionTitle}>PROMOTIONS</Text>
+									<Text style={styles.promotionTitle}>
+										{isEnglish ? 'PROMOTIONS' : 'PROMOTIONS'}
+									</Text>
 									<View style={styles.promotionInnerContainer}>
 										<View style={styles.promotionDetail}>
 											<MaterialCommunityIcons
@@ -420,13 +410,17 @@ const Details = () => {
 												color="black"
 											/>
 											<Text style={styles.promotionText}>
-												14 day buyer protection
+												{isEnglish
+													? '14 day buyer protection'
+													: "14 jours de protection de l'acheteur"}
 											</Text>
 										</View>
 										<View style={[styles.promotionDetail, { marginTop: 5 }]}>
 											<AntDesign name="Safety" size={24} color="black" />
 											<Text style={styles.promotionText}>
-												Easy and safer payments via MaxiCash
+												{isEnglish
+													? 'Easy and safer payments via MaxiCash'
+													: 'Paiements simples et sécurisés via MaxiCash'}
 											</Text>
 										</View>
 									</View>
@@ -435,13 +429,21 @@ const Details = () => {
 							<Text style={styles.promotionTitle}>DELIVERY & RETURNS</Text>
 						</View> */}
 								<View>
-									<Text style={styles.promotionTitle}>PRODUCT DETAILS</Text>
+									<Text style={styles.promotionTitle}>
+										{isEnglish ? 'PRODUCT DETAILS' : 'DÉTAILS DU PRODUIT'}
+									</Text>
 									<View style={styles.itemInnerContainer}>
 										<View>
 											<View style={styles.itemHeader}>
-												<Text style={styles.itemTitle}>Description</Text>
+												<Text style={styles.itemTitle}>
+													{isEnglish ? 'Description' : 'La description'}
+												</Text>
 											</View>
-											<Text>{description}</Text>
+											<Text>
+												{isEnglish
+													? translations[0]?.en[0]?.description
+													: translations[0]?.fr[0]?.description}
+											</Text>
 											<Text style={{ marginTop: 30 }}>Size: {size}</Text>
 											{/* <Text>Weight: {weight}</Text> */}
 										</View>
@@ -450,7 +452,11 @@ const Details = () => {
 
 								<GooglePlacesAutocomplete
 									nearbyPlacesAPI="GooglePlacesSearch"
-									placeholder="Search your delivery location"
+									placeholder={
+										isEnglish
+											? 'Search your delivery location'
+											: 'Rechercher votre lieu de livraison'
+									}
 									listViewDisplayed={false}
 									debounce={400}
 									ref={textInput}
@@ -523,12 +529,16 @@ const Details = () => {
 									</MapView>
 								</View>
 								<View>
-									<Text style={styles.promotionTitle}>SELLER INFORMATION</Text>
+									<Text style={styles.promotionTitle}>
+										{isEnglish
+											? 'SELLER INFORMATION'
+											: 'INFORMATION DU VENDEUR'}
+									</Text>
 								</View>
 								<View style={styles.sellerContainer}>
 									<View style={styles.popularText}>
 										<Text style={{ fontSize: 8, color: '#fff' }}>
-											POPULAR SELLER
+											{isEnglish ? 'POPULAR SELLER' : 'VENDEUR POPULAIRE'}
 										</Text>
 									</View>
 									<View style={styles.sellerHeader}>

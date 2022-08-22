@@ -6,11 +6,14 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const Country = () => {
 	let userAddress = useSelector((state) => state.auth.currentUserAddress);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	return (
 		<>
 			<View>
-				<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Country</Text>
+				<Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+					{isEnglish ? 'Country' : 'Pays'}
+				</Text>
 				<View
 					style={{
 						flexDirection: 'row',
@@ -38,7 +41,7 @@ const Country = () => {
 			</View>
 			<View>
 				<Text style={{ paddingTop: 30, fontSize: 20, fontWeight: 'bold' }}>
-					Your preferred language
+					{isEnglish ? 'Your preferred language' : 'Votre langue préférée'}
 				</Text>
 				<View
 					style={{
@@ -60,10 +63,7 @@ const Country = () => {
 								letterSpacing: 0.5,
 							}}
 						>
-							{Localization.locale.slice(0, 2) === 'en'
-								? 'English'
-								: 'Français'}{' '}
-							{`(${Localization.locale})`}
+							{isEnglish ? 'English' : 'Français'} {`(${Localization.locale})`}
 						</Text>
 					</TouchableOpacity>
 				</View>

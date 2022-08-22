@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Localization from 'expo-localization';
 import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import {
 	Ionicons,
@@ -16,6 +17,7 @@ const SettingsAccount = () => {
 	const navigation = useNavigation();
 
 	let userAddress = useSelector((state) => state.auth.currentUserAddress);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const goToProfileScreen = () => {
 		navigation.navigate('SettingsProfileScreen');
@@ -40,7 +42,7 @@ const SettingsAccount = () => {
 	return (
 		<View>
 			<Text style={{ fontSize: 20, fontWeight: 'bold', paddingTop: 5 }}>
-				Account
+				{isEnglish ? 'Account' : 'Compte'}
 			</Text>
 			<View
 				style={{
@@ -67,7 +69,7 @@ const SettingsAccount = () => {
 							marginLeft: 15,
 						}}
 					>
-						Your Profile
+						{isEnglish ? 'Your Profile' : 'Votre profil'}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -96,7 +98,7 @@ const SettingsAccount = () => {
 							marginLeft: 15,
 						}}
 					>
-						Password reset
+						{isEnglish ? 'Password reset' : 'Réinitialisation du mot de passe'}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -126,14 +128,16 @@ const SettingsAccount = () => {
 								marginLeft: 15,
 							}}
 						>
-							Delivery Address
+							{isEnglish ? 'Delivery Address' : 'Adresse de livraison'}
 						</Text>
 					</View>
 					<View>
 						<Text style={{ marginLeft: 38, color: 'gray' }}>
 							{userAddress?.name
 								? userAddress?.name
-								: 'Please set your delivery address'}
+								: isEnglish
+								? 'Please set your delivery address'
+								: 'Veuillez définir votre adresse de livraison'}
 						</Text>
 						<Text style={{ marginLeft: 38, color: 'gray' }}>
 							{userAddress?.description}
@@ -166,7 +170,7 @@ const SettingsAccount = () => {
 							marginLeft: 15,
 						}}
 					>
-						Orders
+						{isEnglish ? 'Orders' : 'Ordres'}
 					</Text>
 				</TouchableOpacity>
 			</View>

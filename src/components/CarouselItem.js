@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
 		width: width - 20,
 		height: height / 3.5,
 		borderRadius: 10,
+		objectFit: 'contain',
 	},
 	itemTitle: {
 		color: 'white',

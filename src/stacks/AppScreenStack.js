@@ -7,6 +7,7 @@ import {
 	CardStyleInterpolators,
 } from '@react-navigation/stack';
 import { Badge } from 'react-native-paper';
+import * as Localization from 'expo-localization';
 
 import {
 	Ionicons,
@@ -57,6 +58,7 @@ const AuthStack = createStackNavigator();
 export const HomeStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
 
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
 	let currentCategoryTitle = useSelector(
 		(state) => state.products?.currentCategoryTitle
@@ -97,7 +99,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeScreen"
 				component={Home}
 				options={{
-					title: 'Home',
+					title: `${isEnglish ? 'Home' : 'Maison'}`,
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							{currentUser ? (
@@ -166,7 +168,9 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeCategoriesScreen"
 				component={BrowseCategories}
 				options={{
-					title: 'Browse categories',
+					title: `${
+						isEnglish ? 'Browse categories' : 'Parcourir les catégories'
+					}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -259,7 +263,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="ExploreMoreProducts"
 				component={ExploreMoreProducts}
 				options={{
-					title: 'Explore Products',
+					title: `${isEnglish ? 'Explore Products' : 'Explorer les produits'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -279,7 +283,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeDetailsScreen"
 				component={Details}
 				options={{
-					title: 'Details',
+					title: `${isEnglish ? 'Details' : 'Détails'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -334,7 +338,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeExploreMoreDetailsScreen"
 				component={Details}
 				options={{
-					title: 'Details',
+					title: `${isEnglish ? 'Details' : 'Détails'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('ExploreMoreProducts')}
@@ -389,7 +393,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeProductsByCategoryDetailsScreen"
 				component={Details}
 				options={{
-					title: 'Details',
+					title: `${isEnglish ? 'Details' : 'Détails'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.goBack()}
@@ -444,7 +448,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeSearchScreen"
 				component={Search}
 				options={{
-					title: 'Search',
+					title: `${isEnglish ? 'Search' : 'Chercher'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('HomeScreen')}
@@ -464,7 +468,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeCartScreen"
 				component={Cart}
 				options={{
-					title: 'My Cart',
+					title: `${isEnglish ? 'My Cart' : 'Mon panier'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -484,7 +488,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeDetailCartScreen"
 				component={Cart}
 				options={{
-					title: 'My Cart',
+					title: `${isEnglish ? 'My Cart' : 'Mon panier'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('HomeDetailsScreen')}
@@ -504,7 +508,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="CheckoutScreen"
 				component={Checkout}
 				options={{
-					title: 'Checkout',
+					title: `${isEnglish ? 'Checkout' : 'Vérifier'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('HomeCartScreen')}
@@ -551,7 +555,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="DeliveryAddressScreen"
 				component={DeliveryAddress}
 				options={{
-					title: 'Delivery Address',
+					title: `${isEnglish ? 'Delivery Address' : 'Adresse de livraison'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('CheckoutScreen')}
@@ -1141,6 +1145,7 @@ export const FeedStackScreen = ({ navigation }) => {
 
 export const SettingsStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	// showTabbar
 	const displayTabbarSettings = () => {
@@ -1154,7 +1159,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="SettingsScreen"
 				component={Settings}
 				options={{
-					title: 'Settings',
+					title: `${isEnglish ? 'Settings' : 'Réglages'}`,
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<TouchableOpacity
@@ -1175,7 +1180,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="SettingsDeliveryAddressScreen"
 				component={DeliveryAddress}
 				options={{
-					title: 'Delivery Address',
+					title: `${isEnglish ? 'Delivery Address' : 'Adresse de livraison'}`,
 					headerLeft: () => (
 						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons
@@ -1192,7 +1197,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="SettingsProfileScreen"
 				component={Profile}
 				options={{
-					title: 'Profile',
+					title: `${isEnglish ? 'Profile' : 'Profil'}`,
 					headerLeft: () => (
 						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons
@@ -1209,7 +1214,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="SettingsChangePasswordScreen"
 				component={ChangePassword}
 				options={{
-					title: 'Change Password',
+					title: `${isEnglish ? 'Change Password' : 'Changer le mot de passe'}`,
 					headerLeft: () => (
 						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons
@@ -1226,7 +1231,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="SettingsOrdersScreen"
 				component={Orders}
 				options={{
-					title: 'Your Orders',
+					title: `${isEnglish ? 'Your Orders' : 'Vos commandes'}`,
 					headerLeft: () => (
 						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons
@@ -1243,6 +1248,7 @@ export const SettingsStackScreen = ({ navigation }) => {
 				name="Notifications"
 				component={Notifications}
 				options={{
+					title: `${isEnglish ? 'Notifications' : 'Avis'}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('SettingsScreen')}

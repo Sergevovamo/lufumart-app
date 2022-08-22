@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import * as Localization from 'expo-localization';
 import {
 	Ionicons,
 	MaterialIcons,
@@ -8,9 +9,13 @@ import {
 } from '@expo/vector-icons';
 
 const HelpCenter = () => {
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
+
 	return (
 		<View>
-			<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Help & Support</Text>
+			<Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+				{isEnglish ? 'Help & Support' : "Support d'aide"}
+			</Text>
 			<View
 				style={{
 					flexDirection: 'column',
@@ -35,7 +40,7 @@ const HelpCenter = () => {
 							marginLeft: 15,
 						}}
 					>
-						Contact Us
+						{isEnglish ? 'Contact Us' : 'Nous contacter'}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -64,7 +69,7 @@ const HelpCenter = () => {
 							marginLeft: 15,
 						}}
 					>
-						About Us
+						{isEnglish ? 'About Us' : 'À propos de nous'}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -92,7 +97,7 @@ const HelpCenter = () => {
 							marginLeft: 15,
 						}}
 					>
-						Terms & Conditions
+						{isEnglish ? 'Terms & Conditions' : 'Termes et conditions'}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -120,7 +125,7 @@ const HelpCenter = () => {
 							marginLeft: 15,
 						}}
 					>
-						Privacy Policy
+						{isEnglish ? 'Privacy Policy' : 'Politique de confidentialité'}
 					</Text>
 				</TouchableOpacity>
 			</View>

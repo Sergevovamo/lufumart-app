@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as Localization from 'expo-localization';
 
 import { MaterialIcons, SimpleLineIcons, AntDesign } from '@expo/vector-icons';
 
@@ -18,6 +19,7 @@ const AppTabStack = () => {
 	let user = useSelector((state) => state.auth?.user?.current_user);
 
 	let tabBarVisible = useSelector((state) => state.appSettings.showTabbar);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	return (
 		<Tab.Navigator
@@ -35,7 +37,7 @@ const AppTabStack = () => {
 			}}
 		>
 			<Tab.Screen
-				name="Home"
+				name={isEnglish ? 'Home' : 'Maison'}
 				component={HomeStackScreen}
 				options={{
 					tabBarIcon: ({ focused }) => (
@@ -48,7 +50,7 @@ const AppTabStack = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="Categories"
+				name={isEnglish ? 'Categories' : 'Catégories'}
 				component={CategoriesStackScreen}
 				options={{
 					tabBarIcon: ({ focused }) => (
@@ -62,7 +64,7 @@ const AppTabStack = () => {
 			/>
 			{user?.role === 'Seller' && (
 				<Tab.Screen
-					name="Selling"
+					name={isEnglish ? 'Selling' : 'Vente'}
 					component={SellStackScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
@@ -77,7 +79,7 @@ const AppTabStack = () => {
 			)}
 			{user?.role === 'Administrator' && (
 				<Tab.Screen
-					name="Selling"
+					name={isEnglish ? 'Selling' : 'Vente'}
 					component={SellStackScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
@@ -91,7 +93,7 @@ const AppTabStack = () => {
 				/>
 			)}
 			<Tab.Screen
-				name="Feed"
+				name={isEnglish ? 'Feed' : 'Alimentation'}
 				component={FeedStackScreen}
 				options={{
 					tabBarIcon: ({ focused }) => (
@@ -104,7 +106,7 @@ const AppTabStack = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="Settings"
+				name={isEnglish ? 'Settings' : 'Réglages'}
 				component={SettingsStackScreen}
 				options={{
 					tabBarIcon: ({ focused }) => (

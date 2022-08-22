@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Platform } from 'react-native';
+import * as Localization from 'expo-localization';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -9,6 +10,8 @@ import ClosedOrders from './ClosedOrders';
 const Tab = createMaterialTopTabNavigator();
 
 const Orders = () => {
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
+
 	return (
 		<View
 			style={{
@@ -43,7 +46,7 @@ const Orders = () => {
 										fontWeight: 'bold',
 									}}
 								>
-									Open Orders
+									{isEnglish ? 'Open Orders' : 'Commandes ouvertes'}
 								</Text>
 							</>
 						),
@@ -61,7 +64,7 @@ const Orders = () => {
 										fontWeight: 'bold',
 									}}
 								>
-									Closed Orders
+									{isEnglish ? 'Closed Orders' : 'Commandes fermées'}
 								</Text>
 							</>
 						),

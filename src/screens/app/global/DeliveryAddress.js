@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, FlatList, StyleSheet, Dimensions, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Location from 'expo-location';
+import * as Localization from 'expo-localization';
 import { GOOGLE_MAPS_APIKEY } from '@env';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -21,6 +22,8 @@ const DeliveryAddress = () => {
 	const _map = useRef(null);
 	const textInput = useRef(3);
 	const mounted = useRef(false);
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [position, setPosition] = useState({
 		latitude: -4.3758745,
@@ -111,7 +114,11 @@ const DeliveryAddress = () => {
 						<>
 							<GooglePlacesAutocomplete
 								nearbyPlacesAPI="GooglePlacesSearch"
-								placeholder="Search your delivery location"
+								placeholder={
+									isEnglish
+										? 'Search your delivery location'
+										: 'Rechercher votre lieu de livraison'
+								}
 								listViewDisplayed={false}
 								debounce={400}
 								ref={textInput}
