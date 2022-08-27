@@ -9,12 +9,22 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from 'react-native';
-import { Spinner, NativeBaseProvider } from 'native-base';
+import {
+	VStack,
+	FormControl,
+	Spinner,
+	Radio,
+	Input,
+	WarningOutlineIcon,
+	NativeBaseProvider,
+} from 'native-base';
+import * as Localization from 'expo-localization';
 import LottieView from 'lottie-react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import Toast from 'react-native-toast-message';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useForm, Controller } from 'react-hook-form';
 
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 
@@ -29,12 +39,13 @@ import { numberWithCommas } from '../../../utils/NumberWithCommas';
 
 const actionSheetRef = createRef();
 
-const sheet_height = height * 0.5;
+const sheet_height = height * 0.8;
 
 const Checkout = () => {
 	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 	let error = useSelector((state) => state.error);
 
 	let currentUserAddress = useSelector(
@@ -52,9 +63,22 @@ const Checkout = () => {
 		(state) => state.products?.cartDetails?.cartProductTotal
 	);
 
+	const shippingFee = useSelector((state) => state.order?.shippingFee);
+
+	const totalOrderAmount = cartProductTotal?.total + shippingFee;
+
 	const [loop, setLoop] = useState(true);
 	const [LottieAnim, setLottieAnim] = useState();
 	const [buttonLoading, setButtonLoading] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState(null);
+	const [paymentMobile, setPaymentMobile] = useState(null);
+
+	const {
+		control,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm({ mode: 'onBlur' });
 
 	useEffect(() => {
 		fetch('https://assets8.lottiefiles.com/packages/lf20_lk80fpsm.json', {
@@ -76,21 +100,62 @@ const Checkout = () => {
 		};
 	}, []);
 
+	const handleChange = (event) => {
+		setPaymentMobile(event);
+	};
+
 	const checkOut = async () => {
 		if (cartProducts?.length === 0) {
 			return Toast.show({
 				type: 'error',
-				text1: 'Your cart is empty.',
-				text2: `You do not have items in cart.`,
+				text1: isEnglish ? 'Your cart is empty.' : `Votre panier est vide.`,
+				text2: isEnglish
+					? `You do not have items in cart.`
+					: `Vous n'avez pas d'articles dans le panier.`,
+			});
+		}
+
+		if (paymentMethod === null) {
+			return Toast.show({
+				type: 'error',
+				text1: isEnglish
+					? 'Please provide payment method'
+					: `Veuillez indiquer le mode de paiement`,
+				text2: isEnglish
+					? `Payment method required`
+					: `Mode de paiement requis`,
+			});
+		}
+
+		if (paymentMobile === null) {
+			return Toast.show({
+				type: 'error',
+				text1: isEnglish
+					? 'Please provide payment mobile'
+					: `Veuillez fournir un mobile de paiement`,
+				text2: isEnglish
+					? `Payment mobile required`
+					: `Mobile de paiement requis`,
+			});
+		}
+
+		if (paymentMobile < 8) {
+			return Toast.show({
+				type: 'error',
+				text1: isEnglish
+					? 'Please provide a valid phone number'
+					: `Veuillez fournir un numéro de téléphone valide`,
 			});
 		}
 
 		if (currentUserAddress && cartProducts?.length > 0) {
 			setButtonLoading(true);
 			const data = {
-				paymentMethod: 'Cash on Delivery',
+				phone: `243${paymentMobile}`,
+				paymentMethod: paymentMethod,
 				deliveryAddress: currentUserAddress,
 			};
+
 			await dispatch(checkOutOrder(data));
 			dispatch(getCartProducts());
 			dispatch(auth());
@@ -99,8 +164,12 @@ const Checkout = () => {
 		} else {
 			Toast.show({
 				type: 'error',
-				text1: 'Please choose delivery address',
-				text2: `You must set delivery address to complete your order.`,
+				text1: isEnglish
+					? 'Please choose delivery address'
+					: `Veuillez choisir l'adresse de livraison`,
+				text2: isEnglish
+					? `You must set delivery address to complete your order.`
+					: `Vous devez définir l'adresse de livraison pour finaliser votre commande.`,
 			});
 		}
 	};
@@ -146,7 +215,7 @@ const Checkout = () => {
 				<View style={{ height: sheet_height, padding: '5%' }}>
 					<View
 						style={{
-							display: 'flex',
+							flex: 1,
 							alignItems: 'center',
 							justifyContent: 'center',
 							paddingTop: '5%',
@@ -170,6 +239,7 @@ const Checkout = () => {
 						<TouchableOpacity
 							onPress={continueShopping}
 							style={{
+								marginTop: 40,
 								padding: 15,
 								borderWidth: 2,
 								borderColor: '#f68b1e',
@@ -212,51 +282,156 @@ const Checkout = () => {
 						<Text style={{ fontSize: 18, paddingBottom: 5 }}>
 							Payment Method
 						</Text>
-						{/* <View style={styles.paymentWrapper}>
-							<View style={styles.iconWrapper}>
-								<AntDesign name="apple1" size={24} color="#fff" />
-							</View>
-							<TouchableOpacity style={styles.cardWrapper}>
-								<View>
-									<Text style={{ fontSize: 18 }}>Apple Pay</Text>
-									<Text style={{ color: 'gray', fontSize: 12 }}>
-										... ... 0675 8340
-									</Text>
-								</View>
-								<View>
-									<Feather name="circle" size={24} color="gray" />
-								</View>
-							</TouchableOpacity>
-						</View> */}
-						<View style={styles.paymentWrapper}>
-							<View style={styles.iconWrapper}>
-								<Ionicons name="cash-outline" size={24} color="#fff" />
-							</View>
-							<TouchableOpacity style={styles.cardWrapper}>
-								<View>
-									<Text style={{ fontSize: 18 }}>Cash on Delivery</Text>
-								</View>
-								<View>
-									<FontAwesome5 name="dot-circle" size={24} color="black" />
-								</View>
-							</TouchableOpacity>
-						</View>
-						{/* <View style={styles.paymentWrapper}>
-							<View style={styles.iconWrapper}>
-								<Fontisto name="visa" size={17} color="#fff" />
-							</View>
-							<TouchableOpacity style={styles.cardWrapper}>
-								<View>
-									<Text style={{ fontSize: 18 }}>Visa</Text>
-									<Text style={{ color: 'gray', fontSize: 12 }}>
-										... ... 0585 7350
-									</Text>
-								</View>
-								<View>
-									<Feather name="circle" size={24} color="gray" />
-								</View>
-							</TouchableOpacity>
-						</View> */}
+
+						<NativeBaseProvider>
+							<FormControl>
+								<FormControl.Label mb="3">
+									{isEnglish
+										? 'Choose your payment method'
+										: `Choisissez votre méthode de paiement`}
+								</FormControl.Label>
+
+								<Controller
+									control={control}
+									name="name"
+									render={({ field: { onChange, value } }) => (
+										<Radio.Group
+											nativeID="payment"
+											name="day_night"
+											value={value}
+											onChange={(nextValue) => {
+												setPaymentMethod(nextValue);
+											}}
+										>
+											<VStack space="3">
+												<Radio value="3">Orange</Radio>
+												<Text
+													style={{
+														color: 'gray',
+														fontSize: 12,
+														paddingLeft: 33,
+													}}
+												>
+													{isEnglish
+														? 'Make payment using Orange'
+														: `Payer avec Orange`}
+												</Text>
+												<Radio value="2">Mpesa</Radio>
+												<Text
+													style={{
+														color: 'gray',
+														fontSize: 12,
+														paddingLeft: 33,
+													}}
+												>
+													{isEnglish
+														? 'Make payment using Mpesa'
+														: `Effectuer un paiement avec Mpesa`}
+												</Text>
+												<Radio value="1">Airtel</Radio>
+												<Text
+													style={{
+														color: 'gray',
+														fontSize: 12,
+														paddingLeft: 33,
+													}}
+												>
+													{isEnglish
+														? 'Make payment using Airtel'
+														: `Payer avec Airtel`}
+												</Text>
+												<Radio value="0">Maxicash</Radio>
+												<Text
+													style={{
+														color: 'gray',
+														fontSize: 12,
+														paddingLeft: 33,
+													}}
+												>
+													{isEnglish
+														? 'Make payment using Maxicash'
+														: `Payer avec Maxicash`}
+												</Text>
+												{/* <Radio value="brand new">Cash on Delivery</Radio>
+										<Text
+											style={{
+												color: 'gray',
+												fontSize: 12,
+												paddingLeft: 33,
+											}}
+										>
+											{isEnglish
+												? 'Make payment once your product is delivered'
+												: `Effectuez le paiement une fois votre produit livré`}
+										</Text> */}
+											</VStack>
+										</Radio.Group>
+									)}
+									rules={{
+										required: {
+											value: true,
+											message: `${
+												isEnglish
+													? 'Item title is required'
+													: `Le titre de l'article est requis`
+											}`,
+										},
+									}}
+								/>
+							</FormControl>
+
+							<FormControl
+								isInvalid={errors?.phone?.message ? true : false}
+								isRequired
+							>
+								<FormControl.Label mt="4">
+									{isEnglish
+										? 'Enter payment mobile number'
+										: 'Entrez le numéro de mobile de paiement'}
+								</FormControl.Label>
+								<Controller
+									control={control}
+									name="phone"
+									render={({ field: { onChange, value } }) => (
+										<Input
+											keyboardType="numeric"
+											size="lg"
+											placeholder={
+												isEnglish
+													? 'Enter mobile number'
+													: 'Entrez le numéro de téléphone portable'
+											}
+											value={value}
+											onChangeText={(value) => handleChange(value)}
+										/>
+									)}
+									rules={{
+										required: {
+											value: true,
+											message: `${
+												isEnglish
+													? 'Payment mobile number is required'
+													: 'Le numéro de téléphone mobile de paiement est requis'
+											}`,
+										},
+										pattern: {
+											value: /^(\+254|0)[1-9]\d{8}$/i,
+											message: `${
+												isEnglish
+													? 'Please enter a valid mobile number'
+													: 'Veuillez entrer un numéro de portable valide'
+											}`,
+										},
+									}}
+								/>
+
+								<FormControl.ErrorMessage
+									leftIcon={<WarningOutlineIcon size="xs" />}
+								>
+									{errors?.phone?.message}
+								</FormControl.ErrorMessage>
+							</FormControl>
+						</NativeBaseProvider>
 					</View>
 					<View style={styles.cartContainer}>
 						<View style={styles.cartHeader}>
@@ -301,6 +476,46 @@ const Checkout = () => {
 					</View>
 					<View style={styles.productTotal}>
 						<Text
+							style={{
+								fontSize: 15,
+								color: 'gray',
+								paddingBottom: 5,
+							}}
+						>
+							Sub Total
+						</Text>
+						<Text
+							style={{
+								fontSize: 15,
+								color: 'gray',
+								paddingBottom: 5,
+							}}
+						>
+							USD ${numberWithCommas(parseFloat(cartProductTotal?.total))}
+						</Text>
+					</View>
+					<View style={styles.productTotal}>
+						<Text
+							style={{
+								fontSize: 15,
+								color: 'gray',
+								paddingBottom: 5,
+							}}
+						>
+							Shipping Fee
+						</Text>
+						<Text
+							style={{
+								fontSize: 15,
+								color: 'gray',
+								paddingBottom: 5,
+							}}
+						>
+							USD ${numberWithCommas(parseFloat(shippingFee))}
+						</Text>
+					</View>
+					<View style={styles.productTotal}>
+						<Text
 							style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
 						>
 							Total
@@ -308,7 +523,7 @@ const Checkout = () => {
 						<Text
 							style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
 						>
-							USD ${numberWithCommas(parseFloat(cartProductTotal?.total))}
+							USD ${numberWithCommas(parseFloat(totalOrderAmount))}
 						</Text>
 					</View>
 					<TouchableOpacity onPress={checkOut} style={styles.button}>
