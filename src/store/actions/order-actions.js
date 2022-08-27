@@ -44,12 +44,13 @@ export const calculateShippingFee = () => async (dispatch) => {
 
 export const checkOutOrder = (payload) => async (dispatch) => {
 	const token = await tokenConfig();
-	const { paymentMethod, deliveryAddress } = payload;
+	const { paymentMethod, deliveryAddress, phone } = payload;
 
 	try {
 		const body = JSON.stringify({
 			paymentMethod,
 			deliveryAddress,
+			phone,
 		});
 
 		await dispatch({
