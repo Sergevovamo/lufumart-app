@@ -16,6 +16,7 @@ import {
 	returnErrors,
 	clearErrors,
 	loginFail,
+	registerFail,
 	authError,
 } from './error-actions';
 

@@ -159,6 +159,7 @@ const ChangePassword = () => {
 													<Button
 														size="xs"
 														rounded="none"
+														colorScheme="orange"
 														h="full"
 														onPress={togglePassword}
 													>
@@ -218,6 +219,7 @@ const ChangePassword = () => {
 													<Button
 														size="xs"
 														rounded="none"
+														colorScheme="orange"
 														h="full"
 														onPress={toggleNewPassword}
 													>

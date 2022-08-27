@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, Text, Platform, Dimensions } from 'react-native';
-
+import { Text, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import Following from './Following';
-import Explore from './Explore';
+import Approved from './Approved';
+import Pending from './Pending';
+import Rejected from './Rejected';
+import OutofStock from './OutofStock';
 
 const Tab = createMaterialTopTabNavigator();
 
 const { width } = Dimensions.get('window');
 
-const Feed = () => {
+const Products = () => {
 	return (
 		<Tab.Navigator
 			screenOptions={{
@@ -25,7 +26,7 @@ const Feed = () => {
 					borderBottomRightRadius: 50,
 					justifyContent: 'center',
 					alignItems: 'center',
-					marginTop: 50,
+					marginTop: 20,
 					marginLeft: 'auto',
 					marginRight: 'auto',
 					marginBottom: 20,
@@ -44,13 +45,13 @@ const Feed = () => {
 									textTransform: 'uppercase',
 								}}
 							>
-								Sellers
+								Approved
 							</Text>
 						</>
 					),
 				}}
-				component={Following}
-				name="Sellers"
+				component={Approved}
+				name="Approved"
 			/>
 			<Tab.Screen
 				options={{
@@ -63,16 +64,54 @@ const Feed = () => {
 									textTransform: 'uppercase',
 								}}
 							>
-								Explore
+								Pending
 							</Text>
 						</>
 					),
 				}}
-				component={Explore}
-				name="Explore"
+				component={Pending}
+				name="Pending"
+			/>
+			<Tab.Screen
+				options={{
+					title: ({ color, focused }) => (
+						<>
+							<Text
+								style={{
+									color: focused ? '#00ab55' : 'gray',
+									fontWeight: 'bold',
+									textTransform: 'uppercase',
+								}}
+							>
+								Rejected
+							</Text>
+						</>
+					),
+				}}
+				component={Rejected}
+				name="Rejected"
+			/>
+			<Tab.Screen
+				options={{
+					title: ({ color, focused }) => (
+						<>
+							<Text
+								style={{
+									color: focused ? '#00ab55' : 'gray',
+									fontWeight: 'bold',
+									textTransform: 'uppercase',
+								}}
+							>
+								Out of Stock
+							</Text>
+						</>
+					),
+				}}
+				component={OutofStock}
+				name="OutofStock"
 			/>
 		</Tab.Navigator>
 	);
 };
 
-export default Feed;
+export default Products;

@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import * as Localization from 'expo-localization';
 
 import { MaterialIcons, SimpleLineIcons, AntDesign } from '@expo/vector-icons';
@@ -12,6 +13,7 @@ import {
 	SellStackScreen,
 	SettingsStackScreen,
 } from './AppScreenStack';
+import { DrawerStackScreen } from './DrawerStackScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,18 +30,19 @@ const AppTabStack = () => {
 				tabBarShowLabel: true,
 				tabBarActiveTintColor: '#fff',
 				tabBarActiveBackgroundColor: '#00ab55',
-				tabBarStyle: [
-					{
-						display: tabBarVisible ? 'flex' : 'none',
-					},
-					null,
-				],
+				// tabBarStyle: [
+				// 	{
+				// 		display: tabBarVisible ? 'flex' : 'none',
+				// 	},
+				// 	null,
+				// ],
 			}}
 		>
 			<Tab.Screen
 				name={isEnglish ? 'Home' : 'Maison'}
 				component={HomeStackScreen}
-				options={{
+				options={({ route }) => ({
+					tabBarStyle: { display: getRouteNameHomeScreen(route) },
 					tabBarIcon: ({ focused }) => (
 						<MaterialIcons
 							name="home"
@@ -47,12 +50,13 @@ const AppTabStack = () => {
 							color={focused ? '#fff' : 'black'}
 						/>
 					),
-				}}
+				})}
 			/>
 			<Tab.Screen
 				name={isEnglish ? 'Categories' : 'Catégories'}
 				component={CategoriesStackScreen}
-				options={{
+				options={({ route }) => ({
+					tabBarStyle: { display: getRouteNameCategoryScreen(route) },
 					tabBarIcon: ({ focused }) => (
 						<MaterialIcons
 							name="category"
@@ -60,13 +64,14 @@ const AppTabStack = () => {
 							color={focused ? '#fff' : 'black'}
 						/>
 					),
-				}}
+				})}
 			/>
 			{user?.role === 'Seller' && (
 				<Tab.Screen
 					name={isEnglish ? 'Selling' : 'Vente'}
-					component={SellStackScreen}
-					options={{
+					component={DrawerStackScreen}
+					options={({ route }) => ({
+						tabBarStyle: { display: getRouteNameSellerScreen(route) },
 						tabBarIcon: ({ focused }) => (
 							<AntDesign
 								name="tago"
@@ -74,14 +79,15 @@ const AppTabStack = () => {
 								color={focused ? '#fff' : 'black'}
 							/>
 						),
-					}}
+					})}
 				/>
 			)}
 			{user?.role === 'Administrator' && (
 				<Tab.Screen
 					name={isEnglish ? 'Selling' : 'Vente'}
-					component={SellStackScreen}
-					options={{
+					component={DrawerStackScreen}
+					options={({ route }) => ({
+						tabBarStyle: { display: getRouteNameSellerScreen(route) },
 						tabBarIcon: ({ focused }) => (
 							<AntDesign
 								name="tago"
@@ -89,7 +95,7 @@ const AppTabStack = () => {
 								color={focused ? '#fff' : 'black'}
 							/>
 						),
-					}}
+					})}
 				/>
 			)}
 			<Tab.Screen
@@ -108,7 +114,8 @@ const AppTabStack = () => {
 			<Tab.Screen
 				name={isEnglish ? 'Settings' : 'Réglages'}
 				component={SettingsStackScreen}
-				options={{
+				options={({ route }) => ({
+					tabBarStyle: { display: getRouteNameSettingScreen(route) },
 					tabBarIcon: ({ focused }) => (
 						<SimpleLineIcons
 							name="settings"
@@ -116,10 +123,87 @@ const AppTabStack = () => {
 							color={focused ? '#fff' : 'black'}
 						/>
 					),
-				}}
+				})}
 			/>
 		</Tab.Navigator>
 	);
 };
 
 export default AppTabStack;
+
+const getRouteNameHomeScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+
+	// console.log(routeName);
+	if (
+		routeName?.includes('AuthStackScreen') ||
+		routeName?.includes('ImageScreen') ||
+		routeName?.includes('HomeDetailsScreen') ||
+		routeName?.includes('HomeExploreMoreDetailsScreen') ||
+		routeName?.includes('HomeProductsByCategoryDetailsScreen') ||
+		routeName?.includes('HomeSearchScreen') ||
+		routeName?.includes('HomeCategoriesScreen') ||
+		routeName?.includes('HomeProductsByCategoryScreen') ||
+		routeName?.includes('ExploreMoreProducts') ||
+		routeName?.includes('HomeCartScreen') ||
+		routeName?.includes('HomeDetailCartScreen') ||
+		routeName?.includes('CheckoutScreen') ||
+		routeName?.includes('DeliveryAddressScreen')
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};
+
+const getRouteNameCategoryScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+
+	// console.log(routeName);
+	if (
+		routeName?.includes('AuthStackScreen') ||
+		routeName?.includes('ImageScreen') ||
+		routeName?.includes('ProductListScreen') ||
+		routeName?.includes('CategoriesDetailsScreen') ||
+		routeName?.includes('CategoriesCartScreen') ||
+		routeName?.includes('CategoriesDetailCartScreen') ||
+		routeName?.includes('CategoriesProductListDetailsScreen') ||
+		routeName?.includes('CategoriesCheckoutScreen') ||
+		routeName?.includes('CategoriesDeliveryAddressScreen')
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};
+
+const getRouteNameSellerScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+
+	// console.log(routeName);
+	if (
+		routeName?.includes('ImageScreen') ||
+		routeName?.includes('CategoriesDeliveryAddressScreen')
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};
+
+const getRouteNameSettingScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+
+	// console.log(routeName);
+	if (
+		routeName?.includes('AuthStackScreen') ||
+		routeName?.includes('SettingsProfileScreen') ||
+		routeName?.includes('SettingsChangePasswordScreen') ||
+		routeName?.includes('SettingsOrdersScreen') ||
+		routeName?.includes('SettingsDeliveryAddressScreen')
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};

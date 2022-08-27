@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import * as Localization from 'expo-localization';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 
 const Country = () => {
 	let userAddress = useSelector((state) => state.auth.currentUserAddress);
@@ -50,7 +50,7 @@ const Country = () => {
 						alignItems: 'center',
 					}}
 				>
-					<FontAwesome5 name="globe-africa" size={24} color="gray" />
+					<FontAwesome name="language" size={24} color="gray" />
 					<TouchableOpacity
 						style={{
 							marginLeft: 15,

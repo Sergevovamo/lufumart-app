@@ -23,7 +23,6 @@ import {
 import { useRoute } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
 import { updateUserInfo } from '../../../store/actions/auth-actions';
-import { hideTabbar } from '../../../store/actions/app-settings-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
 import TextInputAvoidingView from '../../../components/KeyboardAvoidingWrapper';
@@ -58,21 +57,6 @@ const Profile = ({ navigation }) => {
 		setButtonLoading(true);
 		await dispatch(updateUserInfo(data));
 	};
-
-	useEffect(() => {
-		mounted.current = true;
-
-		if (route.name === 'SettingsProfileScreen') {
-			if (mounted.current) {
-				dispatch(hideTabbar());
-			}
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, [route.name]);
 
 	useEffect(() => {
 		reset({

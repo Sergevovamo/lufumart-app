@@ -1,17 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import {
-	Avatar,
-	Title,
-	Caption,
-	Paragraph,
-	Drawer,
-	Text,
-	TouchableRipple,
-	Switch,
-} from 'react-native-paper';
+import { View, StyleSheet, Text } from 'react-native';
+import { Avatar, Title, Drawer } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-// import { useToast } from 'react-native-toast-notifications';
 import { logOut } from '../../store/actions/auth-actions';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 
@@ -25,7 +15,6 @@ import {
 export function DrawerContent(props) {
 	const dispatch = useDispatch();
 	let user = useSelector((state) => state.auth?.user?.current_user);
-	// const toast = useToast();
 
 	const signOut = async () => {
 		await dispatch(logOut());
@@ -35,16 +24,18 @@ export function DrawerContent(props) {
 		<View style={{ flex: 1 }}>
 			<View style={styles.drawerContent}>
 				<View style={styles.userInfoSection}>
-					<View style={{ flexDirection: 'row', marginTop: 15 }}>
+					<View style={{ flexDirection: 'row', marginTop: 50 }}>
 						<Avatar.Image
 							source={{
 								uri: 'https://res.cloudinary.com/dgisuffs0/image/upload/q_auto/v1659300717/3052.png_860_g8brn4.png',
 							}}
 							size={50}
 						/>
-						<View style={{ marginLeft: 15, flexDirection: 'column' }}>
+						<View style={{ marginLeft: 5, flexDirection: 'column' }}>
 							<Title style={styles.title}>{user?.name}</Title>
-							<Caption style={styles.caption}>{user?.email}</Caption>
+							<Text numberOfLines={1} style={styles.caption}>
+								{user?.email}
+							</Text>
 						</View>
 					</View>
 				</View>
@@ -52,7 +43,7 @@ export function DrawerContent(props) {
 					<Drawer.Section>
 						<DrawerItem
 							icon={({ size }) => (
-								<MaterialIcons name="home" size={size} color="black" />
+								<MaterialIcons name="home" size={size} color="gray" />
 							)}
 							label="Home"
 							active
@@ -61,6 +52,20 @@ export function DrawerContent(props) {
 							}}
 							onPress={() => {
 								props.navigation.navigate('HomeDrawer');
+							}}
+						/>
+						<DrawerItem
+							icon={({ size }) => (
+								<FontAwesome name="product-hunt" size={size} color="gray" />
+							)}
+							label="Products"
+							active
+							style={styles.borderDrawerItem}
+							labelStyle={{
+								color: '#000000',
+							}}
+							onPress={() => {
+								props.navigation.navigate('ProductsDrawer');
 							}}
 						/>
 						<DrawerItem
@@ -80,20 +85,7 @@ export function DrawerContent(props) {
 								props.navigation.navigate('HomeDrawer');
 							}}
 						/>
-						<DrawerItem
-							icon={({ size }) => (
-								<FontAwesome name="product-hunt" size={size} color="black" />
-							)}
-							label="Products"
-							active
-							style={styles.borderDrawerItem}
-							labelStyle={{
-								color: '#000000',
-							}}
-							onPress={() => {
-								props.navigation.navigate('HomeDrawer');
-							}}
-						/>
+
 						<DrawerItem
 							icon={({ size }) => (
 								<AntDesign name="dropbox" size={size} color="black" />

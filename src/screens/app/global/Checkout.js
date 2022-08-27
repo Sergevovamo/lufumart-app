@@ -25,7 +25,6 @@ import { checkOutOrder } from '../../../store/actions/order-actions';
 import { clearErrors } from '../../../store/actions/error-actions';
 
 import { auth } from '../../../store/actions/auth-actions';
-import { showTabbar } from '../../../store/actions/app-settings-actions';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
 
 const actionSheetRef = createRef();
@@ -123,7 +122,6 @@ const Checkout = () => {
 
 	const continueShopping = () => {
 		navigation.navigate('HomeScreen');
-		dispatch(showTabbar());
 	};
 
 	const goToDeliveryScreen = () => {

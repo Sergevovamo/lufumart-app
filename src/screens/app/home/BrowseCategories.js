@@ -14,7 +14,6 @@ import {
 	getProductsByCategory,
 	getCurrentCategoryTitle,
 } from '../../../store/actions/product-actions';
-import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const BrowseCategories = () => {
 	const route = useRoute();
@@ -37,21 +36,6 @@ const BrowseCategories = () => {
 			mounted.current = false;
 		};
 	}, []);
-
-	useEffect(() => {
-		mounted.current = true;
-
-		if (route.name === 'HomeCategoriesScreen') {
-			if (mounted.current) {
-				dispatch(hideTabbar());
-			}
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, [route.name]);
 
 	const fetchCategories = useCallback(() => {
 		dispatch(getProductCategories());

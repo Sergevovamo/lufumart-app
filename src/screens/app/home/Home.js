@@ -37,7 +37,6 @@ import NewArrivals from './NewArrivals';
 import FreeShippingProducts from './FreeShippingProducts';
 import RecommendedSellers from './RecommendedSellers';
 import RecommendedForYou from './RecommendedForYou';
-import { showTabbar } from '../../../store/actions/app-settings-actions';
 import { currentPushToken } from '../../../store/actions/auth-actions';
 
 Notifications.setNotificationHandler({
@@ -71,21 +70,6 @@ const Home = ({ navigation }) => {
 
 	const [notification, setNotification] = useState(false);
 	let isEnglish = Localization.locale.slice(0, 2) === 'en';
-
-	useEffect(() => {
-		mounted.current = true;
-
-		if (route.name === 'HomeScreen') {
-			if (mounted.current) {
-				dispatch(showTabbar());
-			}
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, [route.name]);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -292,11 +276,16 @@ const Home = ({ navigation }) => {
 							? 'Exclusive new products'
 							: 'Nouveaux produits exclusifs'}
 					</Text>
-					<TouchableOpacity style={styles.titleButton}>
-						<Text style={{ color: '#fff' }}>
-							{isEnglish ? 'Shop now' : 'Achetez maintenant'}
-						</Text>
-					</TouchableOpacity>
+
+					{isEnglish ? (
+						<TouchableOpacity style={styles.titleButton}>
+							<Text style={{ color: '#fff' }}>Shop now</Text>
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity style={styles.titleButtonFr}>
+							<Text style={{ color: '#fff' }}>Achetez maintenant</Text>
+						</TouchableOpacity>
+					)}
 				</View>
 				<NewArrivals />
 
@@ -309,9 +298,7 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						{isEnglish
-							? "Today's Deals - All With Free Shipping"
-							: 'Offres du jour - Toutes avec livraison gratuite'}
+						{isEnglish ? "Today's Deals" : 'Offres du jour'}
 					</Text>
 					<AntDesign name="arrowright" size={24} color="#f68b1e" />
 				</TouchableOpacity>
@@ -335,11 +322,16 @@ const Home = ({ navigation }) => {
 							? 'Up to 40% off Certified Refurbished'
 							: "Jusqu'à 40 % de réduction sur les produits certifiés remis à neuf"}
 					</Text>
-					<TouchableOpacity style={styles.bannerButton2}>
-						<Text style={{ color: '#00ab55' }}>
-							{isEnglish ? 'Spend smart' : 'Dépensez intelligemment'}
-						</Text>
-					</TouchableOpacity>
+					{isEnglish ? (
+						<TouchableOpacity style={styles.bannerButton2}>
+							<Text style={{ color: '#00ab55' }}>Spend smart</Text>
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity style={styles.bannerButton2Fr}>
+							<Text style={{ color: '#00ab55' }}>Dépensez intelligemment</Text>
+						</TouchableOpacity>
+					)}
+
 					{/* <FlashSales /> */}
 				</View>
 
@@ -401,7 +393,7 @@ const Home = ({ navigation }) => {
 							paddingBottom: 5,
 						}}
 					>
-						{isEnglish ? 'Recommended Sellers' : 'Vendeurs recommandés'}
+						{isEnglish ? 'Sellers' : 'Les vendeurs'}
 					</Text>
 				</View>
 				<RecommendedSellers />
@@ -421,7 +413,14 @@ const Home = ({ navigation }) => {
 						{isEnglish ? 'Explore Products' : 'Explorer les produits'}
 					</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<Text style={{ paddingRight: 5, fontSize: 12, color: '#f68b1e' }}>
+						<Text
+							style={{
+								paddingRight: 5,
+								fontSize: 13,
+								fontWeight: 'bold',
+								color: '#f68b1e',
+							}}
+						>
 							{isEnglish ? 'See More' : 'Voir plus'}
 						</Text>
 						<AntDesign name="arrowright" size={18} color="#f68b1e" />
@@ -455,7 +454,7 @@ const styles = StyleSheet.create({
 	},
 	banner: {
 		marginVertical: 10,
-		height: 260,
+		height: Platform.OS === 'ios' ? 260 : 280,
 		backgroundColor: '#f68b1e',
 	},
 	textHeader: {
@@ -466,14 +465,14 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	bannerButton: {
-		marginTop: 10,
+		marginTop: 5,
 		marginHorizontal: 12,
 		padding: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: 50,
 		backgroundColor: '#fff',
-		width: '30%',
+		width: Platform.OS === 'ios' ? '30%' : '35%',
 	},
 	titleHeader: {
 		marginHorizontal: 18,
@@ -487,6 +486,15 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		backgroundColor: '#00ab55',
 		width: '30%',
+	},
+	titleButtonFr: {
+		marginTop: 10,
+		padding: 10,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 50,
+		backgroundColor: '#00ab55',
+		width: Platform.OS === 'ios' ? '50%' : '60%',
 	},
 	titleOnlyHeader: {
 		marginHorizontal: 18,
@@ -517,6 +525,16 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#fff',
 		width: Platform.OS === 'ios' ? '30%' : '35%',
+	},
+	bannerButton2Fr: {
+		marginTop: 20,
+		marginHorizontal: 12,
+		padding: 10,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 10,
+		backgroundColor: '#fff',
+		width: Platform.OS === 'ios' ? '50%' : '60%',
 	},
 });
 

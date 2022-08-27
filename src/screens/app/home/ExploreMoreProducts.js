@@ -5,7 +5,6 @@ import {
 	Image,
 	StyleSheet,
 	FlatList,
-	Button,
 	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
@@ -18,7 +17,6 @@ import {
 	getProduct,
 	getMoreProducts,
 } from '../../../store/actions/product-actions';
-import { hideTabbar } from '../../../store/actions/app-settings-actions';
 
 const ExploreMoreProducts = () => {
 	const route = useRoute();
@@ -45,21 +43,6 @@ const ExploreMoreProducts = () => {
 			mounted.current = false;
 		};
 	}, []);
-
-	useEffect(() => {
-		mounted.current = true;
-
-		if (route.name === 'ExploreMoreProducts') {
-			if (mounted.current) {
-				dispatch(hideTabbar());
-			}
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, [route.name]);
 
 	const fetchProducts = useCallback(() => {
 		dispatch(getMoreProducts());

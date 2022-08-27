@@ -35,10 +35,6 @@ import {
 } from '../../../../store/actions/product-actions';
 import { calculateShippingFee } from '../../../../store/actions/order-actions';
 import { currentUserAddress } from '../../../../store/actions/auth-actions';
-import {
-	showTabbar,
-	hideTabbar,
-} from '../../../../store/actions/app-settings-actions';
 import { mapStyle } from './MapStyle';
 
 import ProductImage from './ProductImage';
@@ -108,25 +104,6 @@ const Details = () => {
 			isMounted = false;
 		};
 	}, []);
-
-	useEffect(() => {
-		mounted.current = true;
-
-		if (
-			route.name === 'HomeDetailsScreen' ||
-			route.name === 'HomeExploreMoreDetailsScreen' ||
-			route.name === 'CategoriesDetailsScreen'
-		) {
-			if (mounted.current) {
-				dispatch(hideTabbar());
-			}
-		}
-
-		return () => {
-			// cancel subscription to useEffect
-			mounted.current = false;
-		};
-	}, [route.name]);
 
 	useEffect(() => {
 		fetchShippingFee();
@@ -544,11 +521,15 @@ const Details = () => {
 									<View style={styles.sellerHeader}>
 										<View style={styles.sellerInfo}>
 											<Fontisto name="shopping-store" size={24} color="black" />
-											<Text style={{ marginLeft: 5 }}>Orbcomm System</Text>
+											<Text style={{ marginLeft: 5 }}>
+												{isEnglish
+													? 'Lufumart Online Store'
+													: `Boutique en ligne Lufumart`}
+											</Text>
 										</View>
-										<TouchableOpacity style={styles.buttonSeller}>
+										{/* <TouchableOpacity style={styles.buttonSeller}>
 											<Text style={{ color: '#fff' }}>Follow</Text>
-										</TouchableOpacity>
+										</TouchableOpacity> */}
 									</View>
 									<View
 										style={{
@@ -577,18 +558,22 @@ const Details = () => {
 									/>
 									<View style={styles.sellerFooter}>
 										<View style={styles.footerTitle}>
-											<Text>Check the latest arrivals</Text>
-											<Text style={{ paddingVertical: 10 }}>74 followers</Text>
+											<Text>
+												{isEnglish
+													? 'Check the latest arrivals'
+													: `Vérifiez les derniers arrivages`}
+											</Text>
+											{/* <Text style={{ paddingVertical: 10 }}>74 followers</Text> */}
 										</View>
 										<TouchableOpacity
 											style={{ flexDirection: 'row', alignItems: 'center' }}
 										>
-											<MaterialIcons
+											{/* <MaterialIcons
 												name="ios-share"
 												size={20}
 												color="#f68b1e"
-											/>
-											<Text style={{ color: '#f68b1e' }}>SHARE</Text>
+											/> */}
+											{/* <Text style={{ color: '#f68b1e' }}>SHARE</Text> */}
 										</TouchableOpacity>
 									</View>
 								</View>
@@ -807,7 +792,7 @@ const styles = StyleSheet.create({
 	sellerContainer: {
 		marginVertical: 1,
 		padding: 3,
-		width: Platform.OS === 'ios' ? 350 : 300,
+		width: Platform.OS === 'ios' ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9,
 		height: 250,
 		...Platform.select({
 			ios: {

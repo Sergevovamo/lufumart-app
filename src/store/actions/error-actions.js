@@ -1,4 +1,10 @@
-import { GET_ERRORS, CLEAR_ERRORS, LOGIN_FAIL, AUTH_ERROR } from './types';
+import {
+	GET_ERRORS,
+	CLEAR_ERRORS,
+	REGISTER_FAIL,
+	LOGIN_FAIL,
+	AUTH_ERROR,
+} from './types';
 
 // RETURN ERRORS from server
 export const returnErrors = (msg, status, id = null) => {
@@ -23,6 +29,13 @@ export const clearErrors = () => {
 export const loginFail = () => {
 	return {
 		type: LOGIN_FAIL,
+	};
+};
+
+// Register Fail
+export const registerFail = () => {
+	return {
+		type: REGISTER_FAIL,
 	};
 };
 

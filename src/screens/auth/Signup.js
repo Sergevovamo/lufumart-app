@@ -23,6 +23,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { registerUser } from '../../store/actions/auth-actions';
 import { clearErrors } from '../../store/actions/error-actions';
+import { getValueFor } from '../../utils/secureStore';
 
 import TextInputAvoidingView from '../../components/KeyboardAvoidingWrapper';
 
@@ -49,8 +50,17 @@ const Signup = ({ navigation }) => {
 
 		setButtonLoading(true);
 		await dispatch(registerUser(data, isSelected));
-		// Go back login screen
-		navigation.goBack();
+
+		confirmToken();
+	};
+
+	// Register successful
+	const confirmToken = async () => {
+		const token = await getValueFor('userToken');
+		if (token) {
+			// Go to home screen
+			navigation.navigate('HomeScreen');
+		}
 	};
 
 	useEffect(() => {
@@ -293,7 +303,7 @@ const Signup = ({ navigation }) => {
 											>
 												{errors?.password?.message}
 											</FormControl.ErrorMessage>
-											<HStack space={6} style={{ marginVertical: 15 }}>
+											{/* <HStack space={6} style={{ marginVertical: 15 }}>
 												<Checkbox
 													shadow={2}
 													value="test"
@@ -302,7 +312,7 @@ const Signup = ({ navigation }) => {
 												>
 													Become a seller at Lufumart
 												</Checkbox>
-											</HStack>
+											</HStack> */}
 
 											<Link
 												href="https://docs.google.com/document/d/1zyycAX15prrhTrIR5H-g3nUVEOUgTvvyQzZwIoHQSSg/edit?usp=sharing"

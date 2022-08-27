@@ -20,6 +20,7 @@ import {
 } from 'native-base';
 import { loginUser } from '../../store/actions/auth-actions';
 import { clearErrors } from '../../store/actions/error-actions';
+import { getValueFor } from '../../utils/secureStore';
 
 import TextInputAvoidingView from '../../components/KeyboardAvoidingWrapper';
 
@@ -45,8 +46,16 @@ const Login = () => {
 		// Attempt to authenticate user
 		setButtonLoading(true);
 		await dispatch(loginUser(data));
-		// Hide login screen
-		navigation.goBack();
+		confirmToken();
+	};
+
+	// Login successful
+	const confirmToken = async () => {
+		const token = await getValueFor('userToken');
+		if (token) {
+			// Hide login screen
+			navigation.goBack();
+		}
 	};
 
 	useEffect(() => {
