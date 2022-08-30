@@ -398,10 +398,7 @@ const Home = ({ navigation }) => {
 				</View>
 				<RecommendedSellers />
 
-				<TouchableOpacity
-					onPress={exploreMoreProducts}
-					style={styles.titleOnlyHeader}
-				>
+				<TouchableOpacity style={styles.titleOnlyHeader}>
 					<Text
 						style={{
 							fontSize: 20,
@@ -412,7 +409,7 @@ const Home = ({ navigation }) => {
 					>
 						{isEnglish ? 'Explore Products' : 'Explorer les produits'}
 					</Text>
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					{/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<Text
 							style={{
 								paddingRight: 5,
@@ -424,9 +421,27 @@ const Home = ({ navigation }) => {
 							{isEnglish ? 'See More' : 'Voir plus'}
 						</Text>
 						<AntDesign name="arrowright" size={18} color="#f68b1e" />
-					</View>
+					</View> */}
 				</TouchableOpacity>
 				<ExploreProducts />
+				<View
+					style={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						paddingVertical: 50,
+					}}
+				>
+					<TouchableOpacity
+						onPress={exploreMoreProducts}
+						style={{
+							padding: 10,
+							backgroundColor: '#f3f7ff',
+							borderRadius: 50,
+						}}
+					>
+						<AntDesign name="arrowdown" size={30} color="black" />
+					</TouchableOpacity>
+				</View>
 			</VirtualizedView>
 		</View>
 	);

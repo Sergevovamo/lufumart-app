@@ -36,6 +36,7 @@ import { clearErrors } from '../../../store/actions/error-actions';
 
 import { auth } from '../../../store/actions/auth-actions';
 import { numberWithCommas } from '../../../utils/NumberWithCommas';
+import { getValueFor } from '../../../utils/secureStore';
 
 const actionSheetRef = createRef();
 
@@ -118,6 +119,7 @@ const Checkout = () => {
 		if (paymentMethod === null) {
 			return Toast.show({
 				type: 'error',
+				autoHide: false,
 				text1: isEnglish
 					? 'Please provide payment method'
 					: `Veuillez indiquer le mode de paiement`,
@@ -130,6 +132,7 @@ const Checkout = () => {
 		if (paymentMobile === null) {
 			return Toast.show({
 				type: 'error',
+				autoHide: false,
 				text1: isEnglish
 					? 'Please provide payment mobile'
 					: `Veuillez fournir un mobile de paiement`,
@@ -149,18 +152,20 @@ const Checkout = () => {
 		}
 
 		if (currentUserAddress && cartProducts?.length > 0) {
-			setButtonLoading(true);
-			const data = {
-				phone: `243${paymentMobile}`,
-				paymentMethod: paymentMethod,
-				deliveryAddress: currentUserAddress,
-			};
+			if (paymentMobile.startsWith('0')) {
+				let phone = paymentMobile.substring(1);
+				console.log(phone);
 
-			await dispatch(checkOutOrder(data));
-			dispatch(getCartProducts());
-			dispatch(auth());
-			setButtonLoading(false);
-			actionSheetRef.current?.setModalVisible();
+				setButtonLoading(true);
+				const data = {
+					phone: `243${phone}`,
+					paymentMethod: paymentMethod,
+					deliveryAddress: currentUserAddress,
+				};
+
+				await dispatch(checkOutOrder(data));
+				confirmTransaction();
+			}
 		} else {
 			Toast.show({
 				type: 'error',
@@ -174,14 +179,29 @@ const Checkout = () => {
 		}
 	};
 
+	// Transaction successful
+	const confirmTransaction = async () => {
+		const message = await getValueFor('transactionMessage');
+		if (message) {
+			// Show success modal
+			setButtonLoading(false);
+			actionSheetRef.current?.setModalVisible();
+		}
+	};
+
 	useEffect(() => {
 		// Check for checkout error
 		if (error.id === 'CHECKOUT_ORDER') {
 			setButtonLoading(false);
 			Toast.show({
 				type: 'error',
-				text1: 'Error! Something went wrong.',
-				text2: `An error occurred while creating an order.`,
+				autoHide: false,
+				text1: isEnglish
+					? 'Error! Something went wrong.'
+					: `Erreur! Quelque chose s'est mal passé.`,
+				text2: isEnglish
+					? `An error occurred while creating an order.`
+					: `Une erreur s'est produite lors de la création d'une commande.`,
 			});
 			dispatch(clearErrors());
 		} else {
@@ -231,10 +251,12 @@ const Checkout = () => {
 						)}
 
 						<Text style={{ fontSize: 22, marginVertical: 10 }}>
-							Congratulations!!!
+							{isEnglish ? 'Congratulations!!!' : `Toutes nos félicitations!!!`}
 						</Text>
 						<Text style={{ fontSize: 18, marginBottom: 30 }}>
-							Your order is successful.
+							{isEnglish
+								? 'Your order is successfully processed.'
+								: `Votre commande est traitée avec succès.`}
 						</Text>
 						<TouchableOpacity
 							onPress={continueShopping}
@@ -246,7 +268,9 @@ const Checkout = () => {
 								borderRadius: 10,
 							}}
 						>
-							<Text style={{ color: '#f68b1e' }}>Continue shopping</Text>
+							<Text style={{ color: '#f68b1e' }}>
+								{isEnglish ? 'Continue shopping' : `Continuer vos achats`}
+							</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -255,7 +279,7 @@ const Checkout = () => {
 				<View style={styles.container}>
 					<View style={styles.deliveryContainer}>
 						<Text style={{ fontSize: 18, paddingBottom: 5 }}>
-							Delivery Address
+							{isEnglish ? 'Delivery Address' : 'Adresse de livraison'}
 						</Text>
 						<View style={styles.deliveryWrapper}>
 							<View style={styles.iconWrapper}>
@@ -269,7 +293,9 @@ const Checkout = () => {
 									<Text numberOfLines={2}>
 										{currentUserAddress?.description
 											? currentUserAddress?.description
-											: 'Search your delivery location'}
+											: isEnglish
+											? 'Search your delivery location'
+											: `Rechercher votre lieu de livraison`}
 									</Text>
 								</View>
 								<View>
@@ -280,7 +306,7 @@ const Checkout = () => {
 					</View>
 					<View style={styles.paymentContainer}>
 						<Text style={{ fontSize: 18, paddingBottom: 5 }}>
-							Payment Method
+							{isEnglish ? 'Payment Method' : `Mode de paiement`}
 						</Text>
 
 						<NativeBaseProvider>
@@ -435,7 +461,10 @@ const Checkout = () => {
 					</View>
 					<View style={styles.cartContainer}>
 						<View style={styles.cartHeader}>
-							<Text style={{ fontSize: 18, paddingBottom: 5 }}>My Cart</Text>
+							<Text style={{ fontSize: 18, paddingBottom: 5 }}>
+								{' '}
+								{isEnglish ? 'My Cart' : `Mon panier`}{' '}
+							</Text>
 						</View>
 
 						<FlatList
@@ -446,7 +475,7 @@ const Checkout = () => {
 							contentContainerStyle={{ padding: 5 }}
 							showsHorizontalScrollIndicator={false}
 							renderItem={({ item: product }) => {
-								const { name, salePrice, imageUrl } = product;
+								const { salePrice, imageUrl, translations } = product;
 
 								return (
 									<View style={styles.product}>
@@ -463,7 +492,9 @@ const Checkout = () => {
 												numberOfLines={2}
 												style={{ paddingVertical: 5, fontSize: 12 }}
 											>
-												{name}
+												{isEnglish
+													? translations[0]?.en[0]?.name
+													: translations[0]?.fr[0]?.name}
 											</Text>
 											<Text style={{ fontWeight: 'bold' }}>
 												US ${numberWithCommas(salePrice.toFixed(2))}
@@ -482,7 +513,7 @@ const Checkout = () => {
 								paddingBottom: 5,
 							}}
 						>
-							Sub Total
+							{isEnglish ? 'Sub Total' : `Sous-total`}
 						</Text>
 						<Text
 							style={{
@@ -494,45 +525,52 @@ const Checkout = () => {
 							USD ${numberWithCommas(parseFloat(cartProductTotal?.total))}
 						</Text>
 					</View>
-					<View style={styles.productTotal}>
-						<Text
-							style={{
-								fontSize: 15,
-								color: 'gray',
-								paddingBottom: 5,
-							}}
-						>
-							Shipping Fee
-						</Text>
-						<Text
-							style={{
-								fontSize: 15,
-								color: 'gray',
-								paddingBottom: 5,
-							}}
-						>
-							USD ${numberWithCommas(parseFloat(shippingFee))}
-						</Text>
-					</View>
-					<View style={styles.productTotal}>
-						<Text
-							style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
-						>
-							Total
-						</Text>
-						<Text
-							style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
-						>
-							USD ${numberWithCommas(parseFloat(totalOrderAmount))}
-						</Text>
-					</View>
+					{cartProducts?.length > 0 && (
+						<>
+							<View style={styles.productTotal}>
+								<Text
+									style={{
+										fontSize: 15,
+										color: 'gray',
+										paddingBottom: 5,
+									}}
+								>
+									{isEnglish ? 'Shipping Fee' : `Frais d'expédition`}
+								</Text>
+								<Text
+									style={{
+										fontSize: 15,
+										color: 'gray',
+										paddingBottom: 5,
+									}}
+								>
+									USD ${numberWithCommas(parseFloat(shippingFee))}
+								</Text>
+							</View>
+							<View style={styles.productTotal}>
+								<Text
+									style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
+								>
+									{isEnglish ? 'Total' : `Totale`}
+								</Text>
+								<Text
+									style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
+								>
+									USD ${numberWithCommas(parseFloat(totalOrderAmount))}
+								</Text>
+							</View>
+						</>
+					)}
+
 					<TouchableOpacity onPress={checkOut} style={styles.button}>
 						{buttonLoading ? (
 							<NativeBaseProvider>
 								<Spinner color="white" accessibilityLabel="Loading posts" />
 							</NativeBaseProvider>
 						) : (
-							<Text style={{ color: '#fff', fontSize: 18 }}>Pay Now</Text>
+							<Text style={{ color: '#fff', fontSize: 18 }}>
+								{isEnglish ? 'Pay Now' : `Payez maintenant`}
+							</Text>
 						)}
 					</TouchableOpacity>
 				</View>

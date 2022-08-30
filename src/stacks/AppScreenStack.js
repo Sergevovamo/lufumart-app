@@ -265,6 +265,7 @@ export const HomeStackScreen = ({ navigation }) => {
 				component={ExploreMoreProducts}
 				options={{
 					title: `${isEnglish ? 'Explore Products' : 'Explorer les produits'}`,
+					presentation: 'modal',
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -275,7 +276,7 @@ export const HomeStackScreen = ({ navigation }) => {
 								marginHorizontal: 15,
 							}}
 						>
-							<Ionicons name="arrow-back" size={24} color="black" />
+							<AntDesign name="close" size={24} color="black" />
 						</TouchableOpacity>
 					),
 				}}

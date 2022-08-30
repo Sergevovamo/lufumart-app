@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useForm, Controller } from 'react-hook-form';
+import * as Localization from 'expo-localization';
 import {
 	Box,
 	Text,
@@ -28,6 +29,8 @@ const Login = () => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 	let error = useSelector((state) => state.error);
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [buttonLoading, setButtonLoading] = useState(false);
@@ -64,6 +67,7 @@ const Login = () => {
 			setButtonLoading(false);
 			Toast.show({
 				type: 'error',
+				autoHide: false,
 				text1: 'Invalid credentials. Please try again!',
 				text2: 'Either your email address or password is incorrect.',
 			});
@@ -87,7 +91,7 @@ const Login = () => {
 									color: 'warmGray.50',
 								}}
 							>
-								Welcome
+								{isEnglish ? 'Welcome' : `Bienvenue`}
 							</Heading>
 							<Heading
 								mt="1"
@@ -98,7 +102,9 @@ const Login = () => {
 								fontWeight="medium"
 								size="xs"
 							>
-								Sign in to continue!
+								{isEnglish
+									? 'Sign in to continue!'
+									: `Connectez-vous pour continuer !`}
 							</Heading>
 
 							<VStack space={3} mt="5">
@@ -106,7 +112,9 @@ const Login = () => {
 									isInvalid={errors?.email?.message ? true : false}
 									isRequired
 								>
-									<FormControl.Label>Your email address</FormControl.Label>
+									<FormControl.Label>
+										{isEnglish ? 'Your email address' : `Votre adresse e-mail`}
+									</FormControl.Label>
 									<Controller
 										control={control}
 										type="email"
@@ -115,7 +123,11 @@ const Login = () => {
 											<Input
 												keyboardType="email-address"
 												size="lg"
-												placeholder="Enter email address"
+												placeholder={
+													isEnglish
+														? 'Enter email address'
+														: `Entrer l'adresse e-mail`
+												}
 												value={value}
 												onChangeText={(value) => onChange(value)}
 											/>
@@ -123,11 +135,15 @@ const Login = () => {
 										rules={{
 											required: {
 												value: true,
-												message: 'Email address is required',
+												message: isEnglish
+													? 'Email address is required'
+													: `Adresse e-mail est nécessaire`,
 											},
 											pattern: {
 												value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-												message: 'Invalid email address',
+												message: isEnglish
+													? 'Invalid email address'
+													: `Adresse e-mail invalide`,
 											},
 										}}
 									/>
@@ -150,7 +166,11 @@ const Login = () => {
 											<Input
 												type={showPassword ? 'text' : 'password'}
 												size="lg"
-												placeholder="Enter password"
+												placeholder={
+													isEnglish
+														? 'Enter password'
+														: `Entrer le mot de passe`
+												}
 												value={value}
 												onChangeText={(value) => onChange(value)}
 												InputRightElement={
@@ -169,11 +189,15 @@ const Login = () => {
 										rules={{
 											required: {
 												value: true,
-												message: 'Password is required',
+												message: isEnglish
+													? 'Password is required'
+													: `Mot de passe requis`,
 											},
 											minLength: {
 												value: 8,
-												message: 'Password should be atleast 8 characters',
+												message: isEnglish
+													? 'Password should be atleast 8 characters'
+													: `Le mot de passe doit comporter au moins 8 caractères`,
 											},
 										}}
 									/>
@@ -199,7 +223,7 @@ const Login = () => {
 												textDecorationLine: 'underline',
 											}}
 										>
-											Forgot Password?
+											{isEnglish ? 'Forgot Password?' : `Mot de passe oublié?`}
 										</Text>
 									</TouchableOpacity>
 								</FormControl>
@@ -216,7 +240,9 @@ const Login = () => {
 											/>
 										</>
 									) : (
-										<Text style={{ color: '#fff', fontSize: 18 }}>Sign in</Text>
+										<Text style={{ color: '#fff', fontSize: 18 }}>
+											{isEnglish ? 'Sign in' : `S'identifier`}
+										</Text>
 									)}
 								</Button>
 								<HStack mt="6" justifyContent="center">
@@ -227,7 +253,9 @@ const Login = () => {
 											color: 'warmGray.200',
 										}}
 									>
-										Don't have an account?{' '}
+										{isEnglish
+											? `Don't have an account?`
+											: `Vous n'avez pas de compte ?`}{' '}
 									</Text>
 									<TouchableOpacity
 										onPress={() => navigation.navigate('AuthScreenSignup')}
@@ -239,7 +267,7 @@ const Login = () => {
 												textDecorationLine: 'underline',
 											}}
 										>
-											Sign Up
+											{isEnglish ? 'Sign Up' : `S'inscrire`}
 										</Text>
 									</TouchableOpacity>
 								</HStack>

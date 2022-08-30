@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	ScrollView,
 } from 'react-native';
+import * as Localization from 'expo-localization';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -34,6 +35,8 @@ const Cart = () => {
 	const navigation = useNavigation();
 	const route = useRoute();
 	const mounted = useRef(false);
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const cartProductTotal = useSelector(
 		(state) => state.products?.cartDetails?.cartProductTotal
@@ -102,7 +105,7 @@ const Cart = () => {
 			<View style={styles.container}>
 				{cartProducts?.length > 0 ? (
 					cartProducts?.map((item, index) => {
-						const { _id, name, salePrice, imageUrl } = item;
+						const { _id, name, salePrice, imageUrl, translations } = item;
 
 						let filteredCartItemQuantity = cartProductQuantity?.filter(
 							(product) => {
@@ -123,7 +126,11 @@ const Cart = () => {
 								</TouchableOpacity>
 								<View style={styles.productDetails}>
 									<View>
-										<Text>{name}</Text>
+										<Text>
+											{isEnglish
+												? translations[0]?.en[0]?.name
+												: translations[0]?.fr[0]?.name}
+										</Text>
 										<Text style={{ marginTop: 5, fontWeight: 'bold' }}>
 											US ${numberWithCommas(salePrice.toFixed(2))}
 										</Text>
@@ -143,11 +150,24 @@ const Cart = () => {
 											}}
 										>
 											<TouchableOpacity
+												disabled={
+													filteredCartItemQuantity[0]?.quantity === 1
+														? true
+														: false
+												}
 												onPress={() =>
 													dispatch(decreaseCartProductQuantity(_id))
 												}
 											>
-												<AntDesign name="minuscircle" size={22} color="black" />
+												<AntDesign
+													name="minuscircle"
+													size={22}
+													color={
+														filteredCartItemQuantity[0]?.quantity === 1
+															? 'gray'
+															: 'black'
+													}
+												/>
 											</TouchableOpacity>
 											<Text style={{ paddingHorizontal: 15, fontSize: 18 }}>
 												{filteredCartItemQuantity[0]?.quantity}
@@ -186,19 +206,28 @@ const Cart = () => {
 						}}
 					>
 						<View style={{ backgroundColor: 'white', padding: 20 }}>
-							<Text>Your cart is empty</Text>
+							<Text>
+								{' '}
+								{isEnglish
+									? 'Your cart is empty'
+									: `Votre panier est vide`}{' '}
+							</Text>
 						</View>
 					</View>
 				)}
 				<TouchableOpacity style={styles.promoContainer}>
-					<Text style={{ fontSize: 16 }}>Promo/Student Code or Vouchers</Text>
+					<Text style={{ fontSize: 16 }}>
+						{isEnglish
+							? 'Promo/Student Code or Vouchers'
+							: `Code Promo/Étudiant ou Coupons`}
+					</Text>
 					<TouchableOpacity>
 						<AntDesign name="right" size={20} color="black" />
 					</TouchableOpacity>
 				</TouchableOpacity>
 				<View style={styles.productTotal}>
 					<View style={styles.productTotalContainer}>
-						<Text>Sub Total</Text>
+						<Text>{isEnglish ? 'Sub Total' : `Sous-total`}</Text>
 						<Text>
 							USD $
 							{cartProductTotal?.subTotal
@@ -224,7 +253,9 @@ const Cart = () => {
 						}}
 					/>
 					<View style={styles.productTotalContainer}>
-						<Text style={{ fontWeight: 'bold' }}>Total</Text>
+						<Text style={{ fontWeight: 'bold' }}>
+							{isEnglish ? 'Total' : `Totale`}
+						</Text>
 						<Text style={{ fontWeight: 'bold' }}>
 							USD $
 							{cartProductTotal?.total
@@ -241,13 +272,19 @@ const Cart = () => {
 						paddingHorizontal: 18,
 					}}
 				>
-					<Text style={{ color: 'gray' }}>
-						You will be charged shipping fee of USD $
-						{shippingFee ? numberWithCommas(parseFloat(shippingFee)) : 0}
-					</Text>
+					{cartProducts?.length > 0 && (
+						<Text style={{ color: 'gray' }}>
+							{isEnglish
+								? 'You will be charged shipping fee of'
+								: `Des frais d'expédition de`}{' '}
+							USD ${shippingFee ? numberWithCommas(parseFloat(shippingFee)) : 0}
+						</Text>
+					)}
 				</View>
 				<TouchableOpacity onPress={goToCheckoutScreen} style={styles.button}>
-					<Text style={{ color: '#fff', fontSize: 18 }}>Checkout</Text>
+					<Text style={{ color: '#fff', fontSize: 18 }}>
+						{isEnglish ? 'Checkout' : `Vérifier`}
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>

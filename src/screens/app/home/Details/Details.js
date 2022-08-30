@@ -107,11 +107,11 @@ const Details = () => {
 
 	useEffect(() => {
 		fetchShippingFee();
-	}, []);
+	}, [cartProducts]);
 
 	const fetchShippingFee = useCallback(() => {
 		dispatch(calculateShippingFee());
-	}, [cartProducts]);
+	}, []);
 
 	// useEffect(async () => {
 	// 	// set a clean up flag
@@ -449,7 +449,7 @@ const Details = () => {
 									styles={autoComplete}
 									query={{
 										key: GOOGLE_MAPS_APIKEY,
-										language: 'en',
+										language: isEnglish ? 'en' : 'fr',
 									}}
 									onPress={(data, details = null) => {
 										const searchedRegion = {
