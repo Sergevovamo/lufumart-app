@@ -24,6 +24,7 @@ export default function ProductReducer(state = initialState, action) {
 				isAuthenticated: true,
 				isLoading: false,
 				orderSuccess: action.payload,
+				shippingFee: null,
 			};
 		case CALCULATE_SHIPPING_COST:
 			return {

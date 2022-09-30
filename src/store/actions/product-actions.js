@@ -8,7 +8,7 @@ import {
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
 	GET_PRODUCTS_BY_CATEGORY,
-	CURRENT_CATEGORY_TITLE,
+	CURRENT_CATEGORY,
 	CLEAR_PRODUCTS_BY_CATEGORY,
 	GET_PRODUCT_HOME_CATEGORIES,
 	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
@@ -19,6 +19,7 @@ import {
 	DECREASE_PRODUCT_TO_CART,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	GET_SEARCH_PRODUCTS,
 	GET_MORE_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
 	GET_MORE_PRODUCTS_SUB_CATEGORY,
@@ -31,12 +32,12 @@ import {
 import { returnErrors, clearErrors } from './error-actions';
 
 const PRODUCTS_CATEGORY_SERVER =
-	'https://api-v1.lufumart.com/api/v1/product-categories';
+	'https://apis.lufumart.net/api/v1/product-categories';
 
 const PRODUCTS_SUB_CATEGORY_SERVER =
-	'https://api-v1.lufumart.com/api/v1/product-sub-categories/get-sub-category-by-category';
+	'https://apis.lufumart.net/api/v1/product-sub-categories/get-sub-category-by-category';
 
-const PRODUCTS_SERVER = 'https://api-v1.lufumart.com/api/v1/products';
+const PRODUCTS_SERVER = 'https://apis.lufumart.net/api/v1/products';
 
 export const getProductCategories = () => async (dispatch) => {
 	try {
@@ -214,7 +215,7 @@ export const getFlashSaleProducts = () => async (dispatch) => {
 		});
 
 		const response = await axios.get(
-			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/flash-sale-promotions`
+			`https://apis.lufumart.net/api/v1/product-promotions/lufumart-app/flash-sale-promotions`
 		);
 		const data = await response.data;
 
@@ -235,7 +236,7 @@ export const getFreeShippingProducts = () => async (dispatch) => {
 		});
 
 		const response = await axios.get(
-			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/free-shipping-promotions`
+			`https://apis.lufumart.net/api/v1/product-promotions/lufumart-app/free-shipping-promotions`
 		);
 		const data = await response.data;
 
@@ -256,7 +257,7 @@ export const getNewArrivalsProducts = () => async (dispatch) => {
 		});
 
 		const response = await axios.get(
-			`https://api-v1.lufumart.com/api/v1/product-promotions/lufumart-app/new-arrivals-promotions`
+			`https://apis.lufumart.net/api/v1/product-promotions/lufumart-app/new-arrivals-promotions`
 		);
 		const data = await response.data;
 
@@ -270,10 +271,11 @@ export const getNewArrivalsProducts = () => async (dispatch) => {
 	}
 };
 
-export const getProductsByCategory = (categoryId) => async (dispatch) => {
+export const getProductsByCategory = (category) => async (dispatch) => {
+	const { _id, page } = category;
 	try {
 		const response = await axios.get(
-			`${PRODUCTS_SERVER}/lufumart-app/products-by-category?&categoryId=${categoryId}`
+			`${PRODUCTS_SERVER}/lufumart-app/products-by-category?&categoryId=${_id}&page=${page}`
 		);
 		const data = await response.data;
 
@@ -307,11 +309,11 @@ export const getProductsByCategory = (categoryId) => async (dispatch) => {
 	}
 };
 
-export const getCurrentCategoryTitle = (data) => (dispatch) => {
+export const getCurrentCategory = (data) => (dispatch) => {
 	try {
 		// dispatch current Sub Category Title
 		dispatch({
-			type: CURRENT_CATEGORY_TITLE,
+			type: CURRENT_CATEGORY,
 			payload: data,
 		});
 	} catch (error) {
@@ -319,7 +321,7 @@ export const getCurrentCategoryTitle = (data) => (dispatch) => {
 			returnErrors(
 				error.response.data,
 				error.response.status,
-				'CURRENT_CATEGORY_TITLE'
+				'CURRENT_CATEGORY'
 			)
 		);
 	}
@@ -525,26 +527,40 @@ export const getCartProducts = () => async (dispatch) => {
 	}
 };
 
-// const calculateTotal = (cartProducts, cartProductQuantity, dispatch) => {
-// 	let total = 0;
+export const searchProducts = (payload) => async (dispatch) => {
+	const token = tokenConfig();
+	try {
+		if (payload) {
+			const { page, limit, searchTerm } = payload;
+			console.log(searchTerm);
 
-// 	cartProducts?.map((item, index) => {
-// 		total += parseInt(item.price, 10) * cartProductQuantity[index]?.quantity;
-// 	});
+			dispatch({ type: PRODUCT_LOADING });
 
-// 	const vat = total * 0.16;
+			const response = await axios.get(
+				`${PRODUCTS_SERVER}?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
+				token
+			);
+			const data = await response.data;
+			// console.log(data);
 
-// 	const data = {
-// 		subTotal: total,
-// 		vat,
-// 		total: total + vat,
-// 	};
-
-// 	dispatch({
-// 		type: CALCULATE_TOTAL,
-// 		payload: data,
-// 	});
-// };
+			await dispatch({
+				type: GET_SEARCH_PRODUCTS,
+				payload: data?.products,
+				totalSearchProducts: data?.totalSearchProducts,
+			});
+			dispatch(clearErrors());
+		}
+	} catch (error) {
+		console.log(error.response);
+		// dispatch(
+		// 	returnErrors(
+		// 		error.response.data,
+		// 		error.response.status,
+		// 		'GET_SEARCH_PRODUCTS'
+		// 	)
+		// );
+	}
+};
 
 // add product to cart and increase product cart quantity
 export const addProductToCart = (id) => async (dispatch) => {

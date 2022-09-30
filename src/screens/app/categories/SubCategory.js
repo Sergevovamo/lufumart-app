@@ -5,12 +5,15 @@ import {
 	Image,
 	StyleSheet,
 	FlatList,
+	ActivityIndicator,
 	TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+import * as Localization from 'expo-localization';
+
 import {
 	resetGetMoreProductsSubCategory,
 	getMoreProductsBySubCategory, // More than 12 products
@@ -25,6 +28,7 @@ import Tabs from './Tabs';
 const SubCategory = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [LottieAnim, setLottieAnim] = useState();
 
@@ -122,7 +126,7 @@ const SubCategory = () => {
 					contentContainerStyle={{ padding: 5 }}
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item: sub }) => {
-						const { name } = sub;
+						const { name, translations } = sub;
 						// console.log(name);
 
 						return (
@@ -132,7 +136,11 @@ const SubCategory = () => {
 										onPress={() => viewSubCategoryProducts(sub)}
 										style={styles.titleOnlyHeader}
 									>
-										<Text style={styles.subTitle}>{name}</Text>
+										<Text style={styles.subTitle}>
+											{isEnglish
+												? translations[0]?.en[0]?.name
+												: translations[0]?.fr[0]?.name}
+										</Text>
 										<View>
 											<AntDesign
 												name="arrowright"
@@ -159,7 +167,7 @@ const SubCategory = () => {
 													{item?._id === sub?._id && (
 														<Fragment>
 															{products?.map((product, index) => {
-																const { name, imageUrl } = product;
+																const { imageUrl, translations } = product;
 																return (
 																	<TouchableOpacity
 																		key={index}
@@ -178,7 +186,9 @@ const SubCategory = () => {
 																			numberOfLines={1}
 																			style={styles.itemText}
 																		>
-																			{name}
+																			{isEnglish
+																				? translations[0]?.en[0]?.name
+																				: translations[0]?.fr[0]?.name}
 																		</Text>
 																	</TouchableOpacity>
 																);

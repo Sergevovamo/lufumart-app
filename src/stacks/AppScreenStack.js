@@ -33,6 +33,7 @@ import {
 	Settings,
 	Profile,
 	Orders,
+	Wallet,
 	ChangePassword,
 } from '../screens/app/settings';
 import {
@@ -61,8 +62,11 @@ export const HomeStackScreen = ({ navigation }) => {
 
 	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
-	let currentCategoryTitle = useSelector(
-		(state) => state.products?.currentCategoryTitle
+	let currentCategoryTitleEn = useSelector(
+		(state) => state.products?.currentCategory?.translations[0]?.en[0]?.name
+	);
+	let currentCategoryTitleFr = useSelector(
+		(state) => state.products?.currentCategory?.translations[0]?.fr[0]?.name
 	);
 
 	const numberOfCartItems = useSelector(
@@ -227,7 +231,9 @@ export const HomeStackScreen = ({ navigation }) => {
 				name="HomeProductsByCategoryScreen"
 				component={ProductCategories}
 				options={{
-					title: `${currentCategoryTitle}`,
+					title: `${
+						isEnglish ? currentCategoryTitleEn : currentCategoryTitleFr
+					}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={clearProductsByCategory}
@@ -344,6 +350,61 @@ export const HomeStackScreen = ({ navigation }) => {
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={() => navigation.navigate('ExploreMoreProducts')}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 15,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					headerRight: () => (
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							{currentUser && (
+								<>
+									<TouchableOpacity
+										onPress={() => navigation.navigate('HomeDetailCartScreen')}
+										style={{
+											padding: 10,
+											backgroundColor: '#f3f7ff',
+											borderRadius: 50,
+										}}
+									>
+										<MaterialCommunityIcons
+											name="cart-outline"
+											size={24}
+											color="black"
+										/>
+									</TouchableOpacity>
+									<Badge
+										visible={numberOfCartItems?.length ? true : false}
+										style={{
+											marginBottom: 25,
+											marginLeft: -15,
+											marginRight: 10,
+											color: '#fff',
+											backgroundColor: '#f68b1e',
+										}}
+										size={15}
+									>
+										{numberOfCartItems?.length}
+									</Badge>
+								</>
+							)}
+						</View>
+					),
+				}}
+			/>
+			<HomeStack.Screen
+				name="HomeSearchDetailsScreen"
+				component={Details}
+				options={{
+					title: `${isEnglish ? 'Details' : 'Détails'}`,
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('HomeSearchScreen')}
 							style={{
 								padding: 10,
 								backgroundColor: '#f3f7ff',
@@ -593,12 +654,19 @@ export const CategoriesStackScreen = ({ navigation }) => {
 	const dispatch = useDispatch();
 	let currentUser = useSelector((state) => state.auth.isAuthenticated);
 
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
+
 	const numberOfCartItems = useSelector(
 		(state) => state.auth?.user?.current_user?.cart
 	);
 
-	const currentSubCategoryTitle = useSelector(
-		(state) => state.products?.currentSubCategoryTitle?.name
+	const currentSubCategoryTitleEn = useSelector(
+		(state) =>
+			state.products?.currentSubCategoryTitle?.translations[0]?.en[0]?.name
+	);
+	const currentSubCategoryTitleFr = useSelector(
+		(state) =>
+			state.products?.currentSubCategoryTitle?.translations[0]?.fr[0]?.name
 	);
 
 	// showTabbar
@@ -618,7 +686,7 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				name="CategoriesScreen"
 				component={Categories}
 				options={{
-					title: 'Categories',
+					title: `${isEnglish ? 'Categories' : 'Catégories'}`,
 					headerRight: () => (
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							{currentUser && (
@@ -718,7 +786,9 @@ export const CategoriesStackScreen = ({ navigation }) => {
 				name="ProductListScreen"
 				component={ProductList}
 				options={{
-					title: `${currentSubCategoryTitle}`,
+					title: `${
+						isEnglish ? currentSubCategoryTitleEn : currentSubCategoryTitleFr
+					}`,
 					headerLeft: () => (
 						<TouchableOpacity
 							onPress={displayTabbar}
@@ -1150,7 +1220,7 @@ export const FeedStackScreen = ({ navigation }) => {
 					title: `${isEnglish ? 'Details' : 'Détails'}`,
 					headerLeft: () => (
 						<TouchableOpacity
-							onPress={() => navigation.navigate('ExploreMoreProducts')}
+							onPress={() => navigation.navigate('FeedScreen')}
 							style={{
 								padding: 10,
 								backgroundColor: '#f3f7ff',
@@ -1166,7 +1236,7 @@ export const FeedStackScreen = ({ navigation }) => {
 							{currentUser && (
 								<>
 									<TouchableOpacity
-										onPress={() => navigation.navigate('HomeDetailCartScreen')}
+										onPress={() => navigation.navigate('FeedDetailCartScreen')}
 										style={{
 											padding: 10,
 											backgroundColor: '#f3f7ff',
@@ -1196,6 +1266,34 @@ export const FeedStackScreen = ({ navigation }) => {
 							)}
 						</View>
 					),
+				}}
+			/>
+			<FeedStack.Screen
+				name="ImageScreen"
+				component={ProductImageZoom}
+				options={{
+					title: '',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate('FeedExploreMoreDetailsScreen')
+							}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<AntDesign name="close" size={24} color="black" />
+						</TouchableOpacity>
+					),
+					cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+					presentation: 'card',
+					cardStyle: {
+						backgroundColor: '#fffff7',
+						opacity: 1,
+					},
 				}}
 			/>
 			<FeedStack.Screen
@@ -1233,27 +1331,59 @@ export const FeedStackScreen = ({ navigation }) => {
 				}}
 			/>
 			<FeedStack.Screen
+				name="FeedDetailCartScreen"
+				component={Cart}
+				options={{
+					title: 'My Cart',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate('FeedExploreMoreDetailsScreen')
+							}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<FeedStack.Screen
 				name="FeedCheckoutScreen"
 				component={Checkout}
 				options={{
 					title: 'Checkout',
 					headerLeft: () => (
 						<TouchableOpacity
-							onPress={() => navigation.navigate('FeedCartScreen')}
+							onPress={() => navigation.navigate('FeedDetailCartScreen')}
+							style={{
+								padding: 10,
+								backgroundColor: '#f3f7ff',
+								borderRadius: 50,
+								marginHorizontal: 5,
+							}}
+						>
+							<Ionicons name="arrow-back" size={24} color="black" />
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<FeedStack.Screen
+				name="FeedDeliveryAddressScreen"
+				component={DeliveryAddress}
+				options={{
+					title: 'Delivery Address',
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate('FeedCheckoutScreen')}
 						>
 							<Ionicons
 								name="arrow-back"
 								size={24}
-								color="black"
-								style={{ paddingHorizontal: 15 }}
-							/>
-						</TouchableOpacity>
-					),
-					headerRight: () => (
-						<TouchableOpacity>
-							<Fontisto
-								name="more-v-a"
-								size={20}
 								color="black"
 								style={{ paddingHorizontal: 15 }}
 							/>
@@ -1354,6 +1484,23 @@ export const SettingsStackScreen = ({ navigation }) => {
 				component={Orders}
 				options={{
 					title: `${isEnglish ? 'Your Orders' : 'Vos commandes'}`,
+					headerLeft: () => (
+						<TouchableOpacity onPress={displayTabbarSettings}>
+							<Ionicons
+								name="arrow-back"
+								size={24}
+								color="black"
+								style={{ paddingHorizontal: 15 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
+			/>
+			<SettingsStack.Screen
+				name="SettingsWalletScreen"
+				component={Wallet}
+				options={{
+					title: `${isEnglish ? 'Referral Balance' : 'Solde de parrainage'}`,
 					headerLeft: () => (
 						<TouchableOpacity onPress={displayTabbarSettings}>
 							<Ionicons

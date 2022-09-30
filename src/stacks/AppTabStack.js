@@ -101,7 +101,8 @@ const AppTabStack = () => {
 			<Tab.Screen
 				name={isEnglish ? 'Feed' : 'Alimentation'}
 				component={FeedStackScreen}
-				options={{
+				options={({ route }) => ({
+					tabBarStyle: { display: getRouteNameFeedScreen(route) },
 					tabBarIcon: ({ focused }) => (
 						<MaterialIcons
 							name="rss-feed"
@@ -109,7 +110,7 @@ const AppTabStack = () => {
 							color={focused ? '#fff' : 'black'}
 						/>
 					),
-				}}
+				})}
 			/>
 			<Tab.Screen
 				name={isEnglish ? 'Settings' : 'Réglages'}
@@ -142,6 +143,7 @@ const getRouteNameHomeScreen = (route) => {
 		routeName?.includes('HomeExploreMoreDetailsScreen') ||
 		routeName?.includes('HomeProductsByCategoryDetailsScreen') ||
 		routeName?.includes('HomeSearchScreen') ||
+		routeName?.includes('HomeSearchDetailsScreen') ||
 		routeName?.includes('HomeCategoriesScreen') ||
 		routeName?.includes('HomeProductsByCategoryScreen') ||
 		routeName?.includes('ExploreMoreProducts') ||
@@ -191,6 +193,23 @@ const getRouteNameSellerScreen = (route) => {
 	}
 };
 
+const getRouteNameFeedScreen = (route) => {
+	const routeName = getFocusedRouteNameFromRoute(route);
+
+	// console.log(routeName);
+	if (
+		routeName?.includes('ImageScreen') ||
+		routeName?.includes('FeedExploreMoreDetailsScreen') ||
+		routeName?.includes('FeedDetailCartScreen') ||
+		routeName?.includes('FeedCheckoutScreen') ||
+		routeName?.includes('FeedDeliveryAddressScreen')
+	) {
+		return 'none';
+	} else {
+		return 'flex';
+	}
+};
+
 const getRouteNameSettingScreen = (route) => {
 	const routeName = getFocusedRouteNameFromRoute(route);
 
@@ -200,6 +219,7 @@ const getRouteNameSettingScreen = (route) => {
 		routeName?.includes('SettingsProfileScreen') ||
 		routeName?.includes('SettingsChangePasswordScreen') ||
 		routeName?.includes('SettingsOrdersScreen') ||
+		routeName?.includes('SettingsWalletScreen') ||
 		routeName?.includes('SettingsDeliveryAddressScreen')
 	) {
 		return 'none';

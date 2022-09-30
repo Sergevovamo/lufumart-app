@@ -56,14 +56,13 @@ const ExploreMoreProducts = () => {
 	const renderFooter = () => (
 		<View style={styles.footerText}>
 			{products.moreLoading && <ActivityIndicator />}
-			{products.isListEnd && <Text>No more products at the moment</Text>}
+			{products.isListEnd && <Text>No more products at the moment.</Text>}
 		</View>
 	);
 
 	const renderEmpty = () => (
 		<View style={styles.emptyText}>
-			<Text>No products at the moment</Text>
-			{/* <Button onPress={() => requestAPI()} title="Refresh" /> */}
+			<Text>No products at the moment.</Text>
 		</View>
 	);
 

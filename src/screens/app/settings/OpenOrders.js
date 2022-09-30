@@ -44,6 +44,7 @@ const OpenOrders = () => {
 				flex: 1,
 				alignItems: 'center',
 				justifyContent: 'flex-start',
+				backgroundColor: '#fffff7',
 			}}
 		>
 			{orders?.length > 0 ? (
@@ -133,6 +134,8 @@ const styles = StyleSheet.create({
 		width: Platform.OS === 'ios' ? width * 0.9 : width * 0.95,
 		height: 200,
 		borderRadius: 10,
+		borderWidth: 0.2,
+		borderColor: 'gray',
 		backgroundColor: '#fff',
 	},
 	imageContainer: {

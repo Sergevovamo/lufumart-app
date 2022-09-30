@@ -89,12 +89,15 @@ const Cart = () => {
 			navigation.navigate('HomeDetailsScreen');
 		}
 	};
+	// FeedCheckoutScreen
 
 	const goToCheckoutScreen = () => {
 		if (route.name === 'CategoriesCartScreen') {
 			navigation.navigate('CategoriesCheckoutScreen');
 		} else if (route.name === 'CategoriesDetailCartScreen') {
 			navigation.navigate('CategoriesCheckoutScreen');
+		} else if (route.name === 'FeedDetailCartScreen') {
+			navigation.navigate('FeedCheckoutScreen');
 		} else {
 			navigation.navigate('CheckoutScreen');
 		}
@@ -283,7 +286,7 @@ const Cart = () => {
 				</View>
 				<TouchableOpacity onPress={goToCheckoutScreen} style={styles.button}>
 					<Text style={{ color: '#fff', fontSize: 18 }}>
-						{isEnglish ? 'Checkout' : `Vérifier`}
+						{isEnglish ? 'Checkout' : `Aller au paiement`}
 					</Text>
 				</TouchableOpacity>
 			</View>

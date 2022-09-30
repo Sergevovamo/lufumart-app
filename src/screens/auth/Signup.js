@@ -135,11 +135,8 @@ const Signup = ({ navigation }) => {
 												name="name"
 												render={({ field: { onChange, value } }) => (
 													<Input
-														keyboardType="email-address"
 														size="lg"
-														placeholder={
-															isEnglish ? 'Enter name' : 'Entrez le nom'
-														}
+														placeholder={isEnglish ? 'John Doe' : 'John Doe'}
 														value={value}
 														onChangeText={(value) => onChange(value)}
 													/>
@@ -180,8 +177,8 @@ const Signup = ({ navigation }) => {
 														size="lg"
 														placeholder={
 															isEnglish
-																? 'Enter email address'
-																: `Entrer l'adresse e-mail`
+																? 'johndoe@example.com'
+																: `johndoe@example.com`
 														}
 														value={value}
 														onChangeText={(value) => onChange(value)}
@@ -227,9 +224,7 @@ const Signup = ({ navigation }) => {
 														keyboardType="numeric"
 														size="lg"
 														placeholder={
-															isEnglish
-																? 'Enter mobile number'
-																: `Entrez le numéro de téléphone portable`
+															isEnglish ? '0800695000' : `0800695000`
 														}
 														value={value}
 														onChangeText={(value) => onChange(value)}
@@ -312,6 +307,37 @@ const Signup = ({ navigation }) => {
 												leftIcon={<WarningOutlineIcon size="xs" />}
 											>
 												{errors?.gender?.message}
+											</FormControl.ErrorMessage>
+										</FormControl>
+										<FormControl>
+											<FormControl.Label>
+												{isEnglish ? 'Referral Code' : `Code de Parrainage`}
+											</FormControl.Label>
+											<Controller
+												control={control}
+												name="referralCode"
+												render={({ field: { onChange, value } }) => (
+													<Input
+														size="lg"
+														placeholder={'6331e5280b6bf12da4e6753e'}
+														value={value}
+														onChangeText={(value) => onChange(value)}
+													/>
+												)}
+												rules={{
+													pattern: {
+														value: /^[a-f\d]{24}$/i,
+														message: isEnglish
+															? 'Please enter a valid referral code'
+															: `Veuillez entrer un code de parrainage valide`,
+													},
+												}}
+											/>
+
+											<FormControl.ErrorMessage
+												leftIcon={<WarningOutlineIcon size="xs" />}
+											>
+												{errors?.referralCode?.message}
 											</FormControl.ErrorMessage>
 										</FormControl>
 										<FormControl

@@ -127,7 +127,7 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
 	sellerContainer: {
 		padding: 3,
-		width: Platform.OS === 'ios' ? width * 0.9 : width * 0.9,
+		width: Platform.OS === 'ios' ? width * 0.94 : width * 0.92,
 		height: 250,
 		...Platform.select({
 			ios: {

@@ -26,8 +26,11 @@ const ProductCategories = () => {
 	const mounted = useRef(false);
 
 	const isLoading = useSelector((state) => state.products?.isLoading);
+	let currentCategory = useSelector((state) => state.products?.currentCategory);
 	const products = useSelector((state) => state.products?.productsByCategory);
 	let isEnglish = Localization.locale.slice(0, 2) === 'en';
+
+	const [page, setPage] = useState(1);
 
 	useEffect(() => {
 		// set a clean up flag
@@ -62,9 +65,16 @@ const ProductCategories = () => {
 		// dispatch(getProductsByCategory());
 	}, []);
 
-	const fetchMoreData = useCallback(() => {
-		// dispatch(getProductsByCategory());
-	}, []);
+	const fetchMoreData = () => {
+		setPage(page + 1);
+
+		const data = {
+			_id: currentCategory?._id,
+			page: page,
+		};
+
+		dispatch(getProductsByCategory(data));
+	};
 
 	const renderFooter = () => (
 		<View style={styles.footerText}>
@@ -95,7 +105,7 @@ const ProductCategories = () => {
 				alignItems: 'center',
 			}}
 		>
-			{products?.length > 0 && (
+			{products?.length > 0 ? (
 				<FlatList
 					data={products}
 					keyExtractor={(item, index) => `${item}-${index}`}
@@ -103,12 +113,12 @@ const ProductCategories = () => {
 					style={{ flexGrow: 0 }}
 					ListEmptyComponent={renderEmpty}
 					ListFooterComponent={renderFooter}
-					onEndReachedThreshold={0.2}
+					onEndReachedThreshold={0.5}
 					onEndReached={fetchMoreData}
 					contentContainerStyle={{ padding: 5 }}
 					showsHorizontalScrollIndicator={false}
 					renderItem={({ item: product }) => {
-						const { name, salePrice, imageUrl, translations } = product;
+						const { salePrice, imageUrl, translations } = product;
 
 						return (
 							<TouchableOpacity onPress={() => viewedProduct(product)}>
@@ -139,6 +149,14 @@ const ProductCategories = () => {
 						);
 					}}
 				/>
+			) : (
+				<View style={styles.emptyText}>
+					<Text>
+						{isEnglish
+							? 'No products at the moment.'
+							: `Aucun produit pour le moment.`}
+					</Text>
+				</View>
 			)}
 		</View>
 	);

@@ -1,13 +1,16 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef, useRef } from 'react';
 import {
 	View,
 	Text,
 	Image,
+	Modal,
 	Dimensions,
 	ScrollView,
 	FlatList,
 	StyleSheet,
 	TouchableOpacity,
+	Animated,
+	ActivityIndicator,
 } from 'react-native';
 import {
 	VStack,
@@ -42,6 +45,47 @@ const actionSheetRef = createRef();
 
 const sheet_height = height * 0.8;
 
+const ModalPoup = ({ visible, children }) => {
+	const [showModal, setShowModal] = useState(visible);
+	const scaleValue = useRef(new Animated.Value(0)).current;
+
+	useEffect(() => {
+		toggleModal();
+	}, [visible]);
+
+	const toggleModal = () => {
+		if (visible) {
+			setShowModal(true);
+			Animated.spring(scaleValue, {
+				toValue: 1,
+				duration: 300,
+				useNativeDriver: true,
+			}).start();
+		} else {
+			setTimeout(() => setShowModal(false), 200);
+			Animated.timing(scaleValue, {
+				toValue: 0,
+				duration: 300,
+				useNativeDriver: true,
+			}).start();
+		}
+	};
+	return (
+		<Modal transparent visible={showModal}>
+			<View style={styles.modalBackGround}>
+				<Animated.View
+					style={[
+						styles.modalContainer,
+						{ transform: [{ scale: scaleValue }] },
+					]}
+				>
+					{children}
+				</Animated.View>
+			</View>
+		</Modal>
+	);
+};
+
 const Checkout = () => {
 	const route = useRoute();
 	const dispatch = useDispatch();
@@ -70,9 +114,12 @@ const Checkout = () => {
 
 	const [loop, setLoop] = useState(true);
 	const [LottieAnim, setLottieAnim] = useState();
+	const [LottieError, setLottieError] = useState();
 	const [buttonLoading, setButtonLoading] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState(null);
 	const [paymentMobile, setPaymentMobile] = useState(null);
+	const [visible, setVisible] = useState(false);
+	const [visibleError, setVisibleError] = useState(false);
 
 	const {
 		control,
@@ -88,6 +135,19 @@ const Checkout = () => {
 			.then((response) => response.json())
 			.then((responseData) => {
 				setLottieAnim(responseData);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}, []);
+
+	useEffect(() => {
+		fetch('https://assets5.lottiefiles.com/packages/lf20_h3Bz5a.json', {
+			method: 'GET',
+		})
+			.then((response) => response.json())
+			.then((responseData) => {
+				setLottieError(responseData);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -142,27 +202,32 @@ const Checkout = () => {
 			});
 		}
 
-		if (paymentMobile < 8) {
+		// length 10 when phone is 0800695000
+		if (paymentMobile.toString().length !== 10) {
 			return Toast.show({
 				type: 'error',
+				autoHide: false,
 				text1: isEnglish
 					? 'Please provide a valid phone number'
 					: `Veuillez fournir un numéro de téléphone valide`,
+				text2: isEnglish
+					? `Let phone number be in the format 0800695000`
+					: `Format requis 0800695000`,
 			});
 		}
 
 		if (currentUserAddress && cartProducts?.length > 0) {
 			if (paymentMobile.startsWith('0')) {
 				let phone = paymentMobile.substring(1);
-				console.log(phone);
 
 				setButtonLoading(true);
+				// Show loading modal
+				setVisible(true);
 				const data = {
 					phone: `243${phone}`,
 					paymentMethod: paymentMethod,
 					deliveryAddress: currentUserAddress,
 				};
-
 				await dispatch(checkOutOrder(data));
 				confirmTransaction();
 			}
@@ -183,9 +248,10 @@ const Checkout = () => {
 	const confirmTransaction = async () => {
 		const message = await getValueFor('transactionMessage');
 		if (message) {
-			// Show success modal
+			// Stop loading & show success animation
 			setButtonLoading(false);
-			actionSheetRef.current?.setModalVisible();
+			setVisibleError(false);
+			// actionSheetRef.current?.setModalVisible();
 		}
 	};
 
@@ -193,12 +259,14 @@ const Checkout = () => {
 		// Check for checkout error
 		if (error.id === 'CHECKOUT_ORDER') {
 			setButtonLoading(false);
+			// Show error modal on order fail
+			setVisibleError(true);
 			Toast.show({
 				type: 'error',
 				autoHide: false,
 				text1: isEnglish
-					? 'Error! Something went wrong.'
-					: `Erreur! Quelque chose s'est mal passé.`,
+					? 'Error! Order processing failed.'
+					: `Le traitement de la commande a échoué.`,
 				text2: isEnglish
 					? `An error occurred while creating an order.`
 					: `Une erreur s'est produite lors de la création d'une commande.`,
@@ -213,9 +281,13 @@ const Checkout = () => {
 		navigation.navigate('HomeScreen');
 	};
 
+	// FeedCheckoutScreen
+
 	const goToDeliveryScreen = () => {
 		if (route.name === 'CategoriesCheckoutScreen') {
 			navigation.navigate('CategoriesDeliveryAddressScreen');
+		} else if (route.name === 'FeedCheckoutScreen') {
+			navigation.navigate('FeedDeliveryAddressScreen');
 		} else {
 			navigation.navigate('DeliveryAddressScreen');
 		}
@@ -277,6 +349,132 @@ const Checkout = () => {
 			</ActionSheet>
 			<ScrollView style={{ backgroundColor: '#fffff7' }}>
 				<View style={styles.container}>
+					{/* On success show success modal else show error modal */}
+					<ModalPoup visible={visible}>
+						<View style={{ alignItems: 'center' }}>
+							<View style={styles.header}></View>
+						</View>
+						<View style={{ alignItems: 'center' }}>
+							{buttonLoading ? (
+								<>
+									<ActivityIndicator size="large" />
+									<Text
+										style={{
+											marginVertical: 30,
+											fontSize: 18,
+											textAlign: 'center',
+											fontWeight: '300',
+											color: '#000000',
+										}}
+									>
+										{isEnglish
+											? 'Order processing...'
+											: 'Commande en cours de traitement...'}
+									</Text>
+								</>
+							) : visibleError ? (
+								<LottieView
+									source={LottieError}
+									style={styles.loading}
+									autoPlay
+									loop={loop}
+								/>
+							) : (
+								<LottieView
+									source={LottieAnim}
+									style={styles.loading}
+									autoPlay
+									loop={loop}
+								/>
+							)}
+						</View>
+
+						{!buttonLoading && (
+							<>
+								{visibleError ? (
+									<Text
+										style={{
+											marginVertical: 30,
+											fontSize: 18,
+											textAlign: 'center',
+											fontWeight: '300',
+											color: '#000000',
+										}}
+									>
+										{isEnglish
+											? 'Order processing failed.'
+											: 'Le traitement de la commande a échoué.'}
+									</Text>
+								) : (
+									<Text
+										style={{
+											marginVertical: 30,
+											fontSize: 18,
+											textAlign: 'center',
+											fontWeight: '300',
+											color: '#000000',
+										}}
+									>
+										{isEnglish
+											? 'Your order has been received.'
+											: 'Votre commande a été reçue.'}
+									</Text>
+								)}
+							</>
+						)}
+						<View
+							style={{
+								flexDirection: 'row',
+								justifyContent: 'space-around',
+								alignItems: 'center',
+								width: '100%',
+								paddingVertical: 5,
+							}}
+						>
+							{!buttonLoading && (
+								<>
+									<TouchableOpacity
+										onPress={() => setVisible(false)}
+										style={{
+											backgroundColor: '#f3f7ff',
+											padding: 10,
+											borderRadius: 7,
+										}}
+									>
+										<Text>Cancel</Text>
+									</TouchableOpacity>
+									{visibleError === true ? (
+										<TouchableOpacity
+											onPress={checkOut}
+											style={{
+												backgroundColor: '#00ab55',
+												padding: 10,
+												borderRadius: 7,
+											}}
+										>
+											<Text style={{ color: '#fff' }}>
+												{isEnglish ? 'Retry' : 'Recommencez'}
+											</Text>
+										</TouchableOpacity>
+									) : (
+										<TouchableOpacity
+											onPress={() => navigation.navigate('HomeScreen')}
+											style={{
+												backgroundColor: '#00ab55',
+												padding: 10,
+												borderRadius: 7,
+											}}
+										>
+											<Text style={{ color: '#fff' }}>
+												{isEnglish ? 'Done' : 'Fait'}
+											</Text>
+										</TouchableOpacity>
+									)}
+								</>
+							)}
+						</View>
+					</ModalPoup>
+
 					<View style={styles.deliveryContainer}>
 						<Text style={{ fontSize: 18, paddingBottom: 5 }}>
 							{isEnglish ? 'Delivery Address' : 'Adresse de livraison'}
@@ -422,11 +620,7 @@ const Checkout = () => {
 										<Input
 											keyboardType="numeric"
 											size="lg"
-											placeholder={
-												isEnglish
-													? 'Enter mobile number'
-													: 'Entrez le numéro de téléphone portable'
-											}
+											placeholder={isEnglish ? '0800695000' : '0800695000'}
 											value={value}
 											onChangeText={(value) => handleChange(value)}
 										/>
@@ -441,7 +635,7 @@ const Checkout = () => {
 											}`,
 										},
 										pattern: {
-											value: /^(\+254|0)[1-9]\d{8}$/i,
+											value: /^(\+243|0)[1-9]\d{8}$/i,
 											message: `${
 												isEnglish
 													? 'Please enter a valid mobile number'
@@ -556,7 +750,8 @@ const Checkout = () => {
 								<Text
 									style={{ fontSize: 18, fontWeight: 'bold', paddingBottom: 5 }}
 								>
-									USD ${numberWithCommas(parseFloat(totalOrderAmount))}
+									USD $
+									{numberWithCommas(parseFloat(totalOrderAmount.toFixed(2)))}
 								</Text>
 							</View>
 						</>
@@ -582,6 +777,28 @@ const Checkout = () => {
 export default Checkout;
 
 const styles = StyleSheet.create({
+	// Modal
+	modalBackGround: {
+		flex: 1,
+		backgroundColor: 'rgba(0,0,0,0.5)',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	modalContainer: {
+		width: '80%',
+		backgroundColor: 'white',
+		paddingHorizontal: 10,
+		paddingVertical: 15,
+		borderRadius: 20,
+		elevation: 20,
+	},
+	header: {
+		width: '100%',
+		height: 40,
+		alignItems: 'flex-end',
+		justifyContent: 'center',
+	},
+	//   Screen Style
 	container: {
 		flex: 1,
 		alignItems: 'center',

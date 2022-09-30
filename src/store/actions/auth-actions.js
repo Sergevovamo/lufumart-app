@@ -20,8 +20,8 @@ import {
 	authError,
 } from './error-actions';
 
-const USERS_URL = 'https://api-v1.lufumart.com/api/v1/auth';
-const SELLERS_URL = 'https://api-v1.lufumart.com/api/v1/seller/auth';
+const USERS_URL = 'https://apis.lufumart.net/api/v1/auth';
+const SELLERS_URL = 'https://apis.lufumart.net/api/v1/seller/auth';
 
 // Setup config headers and token
 export const tokenConfig = async () => {
@@ -72,7 +72,7 @@ export const auth = () => async (dispatch) => {
 
 // Register User
 export const registerUser = (payload, isSeller) => async (dispatch) => {
-	const { name, email, phone, gender, password } = payload;
+	const { name, email, phone, gender, password, referralCode } = payload;
 
 	try {
 		// Headers
@@ -90,6 +90,7 @@ export const registerUser = (payload, isSeller) => async (dispatch) => {
 			gender,
 			password,
 			password_confirmation: password,
+			referralCode,
 		});
 
 		if (isSeller) {

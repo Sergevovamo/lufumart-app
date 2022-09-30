@@ -39,7 +39,7 @@ const Feed = () => {
 						<>
 							<Text
 								style={{
-									color: focused ? '#00ab55' : 'gray',
+									color: focused ? '#f68b1e' : 'gray',
 									fontWeight: 'bold',
 									textTransform: 'uppercase',
 								}}
@@ -58,7 +58,7 @@ const Feed = () => {
 						<>
 							<Text
 								style={{
-									color: focused ? '#00ab55' : 'gray',
+									color: focused ? '#f68b1e' : 'gray',
 									fontWeight: 'bold',
 									textTransform: 'uppercase',
 								}}

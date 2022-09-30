@@ -9,6 +9,8 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Localization from 'expo-localization';
+
 import {
 	getProductCategories,
 	getProductSubCategoryByCategory,
@@ -17,6 +19,8 @@ import {
 const Tabs = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const productCategories = useSelector(
 		(state) => state.products?.productCategories
@@ -45,7 +49,7 @@ const Tabs = () => {
 				contentContainerStyle={{ paddingHorizontal: 5 }}
 				showsHorizontalScrollIndicator={true}
 				renderItem={({ item: category }) => {
-					const { name } = category;
+					const { name, translations } = category;
 					// console.log(name);
 
 					return (
@@ -67,7 +71,9 @@ const Tabs = () => {
 										},
 									]}
 								>
-									{name}
+									{isEnglish
+										? translations[0]?.en[0]?.name
+										: translations[0]?.fr[0]?.name}
 								</Text>
 							</View>
 						</TouchableOpacity>

@@ -29,7 +29,7 @@ export const PAGINATION_LIST_END = 'pagination_list_end';
 export const GET_PRODUCT_CATEGORY = 'get_product_category';
 export const GET_PRODUCT_CATEGORIES = 'get_product_categories';
 export const GET_PRODUCTS_BY_CATEGORY = 'get_products_by_category';
-export const CURRENT_CATEGORY_TITLE = 'current_category_title';
+export const CURRENT_CATEGORY = 'current_category';
 export const CLEAR_PRODUCTS_BY_CATEGORY = 'clear_products_by_category';
 export const GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY =
 	'get_product_sub_categories_by_category';
@@ -38,6 +38,7 @@ export const DELETE_PRODUCT_CATEGORY = 'delete_product_category';
 
 export const GET_PRODUCT = 'get_product';
 export const GET_PRODUCTS = 'get_products';
+export const GET_SEARCH_PRODUCTS = 'get_search_products';
 export const GET_MORE_PRODUCTS = 'get_more_products';
 export const GET_PRODUCTS_SUB_CATEGORY = 'get_products_sub_category';
 export const GET_MORE_PRODUCTS_SUB_CATEGORY = 'get_more_products_sub_category';

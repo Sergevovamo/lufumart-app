@@ -84,6 +84,7 @@ const Details = () => {
 
 	const shippingFee = useSelector((state) => state.order?.shippingFee);
 	const isLoading = useSelector((state) => state.products?.isLoading);
+	console.log(shippingFee);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -239,7 +240,11 @@ const Details = () => {
 									{/* <Text style={styles.initialPrice}>KSh {price}</Text> */}
 									<Text style={styles.location}>
 										{isEnglish ? '+ shipping fee of' : '+ frais de port de'} USD
-										${shippingFee ? shippingFee : 0} {isEnglish ? 'from' : 'de'}{' '}
+										$
+										{shippingFee
+											? numberWithCommas(parseFloat(shippingFee))
+											: 0}{' '}
+										{isEnglish ? 'from' : 'de'}{' '}
 										{isEnglish ? 'Lufumart Seller to' : 'Vendeur Lufumart à'}{' '}
 										{userAddress?.description
 											? userAddress?.description
@@ -336,7 +341,6 @@ const Details = () => {
 												>
 													<View
 														style={{
-															width: '50%',
 															flexDirection: 'row',
 															justifyContent: 'space-around',
 															alignItems: 'center',
@@ -349,7 +353,9 @@ const Details = () => {
 														/>
 														<Text style={{ color: '#fff', fontSize: 18 }}>
 															{' '}
-															{isEnglish ? 'Add to Cart' : 'Ajouter au chariot'}
+															{isEnglish
+																? 'Add to Cart'
+																: `Ajouter l'article au panier`}
 														</Text>
 													</View>
 												</TouchableOpacity>
@@ -792,7 +798,7 @@ const styles = StyleSheet.create({
 	sellerContainer: {
 		marginVertical: 1,
 		padding: 3,
-		width: Platform.OS === 'ios' ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9,
+		width: Platform.OS === 'ios' ? SCREEN_WIDTH * 0.94 : SCREEN_WIDTH * 0.92,
 		height: 250,
 		...Platform.select({
 			ios: {

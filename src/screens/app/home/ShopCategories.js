@@ -1,21 +1,20 @@
 import React, { useEffect, useRef } from 'react';
-import {
-	View,
-	Text,
-	Image,
-	StyleSheet,
-	FlatList,
-	TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { numberWithCommas } from '../../../utils/NumberWithCommas';
-import { getProductHomeCategories } from '../../../store/actions/product-actions';
+import * as Localization from 'expo-localization';
+import {
+	getProductHomeCategories,
+	getProductsByCategory,
+	getCurrentCategory,
+} from '../../../store/actions/product-actions';
 
 const ShopCategories = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const productCategories = useSelector(
 		(state) => state.products?.productHomeCategories
@@ -34,12 +33,23 @@ const ShopCategories = () => {
 			mounted.current = false;
 		};
 	}, []);
+
+	const viewedProduct = (category) => {
+		const data = {
+			_id: category?._id,
+			page: 1,
+		};
+		dispatch(getProductsByCategory(data));
+		dispatch(getCurrentCategory(category));
+		navigation.navigate('HomeProductsByCategoryScreen');
+	};
+
 	return (
 		<View style={styles.container}>
 			{productCategories?.map((item, index) => {
-				const { name, imageUrl } = item;
+				const { name, imageUrl, translations } = item;
 				return (
-					<TouchableOpacity key={index}>
+					<TouchableOpacity key={index} onPress={() => viewedProduct(item)}>
 						<View style={styles.product}>
 							<View style={styles.imageContainer}>
 								<Image
@@ -57,7 +67,9 @@ const ShopCategories = () => {
 										fontSize: 12,
 									}}
 								>
-									{name}
+									{isEnglish
+										? translations[0]?.en[0]?.name
+										: translations[0]?.fr[0]?.name}
 								</Text>
 							</View>
 						</View>

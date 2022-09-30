@@ -70,7 +70,7 @@ const Explore = () => {
 
 	const viewedProduct = (product) => {
 		dispatch(getProduct(product._id));
-		navigation.navigate('HomeExploreMoreDetailsScreen');
+		navigation.navigate('FeedExploreMoreDetailsScreen');
 	};
 
 	return (

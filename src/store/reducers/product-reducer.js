@@ -5,7 +5,7 @@ import {
 	GET_PRODUCT_CATEGORY,
 	GET_PRODUCT_CATEGORIES,
 	GET_PRODUCTS_BY_CATEGORY,
-	CURRENT_CATEGORY_TITLE,
+	CURRENT_CATEGORY,
 	CLEAR_PRODUCTS_BY_CATEGORY,
 	GET_PRODUCT_HOME_CATEGORIES,
 	GET_PRODUCT_SUB_CATEGORIES_BY_CATEGORY,
@@ -13,6 +13,7 @@ import {
 	DELETE_PRODUCT_CATEGORY,
 	GET_PRODUCT,
 	GET_PRODUCTS,
+	GET_SEARCH_PRODUCTS,
 	GET_MORE_PRODUCTS,
 	GET_PRODUCTS_SUB_CATEGORY,
 	GET_MORE_PRODUCTS_SUB_CATEGORY,
@@ -40,6 +41,7 @@ const initialState = {
 	productSubCategoriesByCategory: null,
 	product: null,
 	products: [],
+	searchProducts: [],
 	getMoreProducts: [],
 	getFlashSaleProducts: null,
 	getFreeShippingProducts: null,
@@ -50,8 +52,9 @@ const initialState = {
 	cartProducts: null,
 	total: null,
 	// Currently view products based on Product Detail or Sub Category
-	currentCategoryTitle: null,
+	currentCategory: null,
 	currentSubCategoryTitle: null,
+	totalSearchProducts: null,
 };
 
 export default function ProductReducer(state = initialState, action) {
@@ -95,12 +98,12 @@ export default function ProductReducer(state = initialState, action) {
 				isLoading: false,
 				productsByCategory: [...state.productsByCategory, ...action.payload],
 			};
-		case CURRENT_CATEGORY_TITLE:
+		case CURRENT_CATEGORY:
 			return {
 				...state,
 				isAuthenticated: false,
 				isLoading: false,
-				currentCategoryTitle: action.payload,
+				currentCategory: action.payload,
 			};
 		case CLEAR_PRODUCTS_BY_CATEGORY:
 			return {
@@ -129,6 +132,14 @@ export default function ProductReducer(state = initialState, action) {
 				isAuthenticated: false,
 				isLoading: false,
 				products: action.payload,
+			};
+		case GET_SEARCH_PRODUCTS:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				searchProducts: action.payload,
+				totalSearchProducts: action.totalSearchProducts,
 			};
 		case GET_MORE_PRODUCTS:
 			return {

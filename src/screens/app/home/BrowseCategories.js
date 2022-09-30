@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Localization from 'expo-localization';
+
 import {
 	getProductCategories,
 	getProductsByCategory,
-	getCurrentCategoryTitle,
+	getCurrentCategory,
 } from '../../../store/actions/product-actions';
 
 const BrowseCategories = () => {
@@ -20,6 +22,7 @@ const BrowseCategories = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const productCategories = useSelector(
 		(state) => state.products?.productCategories
@@ -42,8 +45,12 @@ const BrowseCategories = () => {
 	}, []);
 
 	const viewedProduct = (category) => {
-		dispatch(getProductsByCategory(category._id));
-		dispatch(getCurrentCategoryTitle(category.name));
+		const data = {
+			_id: category?._id,
+			page: 1,
+		};
+		dispatch(getProductsByCategory(data));
+		dispatch(getCurrentCategory(category));
 		navigation.navigate('HomeProductsByCategoryScreen');
 	};
 
@@ -68,12 +75,12 @@ const BrowseCategories = () => {
 					numColumns={2}
 					style={{ flexGrow: 0 }}
 					ListEmptyComponent={renderEmpty}
-					// onEndReachedThreshold={0.2}
+					// onEndReachedThreshold={0.5}
 					// onEndReached={fetchMoreData}
 					contentContainerStyle={{ padding: 5 }}
 					showsHorizontalScrollIndicator={false}
 					renderItem={({ item: category }) => {
-						const { name, imageUrl } = category;
+						const { translations, imageUrl } = category;
 
 						return (
 							<TouchableOpacity onPress={() => viewedProduct(category)}>
@@ -91,7 +98,9 @@ const BrowseCategories = () => {
 											numberOfLines={2}
 											style={{ paddingVertical: 5, fontSize: 12 }}
 										>
-											{name}
+											{isEnglish
+												? translations[0]?.en[0]?.name
+												: translations[0]?.fr[0]?.name}
 										</Text>
 									</View>
 								</View>

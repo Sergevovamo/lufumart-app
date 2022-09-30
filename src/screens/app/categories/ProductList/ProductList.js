@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as Localization from 'expo-localization';
 
 import { numberWithCommas } from '../../../../utils/NumberWithCommas';
 import {
@@ -24,6 +25,8 @@ const ProductList = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const mounted = useRef(false);
+
+	let isEnglish = Localization.locale.slice(0, 2) === 'en';
 
 	const [page, setPage] = useState(1);
 
@@ -90,13 +93,23 @@ const ProductList = () => {
 	const renderFooter = () => (
 		<View style={styles.footerText}>
 			{products.moreLoading && <ActivityIndicator />}
-			{products.isListEnd && <Text>No more products at the moment</Text>}
+			{products.isListEnd && (
+				<Text>
+					{isEnglish
+						? 'No more products at the moment.'
+						: `Plus de produits pour le moment..`}
+				</Text>
+			)}
 		</View>
 	);
 
 	const renderEmpty = () => (
 		<View style={styles.emptyText}>
-			<Text>No products at the moment</Text>
+			<Text>
+				{isEnglish
+					? 'No products at the moment.'
+					: `Aucun produit pour le moment.`}
+			</Text>
 			{/* <Button onPress={() => requestAPI()} title="Refresh" /> */}
 		</View>
 	);
@@ -123,12 +136,12 @@ const ProductList = () => {
 					style={{ flexGrow: 0 }}
 					ListEmptyComponent={renderEmpty}
 					ListFooterComponent={renderFooter}
-					onEndReachedThreshold={0.2}
+					onEndReachedThreshold={0.5}
 					onEndReached={fetchMoreData}
 					contentContainerStyle={{ padding: 5 }}
 					showsHorizontalScrollIndicator={false}
 					renderItem={({ item: product }) => {
-						const { name, salePrice, imageUrl } = product;
+						const { salePrice, imageUrl, translations } = product;
 
 						return (
 							<TouchableOpacity onPress={() => viewedProduct(product)}>
@@ -146,7 +159,9 @@ const ProductList = () => {
 											numberOfLines={2}
 											style={{ paddingVertical: 5, fontSize: 12 }}
 										>
-											{name}
+											{isEnglish
+												? translations[0]?.en[0]?.name
+												: translations[0]?.fr[0]?.name}
 										</Text>
 										<Text style={{ fontWeight: 'bold' }}>
 											US ${numberWithCommas(salePrice)}

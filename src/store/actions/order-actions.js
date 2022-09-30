@@ -11,7 +11,7 @@ import { tokenConfig, auth } from './auth-actions';
 import { getCartProducts } from './product-actions';
 import { returnErrors } from './error-actions';
 
-const ORDER_SERVER = 'https://api-v1.lufumart.com/api/v1/orders';
+const ORDER_SERVER = 'https://apis.lufumart.net/api/v1/orders';
 
 export const calculateShippingFee = () => async (dispatch) => {
 	const token = await tokenConfig();
@@ -33,13 +33,12 @@ export const calculateShippingFee = () => async (dispatch) => {
 		});
 	} catch (error) {
 		// console.log(error.response.data);
-		let shippingFee = 0;
-		await dispatch({
-			type: CALCULATE_SHIPPING_COST,
-			payload: shippingFee,
-		});
 		dispatch(
-			returnErrors(error.response.data, error.response.status, 'GET_PRODUCTS')
+			returnErrors(
+				error.response.data,
+				error.response.status,
+				'CALCULATE_SHIPPING_COST'
+			)
 		);
 	}
 };
@@ -71,6 +70,8 @@ export const checkOutOrder = (payload) => async (dispatch) => {
 		await dispatch(auth());
 	} catch (error) {
 		console.log(error.response.data);
+		const clearMessage = '';
+		await save('transactionMessage', clearMessage);
 		dispatch(
 			returnErrors(error.response.data, error.response.status, 'CHECKOUT_ORDER')
 		);
